@@ -39,7 +39,14 @@ def parse_repository(path):
 
     Analyse the content of *path* recursively.
 
+    Raises :exc:`OSError` if the directory is incorrect.
+
     """
+    if not os.path.isdir(path) or not os.access(path, os.R_OK):
+        raise OSError(
+            "The javascript package directory is incorrect: {0}".format(path)
+        )
+
     environment = dict(
         modules={},
         classes={},
