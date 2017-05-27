@@ -26,6 +26,7 @@ def test_parse_repository_empty(temporary_directory):
 
 
 def test_parse_variables():
+    """Return variable environment from content."""
     content = (
         "/** test list variable */\n"
         "const test_list = [1, 2, 3];\n"
