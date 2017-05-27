@@ -30,7 +30,7 @@ FUNCTION_ARROW_PATTERN = re.compile(
 #: Regular Expression pattern for variables
 VARIABLES_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"(const|let|var) (?P<variable_name>\w+) *= *(?P<variable_value>.+);"
+    r"(const|let|var) (?P<variable_name>\w+) *= *(?P<variable_value>[^;]+);"
 )
 
 
@@ -318,7 +318,9 @@ def parse_variables(content, module_id):
 
         # As we collapsed all contexts to avoid noises, we need to get the
         # value from the original data in case it represents an object.
-        match_in_line = VARIABLES_PATTERN.search(lines[line_number-1])
+        match_in_line = VARIABLES_PATTERN.search(
+            "\n".join(lines[line_number-1:])
+        )
 
         variable_environment = dict(
             id=variable_id,
