@@ -25,6 +25,61 @@ def test_parse_repository_empty(temporary_directory):
     ) == environment
 
 
+def test_parse_functions():
+    """Return function environment from content."""
+    content = (
+        "/** test function */\n"
+        "export function doSomething() {\n"
+        "    console.log('something');\n"
+        "}\n"
+        "\n"
+        "/**\n"
+        " * test function with arguments.\n"
+        " */\n"
+        "const doSomethingElse = (arg1, arg2) => {\n"
+        "    console.log('something_else');\n"
+        "};\n"
+        "\n"
+        "export default const greeting = () => {};\n"
+        "\n"
+    )
+
+    assert sphinxcontrib.parser.parse_functions(
+        content, "test.module"
+    ) == {
+        "test.module.doSomething": {
+            "id": "test.module.doSomething",
+            "module_id": "test.module",
+            "exported": True,
+            "default": False,
+            "name": "doSomething",
+            "arguments": [],
+            "line": 2,
+            "description": "test function"
+        },
+        "test.module.doSomethingElse": {
+            "id": "test.module.doSomethingElse",
+            "module_id": "test.module",
+            "exported": False,
+            "default": False,
+            "name": "doSomethingElse",
+            "arguments": ["arg1", "arg2"],
+            "line": 9,
+            "description": "test function with arguments."
+        },
+        "test.module.greeting": {
+            "id": "test.module.greeting",
+            "module_id": "test.module",
+            "exported": True,
+            "default": True,
+            "name": "greeting",
+            "arguments": [],
+            "line": 13,
+            "description": None
+        },
+    }
+
+
 def test_parse_variables():
     """Return variable environment from content."""
     content = (

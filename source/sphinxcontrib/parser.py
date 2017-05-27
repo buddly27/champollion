@@ -18,13 +18,13 @@ CLASS_PATTERN = re.compile(
 #: Regular Expression pattern for function expressions
 FUNCTION_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"function (?P<function_name>\w+) *\((?P<arguments>[\w,]*)\) *{"
+    r"function (?P<function_name>\w+) *\((?P<arguments>.*)\) *{"
 )
 
 #: Regular Expression pattern for arrow functions
 FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"(const|let|var) (?P<function_name>\w+) *= *\((?P<arguments>.+)\) *=> *{"
+    r"const (?P<function_name>\w+) *= *\((?P<arguments>.*)\) *=> *{"
 )
 
 #: Regular Expression pattern for variables
@@ -281,9 +281,9 @@ def parse_functions(content, module_id):
         for match in match_iter:
             function_id = ".".join([module_id, match.group("function_name")])
             line_number = content[:match.start()].count("\n")+1
-            arguments = [
+            arguments = filter(lambda x: len(x), [
                 arg.strip() for arg in match.group("arguments").split(",")
-            ]
+            ])
 
             function_environment = dict(
                 id=function_id,
