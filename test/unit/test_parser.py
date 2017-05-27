@@ -25,40 +25,6 @@ def test_parse_repository_empty(temporary_directory):
     ) == environment
 
 
-@pytest.fixture()
-def content_lines_with_docstrings():
-    return [
-        "/**",
-        " * An function example.",
-        " *",
-        " * Detailed description.",
-        " */",
-        "function sum(a, b) {",
-        "    return a+b;",
-        "}",
-        "",
-        "/*",
-        " * Incorrect docstring",
-        " */",
-        "function doSomething() {",
-        "    console.log('something');",
-        "}",
-        "",
-        "/*",
-        "",
-        " Incorrect docstring",
-        "",
-        "*/",
-        "function doSomethingElse() {",
-        "    console.log('something_else');",
-        "}",
-        "",
-        "",
-        "/* A cool variable. */",
-        "const Data = null",
-    ]
-
-
 @pytest.mark.parametrize(
     ("content_lines", "line_number", "expected"),
     [
