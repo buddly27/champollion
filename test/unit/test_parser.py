@@ -25,6 +25,80 @@ def test_parse_repository_empty(temporary_directory):
     ) == environment
 
 
+def test_parse_variables():
+    content = (
+        "/** test list variable */\n"
+        "const test_list = [1, 2, 3];\n"
+        "\n"
+        "/**\n"
+        " * test dictionary variable.\n"
+        " * \n"
+        " * Detailed description.\n"
+        " */\n"
+        "export default var test_object = {\n"
+        "   key1: value1,\n"
+        "   key2: value2,\n"
+        "   key3: value3,\n"
+        "};\n"
+        "\n"
+        "/** test string variable */\n"
+        "let test_string ='youpi';\n"
+        "\n"
+        "export const test_int = 42;\n"
+    )
+
+    assert sphinxcontrib.parser.parse_variables(
+        content, "test.module"
+    ) == {
+        "test.module.test_list": {
+            "id": "test.module.test_list",
+            "module_id": "test.module",
+            "exported": False,
+            "default": False,
+            "name": "test_list",
+            "value": "[1, 2, 3]",
+            "line": 2,
+            "description": "test list variable"
+        },
+        "test.module.test_object": {
+            "id": "test.module.test_object",
+            "module_id": "test.module",
+            "exported": True,
+            "default": True,
+            "name": "test_object",
+            "value": (
+                "{\n"
+                "   key1: value1,\n"
+                "   key2: value2,\n"
+                "   key3: value3,\n"
+                "}"
+            ),
+            "line": 9,
+            "description": "test dictionary variable.\n\nDetailed description."
+        },
+        "test.module.test_string": {
+            "id": "test.module.test_string",
+            "module_id": "test.module",
+            "exported": False,
+            "default": False,
+            "name": "test_string",
+            "value": "'youpi'",
+            "line": 16,
+            "description": "test string variable"
+        },
+        "test.module.test_int": {
+            "id": "test.module.test_int",
+            "module_id": "test.module",
+            "exported": True,
+            "default": False,
+            "name": "test_int",
+            "value": "42",
+            "line": 18,
+            "description": None
+        },
+    }
+
+
 @pytest.mark.parametrize(
     ("content_lines", "line_number", "expected"),
     [
@@ -110,7 +184,6 @@ def test_parse_repository_empty(temporary_directory):
             1,
             None
         )
-
     ],
     ids=[
         "valid element line number with multiline docstring",
