@@ -25,6 +25,93 @@ def test_parse_repository_empty(temporary_directory):
     ) == environment
 
 
+def test_parse_classes():
+    """Return class environment from content."""
+    content = (
+        "/**\n"
+        " * Base Class\n"
+        " */\n"
+        "class MotherClass {\n"
+        "    constructor() {\n"
+        "        this.attribute = 42\n"
+        "    }\n"
+        "}\n"
+        "\n"
+        "const CustomWelcome = class Welcome {\n"
+        "    greeting() {\n"
+        "        return 'Hello World';\n"
+        "    }\n"
+        "};\n"
+        "\n"
+        "/**\n"
+        " * Inherited class\n"
+        " */\n"
+        "export default class AwesomeClass extends MotherClass {\n"
+        "    constructor(name) {\n"
+        "        super();\n"
+        "        this.name = name;\n"
+        "    }\n"
+        "\n"
+        "    get name() {\n"
+        "        return this.name;\n"
+        "    }\n"
+        "\n"
+        "    set name(value) {\n"
+        "        this.name = value;\n"
+        "    }\n"
+        "\n"
+        "    awesomeMethod1 = () => {\n"
+        "        console.log('Method 1 has been called');\n"
+        "    };\n"
+        "\n"
+        "    awesomeMethod2(arg1, arg2) {\n"
+        "        console.log('Method 2 has been called');\n"
+        "    }\n"
+        "\n"
+        "    static staticMethod() {\n"
+        "        console.log('Static method has been called');\n"
+        "    }\n"
+        "\n"
+        "    static attribute = 42;\n"
+        "}\n"
+    )
+
+    assert sphinxcontrib.parser.parse_classes(
+        content, "test.module"
+    ) == {
+        "test.module.MotherClass": {
+            "id": "test.module.MotherClass",
+            "module_id": "test.module",
+            "exported": False,
+            "default": False,
+            "name": "MotherClass",
+            "parent": None,
+            "line": 4,
+            "description": "Base Class"
+        },
+        "test.module.CustomWelcome": {
+            "id": "test.module.CustomWelcome",
+            "module_id": "test.module",
+            "exported": False,
+            "default": False,
+            "name": "CustomWelcome",
+            "parent": None,
+            "line": 10,
+            "description": None
+        },
+        "test.module.AwesomeClass": {
+            "id": "test.module.AwesomeClass",
+            "module_id": "test.module",
+            "exported": True,
+            "default": True,
+            "name": "AwesomeClass",
+            "parent": "MotherClass",
+            "line": 19,
+            "description": "Inherited class"
+        },
+    }
+
+
 def test_parse_functions():
     """Return function environment from content."""
     content = (
@@ -268,7 +355,7 @@ def test_parse_docstrings(content_lines, line_number, expected):
 def test_filter_comments():
     """Remove all comments from content"""
     content = (
-        "'use strict' /* a beautiful comment */\n"
+        "'use strict'; /* a beautiful comment */\n"
         "\n"
         "/*\n"
         "a long comment that can take a lot of places so\n"
@@ -288,7 +375,7 @@ def test_filter_comments():
     )
 
     expected = (
-        "'use strict' \n"
+        "'use strict'; \n"
         "\n"
         "\n"
         "\n"
