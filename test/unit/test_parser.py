@@ -27,8 +27,112 @@ def test_get_environment_empty(temporary_directory):
     ) == environment
 
 
+def test_get_module_environment_from_file():
+    """Return module_id and environment from file id."""
+    assert sphinxcontrib.parser.get_module_environment(
+        "test/module/example.js", []
+    ) == (
+        "test.module.example",
+        {
+            "modules": {
+                "test.module.example": {
+                    "id": "test.module.example",
+                    "name": "example",
+                    "file_id": "test/module/example.js"
+                }
+            }
+        }
+    )
+
+
+def test_get_module_environment_from_index_file():
+    """Return module_id and environment from index file id."""
+    assert sphinxcontrib.parser.get_module_environment(
+        "test/module/index.js", []
+    ) == (
+        "test.module",
+        {
+            "modules": {
+                "test.module": {
+                    "id": "test.module",
+                    "name": "module",
+                    "file_id": "test/module/index.js"
+                }
+            }
+        }
+    )
+
+
+def test_get_module_environment_from_file_with_adjacent_index():
+    """Return module_id and environment from file id with adjacent index file.
+    """
+    assert sphinxcontrib.parser.get_module_environment(
+        "test/module/example.js", ["index.js"]
+    ) == (
+        "test.module.example",
+        {
+            "modules": {
+                "test.module.example": {
+                    "id": "test.module.example",
+                    "name": "module.example",
+                    "file_id": "test/module/example.js"
+                }
+            }
+        }
+    )
+
+
+def test_get_module_environment_from_file_with_initial_environment():
+    """Return module_id and updated environment from file id and module id."""
+    environment = dict(
+        modules={
+            "test": {}
+        },
+        classes={
+            "test.AwesomeClass": {}
+        },
+        functions={
+            "test.doSomething": {}
+        },
+        variables={
+            "test.DATA": {}
+        },
+        files={
+            "path/to/other/example.js": {}
+        }
+    )
+
+    assert sphinxcontrib.parser.get_module_environment(
+        "test/module/index.js", [], environment
+    ) == (
+        "test.module",
+        {
+            "modules": {
+                "test": {},
+                "test.module": {
+                    "id": "test.module",
+                    "name": "test.module",
+                    "file_id": "test/module/index.js"
+                }
+            },
+            "files": {
+                "path/to/other/example.js": {}
+            },
+            "classes": {
+                "test.AwesomeClass": {}
+            },
+            "functions": {
+                "test.doSomething": {}
+            },
+            "variables": {
+                "test.DATA": {}
+            }
+        }
+    )
+
+
 def test_get_file_environment_empty(request):
-    """Return file environment from content."""
+    """Return environment from empty file."""
     file_handle, path = tempfile.mkstemp(suffix=".js")
     os.close(file_handle)
 
@@ -64,7 +168,7 @@ def test_get_file_environment_empty(request):
 
 
 def test_get_file_environment_empty_with_initial_environment(request):
-    """Return file environment from content."""
+    """Update environment from empty file."""
     file_handle, path = tempfile.mkstemp(suffix=".js")
     os.close(file_handle)
 
