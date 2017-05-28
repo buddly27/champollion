@@ -40,8 +40,11 @@ def test_parse_functions():
         "    console.log('something_else');\n"
         "};\n"
         "\n"
-        "export default const greeting = () => {};\n"
+        "export default const doSomethingWithManyArguments = ("
+        "  arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9"
+        ") => {};\n"
         "\n"
+        ""
     )
 
     assert sphinxcontrib.parser.parse_functions(
@@ -67,13 +70,17 @@ def test_parse_functions():
             "line": 9,
             "description": "test function with arguments."
         },
-        "test.module.greeting": {
-            "id": "test.module.greeting",
+        "test.module.doSomethingWithManyArguments": {
+            "id": "test.module.doSomethingWithManyArguments",
             "module_id": "test.module",
             "exported": True,
             "default": True,
-            "name": "greeting",
-            "arguments": [],
+            "name": "doSomethingWithManyArguments",
+            "arguments": [
+                "arg1", "arg2", "arg3", "arg4",
+                "arg5", "arg6", "arg7", "arg8",
+                "arg9"
+            ],
             "line": 13,
             "description": None
         },
