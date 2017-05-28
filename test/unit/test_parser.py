@@ -1,6 +1,8 @@
 # :coding: utf-8
 
 import pytest
+import tempfile
+import os
 
 import sphinxcontrib.parser
 
@@ -23,6 +25,106 @@ def test_get_environment_empty(temporary_directory):
     assert sphinxcontrib.parser.get_environment(
         temporary_directory
     ) == environment
+
+
+def test_get_file_environment_empty(request):
+    """Return file environment from content."""
+    file_handle, path = tempfile.mkstemp(suffix=".js")
+    os.close(file_handle)
+
+    assert sphinxcontrib.parser.get_file_environment(
+        path, "path/to/example.js", "test.module"
+    ) == {
+        "files": {
+            "path/to/example.js": {
+                "id": "path/to/example.js",
+                "module_id": "test.module",
+                "name": os.path.basename(path),
+                "path": path,
+                "content": "",
+                "classes": [],
+                "functions": [],
+                "variables": [],
+            }
+        },
+        "classes": {},
+        "functions": {},
+        "variables": {}
+    }
+
+    def cleanup():
+        """Remove temporary file."""
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+    request.addfinalizer(cleanup)
+    return path
+
+
+def test_get_file_environment_empty_with_initial_environment(request):
+    """Return file environment from content."""
+    file_handle, path = tempfile.mkstemp(suffix=".js")
+    os.close(file_handle)
+
+    environment = dict(
+        modules={
+            "test.module": {}
+        },
+        classes={
+            "test.module.AwesomeClass": {}
+        },
+        functions={
+            "test.module.doSomething": {}
+        },
+        variables={
+            "test.module.DATA": {}
+        },
+        files={
+            "path/to/other/example.js": {}
+        }
+    )
+
+    assert sphinxcontrib.parser.get_file_environment(
+        path, "path/to/example.js", "test.module", environment
+    ) == {
+        "files": {
+            "path/to/other/example.js": {},
+            "path/to/example.js": {
+                "id": "path/to/example.js",
+                "module_id": "test.module",
+                "name": os.path.basename(path),
+                "path": path,
+                "content": "",
+                "classes": [],
+                "functions": [],
+                "variables": [],
+            }
+        },
+        "modules": {
+            "test.module": {}
+        },
+        "classes": {
+            "test.module.AwesomeClass": {}
+        },
+        "functions": {
+            "test.module.doSomething": {}
+        },
+        "variables": {
+            "test.module.DATA": {}
+        }
+    }
+
+    def cleanup():
+        """Remove temporary file."""
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+    request.addfinalizer(cleanup)
+    return path
 
 
 def test_get_class_environment():
