@@ -12,7 +12,8 @@ MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
 #: Regular Expression pattern for classes
 CLASS_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"class +(?P<class_name>\w+)( +extends +(?P<mother_class>\w+))? *{"
+    r"(class +(?P<class_name>\w+)|const +(?P<variable_name>\w+) *= *class +\w+)"
+    r"( +extends +(?P<mother_class>\w+))? *{"
 )
 
 #: Regular Expression pattern for function expressions
@@ -244,7 +245,11 @@ def parse_classes(content, module_id):
     content = collapse_all(content)
 
     for match in CLASS_PATTERN.finditer(content):
-        class_id = ".".join([module_id, match.group("class_name")])
+        class_name = match.group("class_name")
+        if class_name is None:
+            class_name = match.group("variable_name")
+
+        class_id = ".".join([module_id, class_name])
         line_number = content[:match.start()].count("\n")+1
 
         class_environment = dict(
@@ -252,7 +257,7 @@ def parse_classes(content, module_id):
             module_id=module_id,
             exported=match.group("export") is not None,
             default=match.group("default") is not None,
-            name=match.group("class_name"),
+            name=class_name,
             parent=match.group("mother_class"),
             line=line_number,
             description=parse_docstring(line_number, lines)
