@@ -5,14 +5,14 @@ import pytest
 import sphinxcontrib.parser
 
 
-def test_parse_repository_error():
+def test_get_environment_error():
     """Raise an error if the path is incorrect."""
     with pytest.raises(OSError):
-        sphinxcontrib.parser.parse_repository("")
+        sphinxcontrib.parser.get_environment("")
 
 
-def test_parse_repository_empty(temporary_directory):
-    """Raise an empty environment."""
+def test_get_environment_empty(temporary_directory):
+    """Return an empty environment."""
     environment = dict(
         modules={},
         classes={},
@@ -20,12 +20,12 @@ def test_parse_repository_empty(temporary_directory):
         variables={},
         files={}
     )
-    assert sphinxcontrib.parser.parse_repository(
+    assert sphinxcontrib.parser.get_environment(
         temporary_directory
     ) == environment
 
 
-def test_parse_classes():
+def test_get_class_environment():
     """Return class environment from content."""
     content = (
         "/**\n"
@@ -76,7 +76,7 @@ def test_parse_classes():
         "}\n"
     )
 
-    assert sphinxcontrib.parser.parse_classes(
+    assert sphinxcontrib.parser.get_class_environment(
         content, "test.module"
     ) == {
         "test.module.MotherClass": {
@@ -112,7 +112,7 @@ def test_parse_classes():
     }
 
 
-def test_parse_functions():
+def test_get_function_environment():
     """Return function environment from content."""
     content = (
         "/** test function */\n"
@@ -134,7 +134,7 @@ def test_parse_functions():
         ""
     )
 
-    assert sphinxcontrib.parser.parse_functions(
+    assert sphinxcontrib.parser.get_function_environment(
         content, "test.module"
     ) == {
         "test.module.doSomething": {
@@ -174,7 +174,7 @@ def test_parse_functions():
     }
 
 
-def test_parse_variables():
+def test_get_variable_environment():
     """Return variable environment from content."""
     content = (
         "/** test list variable */\n"
@@ -197,7 +197,7 @@ def test_parse_variables():
         "export const test_int = 42;\n"
     )
 
-    assert sphinxcontrib.parser.parse_variables(
+    assert sphinxcontrib.parser.get_variable_environment(
         content, "test.module"
     ) == {
         "test.module.test_list": {
@@ -345,9 +345,9 @@ def test_parse_variables():
         "invalid line_number",
     ]
 )
-def test_parse_docstrings(content_lines, line_number, expected):
+def test_get_docstrings(content_lines, line_number, expected):
     """Return docstrings from a element's line number."""
-    assert sphinxcontrib.parser.parse_docstring(
+    assert sphinxcontrib.parser.get_docstring(
         line_number, content_lines
     ) == expected
 

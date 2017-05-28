@@ -35,7 +35,7 @@ VARIABLES_PATTERN = re.compile(
 )
 
 
-def parse_repository(path):
+def get_environment(path):
     """Return javascript environment dictionary from *path*.
 
     Analyse the content of *path* recursively.
@@ -80,18 +80,18 @@ def parse_repository(path):
             file_id = "/".join(root_folders + [_file])
             file_path = os.path.join(root, _file)
 
-            module_id, environment = parse_module_environment(
+            module_id, environment = get_module_environment(
                 file_id, files, environment
             )
 
-            environment = parse_file(
+            environment = get_file_environment(
                 file_path, file_id, module_id, environment
             )
 
     return environment
 
 
-def parse_module_environment(file_id, files, environment=None):
+def get_module_environment(file_id, files, environment=None):
     """Return module ID and updated environment from *file_id*.
 
     *file_id* is in the form of::
@@ -141,8 +141,8 @@ def parse_module_environment(file_id, files, environment=None):
     return module_id, environment
 
 
-def parse_file(file_path, file_id, module_id, environment=None):
-    """Parse a javascript *file_path*.
+def get_file_environment(file_path, file_id, module_id, environment=None):
+    """Return file environment from *file_path*.
 
     *file_id* represent the ID of the file.
 
@@ -198,9 +198,9 @@ def parse_file(file_path, file_id, module_id, environment=None):
     except (IOError, OSError):
         return environment
 
-    classes = parse_classes(content, module_id)
-    functions = parse_functions(content, module_id)
-    variables = parse_variables(content, module_id)
+    classes = get_class_environment(content, module_id)
+    functions = get_function_environment(content, module_id)
+    variables = get_variable_environment(content, module_id)
 
     file_environment["classes"] = classes.keys()
     file_environment["functions"] = functions.keys()
@@ -216,8 +216,8 @@ def parse_file(file_path, file_id, module_id, environment=None):
     return environment
 
 
-def parse_classes(content, module_id):
-    """Parse all classes from a file *content*.
+def get_class_environment(content, module_id):
+    """Return class environment from *content*.
 
     *module_id* represent the ID of the module.
 
@@ -260,15 +260,15 @@ def parse_classes(content, module_id):
             name=class_name,
             parent=match.group("mother_class"),
             line=line_number,
-            description=parse_docstring(line_number, lines)
+            description=get_docstring(line_number, lines)
         )
         environment[class_id] = class_environment
 
     return environment
 
 
-def parse_functions(content, module_id):
-    """Parse all functions from a file *content*.
+def get_function_environment(content, module_id):
+    """Return function environment from *content*.
 
     *module_id* represent the ID of the module.
 
@@ -298,15 +298,15 @@ def parse_functions(content, module_id):
                 name=match.group("function_name"),
                 arguments=arguments,
                 line=line_number,
-                description=parse_docstring(line_number, lines)
+                description=get_docstring(line_number, lines)
             )
             environment[function_id] = function_environment
 
     return environment
 
 
-def parse_variables(content, module_id):
-    """Parse all variables from a file *content*.
+def get_variable_environment(content, module_id):
+    """Return variable environment from *content*.
 
     *module_id* represent the ID of the module.
 
@@ -335,14 +335,14 @@ def parse_variables(content, module_id):
             name=match.group("variable_name"),
             value=match_in_line.group("variable_value"),
             line=line_number,
-            description=parse_docstring(line_number, lines)
+            description=get_docstring(line_number, lines)
         )
         environment[variable_id] = variable_environment
 
     return environment
 
 
-def parse_docstring(line_number, lines):
+def get_docstring(line_number, lines):
     """Return docstrings for an element at a specific *line_number*.
 
     Loop into the file *lines* in reverse, starting from the element's
