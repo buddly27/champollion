@@ -207,10 +207,20 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     file_environment["variables"] = variables.keys()
     file_environment["content"] = content
 
+    if "classes" not in environment.keys():
+        environment["classes"] = {}
     environment["classes"].update(classes)
+
+    if "functions" not in environment.keys():
+        environment["functions"] = {}
     environment["functions"].update(functions)
+
+    if "variables" not in environment.keys():
+        environment["variables"] = {}
     environment["variables"].update(variables)
 
+    if "files" not in environment.keys():
+        environment["files"] = {}
     environment["files"][file_id] = file_environment
 
     return environment
