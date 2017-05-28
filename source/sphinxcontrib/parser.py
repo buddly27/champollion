@@ -105,7 +105,9 @@ def get_module_environment(file_id, files, environment=None):
 
     """
     if environment is None:
-        environment = {}
+        environment = {
+            "modules": {}
+        }
 
     hierarchy = file_id.split("/")
     file_name = hierarchy.pop()
