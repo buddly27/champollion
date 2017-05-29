@@ -22,9 +22,13 @@ def temporary_directory(request):
 
 
 @pytest.fixture()
-def docs_folder(temporary_directory):
-    path = os.path.join(temporary_directory, "docs")
+def doc_folder(temporary_directory):
+    path = os.path.join(temporary_directory, "doc")
     os.makedirs(path)
+
+    # Create the js code source folder
+    js_source = os.path.join(temporary_directory, "doc", "example")
+    os.makedirs(js_source)
 
     # Create minimal conf.py file
     conf_file = os.path.join(path, "conf.py")
@@ -42,3 +46,30 @@ def docs_folder(temporary_directory):
 
     return path
 
+
+# @pytest.fixture()
+# def doc_folder():
+#     temporary_directory = "/var/tmp"
+#     path = os.path.join(temporary_directory, "doc")
+#     os.makedirs(path)
+#
+#     # Create the js code source folder
+#     js_source = os.path.join(temporary_directory, "doc", "example")
+#     os.makedirs(js_source)
+#
+#     # Create minimal conf.py file
+#     conf_file = os.path.join(path, "conf.py")
+#
+#     with open(conf_file, "w") as f:
+#         f.write(
+#             "# :coding: utf-8\n"
+#             "extensions=['sphinxcontrib.autojs']\n"
+#             "html_theme = 'sphinx_rtd_theme'\n"
+#             "source_suffix = '.rst'\n"
+#             "master_doc = 'index'\n"
+#             "author = u'Jeremy Retailleau'\n"
+#             "exclude_patterns = ['Thumbs.db', '.DS_Store']\n"
+#             "js_source='./example'"
+#         )
+#
+#     return path
