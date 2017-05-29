@@ -116,7 +116,7 @@ class AutoDataDirective(JSObject):
         if is_default:
             return StringList(
                 [
-                    "``import {name} from \"{module}\"``".format(
+                    "``import {name} from '{module}'``".format(
                         name=self.data_env["name"],
                         module=module_name
                     ),
@@ -127,7 +127,7 @@ class AutoDataDirective(JSObject):
         else:
             return StringList(
                 [
-                    "``import {{{name}}} from \"{module}\"``".format(
+                    "``import {{{name}}} from '{module}'``".format(
                         name=self.data_env["name"],
                         module=module_name
                     ),

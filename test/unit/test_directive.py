@@ -19,7 +19,7 @@ def test_directive_autodata(doc_folder):
             " *\n"
             " *     A note.\n"
             " */\n"
-            "const VARIABLE_INT = 42;\n"
+            "export default const VARIABLE_INT = 42;\n"
             "\n"
             "/**\n"
             " * Another variable\n"
@@ -34,7 +34,7 @@ def test_directive_autodata(doc_folder):
             "    key3: 'value3',\n"
             "};\n"
             "\n"
-            "let VARIABLE_STRING = 'rosebud';\n"
+            "export let VARIABLE_STRING = 'rosebud';\n"
         )
 
     index_file = os.path.join(doc_folder, "index.rst")
@@ -54,6 +54,8 @@ def test_directive_autodata(doc_folder):
         assert f.read() == (
             "const example.VARIABLE_INT\n"
             "\n"
+            "   \"import VARIABLE_INT from \'example\'\"\n"
+            "\n"
             "   A variable\n"
             "\n"
             "   Note: A note.\n"
@@ -67,6 +69,8 @@ def test_directive_autodata(doc_folder):
             "      A citation\n"
             "\n"
             "let example.VARIABLE_STRING\n"
+            "\n"
+            "   \"import {VARIABLE_STRING} from \'example\'\"\n"
         )
 
 
