@@ -6,7 +6,8 @@ from ._version import __version__
 
 from directive import (
     AutoDataDirective,
-    AutoFunctionDirective
+    AutoFunctionDirective,
+    AutoClassDirective
 )
 from viewcode import (
     add_source_code_links,
@@ -33,5 +34,5 @@ def setup(app):
 
     app.add_directive_to_domain("js", "autodata", AutoDataDirective)
     app.add_directive_to_domain("js", "autofunction", AutoFunctionDirective)
+    app.add_directive_to_domain("js", "autoclass", AutoClassDirective)
     # app.add_directive_to_domain("js", "automodule", AutoModuleDirective)
-    # app.add_directive_to_domain("js", "autoclass", AutoClassDirective)

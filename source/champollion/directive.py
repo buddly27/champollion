@@ -7,7 +7,7 @@ from helper import generate_content
 
 
 class AutoDataDirective(JSObject):
-    """Generate reStructuredText from JavaScript global data.
+    """Generate reStructuredText from JavaScript data.
 
     .. sourcecode:: rest
 
@@ -57,12 +57,12 @@ class AutoDataDirective(JSObject):
         self.module_env = {}
 
         # Initiate Javascript environment and raise an error if the
-        # variable element is unavailable.
+        # element is unavailable.
         js_env = self.state.document.settings.env.js_environment
         if signature not in js_env["data"].keys():
-            raise self.error("The global data is unavailable: {0}".format(
-                signature
-            ))
+            raise self.error(
+                "The data id is unavailable: {0}".format(signature)
+            )
 
         else:
             self.data_env = js_env["data"][signature]
@@ -157,12 +157,12 @@ class AutoFunctionDirective(JSCallable):
         self.module_env = {}
 
         # Initiate Javascript environment and raise an error if the
-        # variable element is unavailable.
+        # element is unavailable.
         js_env = self.state.document.settings.env.js_environment
         if signature not in js_env["function"].keys():
-            raise self.error("The function is unavailable: {0}".format(
-                signature
-            ))
+            raise self.error(
+                "The function id is unavailable: {0}".format(signature)
+            )
 
         else:
             self.function_env = js_env["function"][signature]
@@ -203,3 +203,73 @@ class AutoFunctionDirective(JSCallable):
         node += param_list
 
         return name, module_name
+
+
+class AutoClassDirective(JSCallable):
+    """Generate reStructuredText from JavaScript class.
+
+    .. sourcecode:: rest
+
+        .. js:autoclass:: my-class-id
+
+    """
+    #: Only one ``class id`` argument is required
+    required_arguments = 1
+
+    #: No optional argument is available
+    optional_arguments = 0
+
+    #: Content is automatically generated and can not be manually entered
+    has_content = False
+
+    #: Nesting available
+    allow_nesting = True
+
+    #: No prefix is displayed right before the documentation entry
+    display_prefix = None
+
+    #: Define the Object type
+    objtype = "class"
+
+    def __init__(
+        self, name, arguments, options, content, lineno, content_offset,
+        block_text, state, state_machine
+    ):
+        """Initiate the directive.
+
+        Raise an error if the variable id is unavailable within the Javascript
+        environment parsed.
+
+        """
+        super(AutoClassDirective, self).__init__(
+            name, arguments, options, content, lineno, content_offset,
+            block_text, state, state_machine
+        )
+
+        # The signature is always the first argument.
+        signature = arguments[0]
+
+        self.class_env = {}
+        self.module_env = {}
+
+        # Initiate Javascript environment and raise an error if the
+        # element is unavailable.
+        js_env = self.state.document.settings.env.js_environment
+        if signature not in js_env["class"].keys():
+            raise self.error(
+                "The class id is unavailable: {0}".format(signature)
+            )
+
+        else:
+            self.class_env = js_env["class"][signature]
+            self.module_env = js_env["module"]
+
+            module_id = self.class_env["module_id"]
+
+            self.content = generate_content(
+                self.class_env["name"],
+                self.module_env[module_id]["name"],
+                description=self.class_env["description"],
+                exported=self.class_env["exported"],
+                is_default=self.class_env["default"]
+            )
