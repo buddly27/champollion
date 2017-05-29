@@ -6,6 +6,36 @@ from sphinx.util.osutil import cd
 import os
 
 
+def test_directive_error(doc_folder):
+    """Do not generate doc for non existing data.
+    """
+    js_source = os.path.join(doc_folder, "example")
+    with open(os.path.join(js_source, "index.js"), "w") as f:
+        f.write(
+            "/**\n"
+            " * A variable\n"
+            " *\n"
+            " * .. note::\n"
+            " *\n"
+            " *     A note.\n"
+            " */\n"
+            "const VARIABLE = 42;\n"
+        )
+
+    index_file = os.path.join(doc_folder, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autodata:: example.UNEXISTING_VARIABLE"
+        )
+
+    with cd(doc_folder):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    assert not os.path.isfile(
+        os.path.join(doc_folder, "_build", "index.txt")
+    )
+
+
 def test_directive_autodata(doc_folder):
     """Generate documentation from global data variables.
     """
@@ -74,31 +104,69 @@ def test_directive_autodata(doc_folder):
         )
 
 
-def test_directive_autodata_error(doc_folder):
-    """Do not generate doc for non existing data.
+def test_directive_autofunction(doc_folder):
+    """Generate documentation from functions.
     """
     js_source = os.path.join(doc_folder, "example")
     with open(os.path.join(js_source, "index.js"), "w") as f:
         f.write(
             "/**\n"
-            " * A variable\n"
+            " * A function\n"
             " *\n"
             " * .. note::\n"
             " *\n"
             " *     A note.\n"
             " */\n"
-            "const VARIABLE = 42;\n"
+            "export default function doSomething1(arg1, arg2 = null) {\n"
+            "    console.log('test1')\n"
+            "}\n"
+            "\n"
+            "/**\n"
+            " * Another function\n"
+            " *\n"
+            " * A citation::\n"
+            " *\n"
+            " *     A citation\n"
+            " */\n"
+            "const doSomething2 = (arg) => {\n"
+            "    console.log('test2')\n"
+            "};\n"
+            "\n"
+            "export const doSomething3 = () => {};\n"
         )
 
     index_file = os.path.join(doc_folder, "index.rst")
     with open(index_file, "w") as f:
         f.write(
-            ".. js:autodata:: example.UNEXISTING_VARIABLE"
+            ".. js:autofunction:: example.doSomething1\n"
+            "\n"
+            ".. js:autofunction:: example.doSomething2\n"
+            "\n"
+            ".. js:autofunction:: example.doSomething3\n"
         )
 
     with cd(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    assert not os.path.isfile(
-        os.path.join(doc_folder, "_build", "index.txt")
-    )
+    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+        assert f.read() == (
+            "example.doSomething1(arg1, arg2 = null)\n"
+            "\n"
+            "   \"import doSomething1 from \'example\'\"\n"
+            "\n"
+            "   A function\n"
+            "\n"
+            "   Note: A note.\n"
+            "\n"
+            "example.doSomething2(arg)\n"
+            "\n"
+            "   Another function\n"
+            "\n"
+            "   A citation:\n"
+            "\n"
+            "      A citation\n"
+            "\n"
+            "example.doSomething3()\n"
+            "\n"
+            "   \"import {doSomething3} from \'example\'\"\n"
+        )
