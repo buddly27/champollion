@@ -164,7 +164,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
                     "id": "path/to/file.js",
                     "name": "script.js",
                     "path": "/path/to/script.js",
-                    "content": "'use strict'\n\n...",
+                    "content": "'use strict'\\n\\n...",
                     "classes": [
                         ...
                     ],
@@ -241,7 +241,7 @@ def get_class_environment(content, module_id):
                 "name": "AwesomeClass",
                 "parent": "MotherClass",
                 "line": 42,
-                "description": "Class doc.\n\nDetailed description."
+                "description": "Class doc.\\n\\nDetailed description."
             },
             "module.another.SuperClass": {
                 ...
@@ -373,7 +373,7 @@ def get_docstring(line_number, lines):
 
     Which will return the following result::
 
-        "Class doc.\n\nDetailed description."
+        "Class doc.\\n\\nDetailed description."
 
     The docstring can also fit on one line, in the form of::
 
