@@ -1,6 +1,6 @@
 # :coding: utf-8
 
-"""sphinxcontrib-autojs documentation build configuration file."""
+"""champollion documentation build configuration file."""
 
 import os
 import sys
@@ -31,14 +31,14 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"sphinxcontrib-autojs"
+project = u"champollion"
 copyright = u"2017, Jeremy Retailleau"
 
 # Version
 with open(
     os.path.join(
         os.path.dirname(__file__), "..", "source",
-        "sphinxcontrib", "_version.py"
+        "champollion", "_version.py"
     )
 ) as _version_file:
     _version = re.match(
@@ -54,7 +54,7 @@ exclude_patterns = ["_template"]
 
 # A list of prefixes to ignore for module listings.
 modindex_common_prefix = [
-    "sphinxcontrib."
+    "champollion."
 ]
 
 

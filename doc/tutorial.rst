@@ -4,4 +4,4 @@
 Tutorial
 ********
 
-A quick dive into using sphinxcontrib-autojs.
+A quick dive into using champollion.

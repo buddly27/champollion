@@ -12,17 +12,17 @@ Installing
 
 Installation is simple with `pip <http://www.pip-installer.org/>`_::
 
-    pip install sphinxcontrib-autojs
+    pip install champollion
 
 Installing from source
 ======================
 
 You can also install manually from the source for more control. First obtain a
 copy of the source by either downloading the
-`zipball <http://github.com/buddly27/sphinxcontrib-autojs/repository/archive.zip?ref=master>`_ or
+`zipball <http://github.com/buddly27/champollion/repository/archive.zip?ref=master>`_ or
 cloning the public repository::
 
-    git clone github.com:buddly27/sphinxcontrib-autojs.git
+    git clone github.com:buddly27/champollion.git
 
 Then you can build and install the package into your current Python
 environment::
@@ -59,7 +59,7 @@ Then you can build the documentation with the command::
 
 View the result in your browser at::
 
-    file:///path/to/sphinxcontrib-autojs/build/doc/html/index.html
+    file:///path/to/champollion/build/doc/html/index.html
 
 Running tests against the source
 --------------------------------
@@ -78,4 +78,4 @@ You can also generate a coverage report when running tests::
 
 View the generated report at::
 
-    file:///path/to/sphinxcontrib-autojs/htmlcov/index.html
+    file:///path/to/champollion/htmlcov/index.html

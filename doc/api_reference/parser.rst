@@ -1,5 +1,5 @@
-********************
-sphinxcontrib.parser
-********************
+******************
+champollion.parser
+******************
 
-.. automodule:: sphinxcontrib.parser
+.. automodule:: champollion.parser

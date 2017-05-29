@@ -4,13 +4,13 @@ import pytest
 import tempfile
 import os
 
-import sphinxcontrib.parser
+import champollion.parser
 
 
 def test_get_environment_error():
     """Raise an error if the path is incorrect."""
     with pytest.raises(OSError):
-        sphinxcontrib.parser.get_environment("")
+        champollion.parser.get_environment("")
 
 
 def test_get_environment_empty(temporary_directory):
@@ -22,14 +22,14 @@ def test_get_environment_empty(temporary_directory):
         variables={},
         files={}
     )
-    assert sphinxcontrib.parser.get_environment(
+    assert champollion.parser.get_environment(
         temporary_directory
     ) == environment
 
 
 def test_get_module_environment_from_file():
     """Return module_id and environment from file id."""
-    assert sphinxcontrib.parser.get_module_environment(
+    assert champollion.parser.get_module_environment(
         "test/module/example.js", []
     ) == (
         "test.module.example",
@@ -47,7 +47,7 @@ def test_get_module_environment_from_file():
 
 def test_get_module_environment_from_index_file():
     """Return module_id and environment from index file id."""
-    assert sphinxcontrib.parser.get_module_environment(
+    assert champollion.parser.get_module_environment(
         "test/module/index.js", []
     ) == (
         "test.module",
@@ -66,7 +66,7 @@ def test_get_module_environment_from_index_file():
 def test_get_module_environment_from_file_with_adjacent_index():
     """Return module_id and environment from file id with adjacent index file.
     """
-    assert sphinxcontrib.parser.get_module_environment(
+    assert champollion.parser.get_module_environment(
         "test/module/example.js", ["index.js"]
     ) == (
         "test.module.example",
@@ -102,7 +102,7 @@ def test_get_module_environment_from_file_with_initial_environment():
         }
     )
 
-    assert sphinxcontrib.parser.get_module_environment(
+    assert champollion.parser.get_module_environment(
         "test/module/index.js", [], environment
     ) == (
         "test.module",
@@ -136,7 +136,7 @@ def test_get_file_environment_empty(request):
     file_handle, path = tempfile.mkstemp(suffix=".js")
     os.close(file_handle)
 
-    assert sphinxcontrib.parser.get_file_environment(
+    assert champollion.parser.get_file_environment(
         path, "path/to/example.js", "test.module"
     ) == {
         "files": {
@@ -190,7 +190,7 @@ def test_get_file_environment_empty_with_initial_environment(request):
         }
     )
 
-    assert sphinxcontrib.parser.get_file_environment(
+    assert champollion.parser.get_file_environment(
         path, "path/to/example.js", "test.module", environment
     ) == {
         "files": {
@@ -282,7 +282,7 @@ def test_get_class_environment():
         "}\n"
     )
 
-    assert sphinxcontrib.parser.get_class_environment(
+    assert champollion.parser.get_class_environment(
         content, "test.module"
     ) == {
         "test.module.MotherClass": {
@@ -340,7 +340,7 @@ def test_get_function_environment():
         ""
     )
 
-    assert sphinxcontrib.parser.get_function_environment(
+    assert champollion.parser.get_function_environment(
         content, "test.module"
     ) == {
         "test.module.doSomething": {
@@ -403,7 +403,7 @@ def test_get_variable_environment():
         "export const test_int = 42;\n"
     )
 
-    assert sphinxcontrib.parser.get_variable_environment(
+    assert champollion.parser.get_variable_environment(
         content, "test.module"
     ) == {
         "test.module.test_list": {
@@ -561,7 +561,7 @@ def test_get_variable_environment():
 )
 def test_get_docstrings(content_lines, line_number, expected):
     """Return docstrings from a element's line number."""
-    assert sphinxcontrib.parser.get_docstring(
+    assert champollion.parser.get_docstring(
         line_number, content_lines
     ) == expected
 
@@ -607,7 +607,7 @@ def test_filter_comments():
         "    return a+b;\n"
         "}\n"
     )
-    assert sphinxcontrib.parser.filter_comments(content) == expected
+    assert champollion.parser.filter_comments(content) == expected
 
 
 @pytest.mark.parametrize(
@@ -681,7 +681,7 @@ def test_filter_comments():
 )
 def test_collapse_all(content, expected):
     """Collapse all objects, classes and functions."""
-    assert sphinxcontrib.parser.collapse_all(content) == expected
+    assert champollion.parser.collapse_all(content) == expected
 
 
 @pytest.mark.parametrize(
@@ -728,6 +728,6 @@ def test_collapse_all(content, expected):
 )
 def test_guess_module_name(name, hierarchy_folders, module_names, expected):
     """Return module name from initial name, hierarchy folders and modules."""
-    assert sphinxcontrib.parser.guess_module_name(
+    assert champollion.parser.guess_module_name(
         name, hierarchy_folders, module_names
     ) == expected

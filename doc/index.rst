@@ -1,10 +1,10 @@
 .. _main:
 
-####################
-sphinxcontrib-autojs
-####################
+###########
+Champollion
+###########
 
-Generate documentation from Javascript ES6 source files.
+Generate Sphynx documentation from Javascript source files.
 
 .. toctree::
     :maxdepth: 1

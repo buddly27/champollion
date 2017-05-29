@@ -36,7 +36,7 @@ def doc_folder(temporary_directory):
     with open(conf_file, "w") as f:
         f.write(
             "# :coding: utf-8\n"
-            "extensions=['sphinxcontrib.autojs']\n"
+            "extensions=['champollion']\n"
             "source_suffix = '.rst'\n"
             "master_doc = 'index'\n"
             "author = u'Jeremy Retailleau'\n"
@@ -63,7 +63,7 @@ def doc_folder(temporary_directory):
 #     with open(conf_file, "w") as f:
 #         f.write(
 #             "# :coding: utf-8\n"
-#             "extensions=['sphinxcontrib.autojs']\n"
+#             "extensions=['champollion']\n"
 #             "html_theme = 'sphinx_rtd_theme'\n"
 #             "source_suffix = '.rst'\n"
 #             "master_doc = 'index'\n"

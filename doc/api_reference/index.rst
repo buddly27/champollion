@@ -4,10 +4,10 @@
 API Reference
 *************
 
-sphinxcontrib
-=============
+champollion
+===========
 
-.. automodule:: sphinxcontrib
+.. automodule:: champollion
 
 .. toctree::
     :maxdepth: 1

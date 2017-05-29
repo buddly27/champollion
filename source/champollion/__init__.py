@@ -2,6 +2,8 @@
 
 import os
 
+from ._version import __version__
+
 from directive import AutoDataDirective
 from viewcode import (
     add_source_code_links,

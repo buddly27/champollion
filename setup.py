@@ -11,7 +11,7 @@ RESOURCE_PATH = os.path.join(ROOT_PATH, "resource")
 SOURCE_PATH = os.path.join(ROOT_PATH, "source")
 README_PATH = os.path.join(ROOT_PATH, "README.rst")
 
-PACKAGE_NAME = "sphinxcontrib"
+PACKAGE_NAME = "champollion"
 
 # Read version from source.
 with open(
@@ -40,11 +40,11 @@ TEST_REQUIRES = [
 ]
 
 setup(
-    name="sphinxcontrib-autojs",
+    name="champollion",
     version=VERSION,
     description="Generate documentation from ES6 source files.",
     long_description=open(README_PATH).read(),
-    url="http://gitlab/jeremyr/sphinxcontrib-autojs",
+    url="http://github.com/buddly27/champollion",
     keywords="",
     author="Jeremy Retailleau",
     packages=find_packages(SOURCE_PATH),
@@ -61,5 +61,4 @@ setup(
     },
     zip_safe=False,
     platforms="any",
-    namespace_packages=["sphinxcontrib"],
 )

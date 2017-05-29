@@ -4,4 +4,4 @@
 Introduction
 ************
 
-A brief introduction to sphinxcontrib-autojs.
+A brief introduction to champollion.
