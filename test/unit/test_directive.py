@@ -6,7 +6,7 @@ from sphinx.util.osutil import cd
 import os
 
 
-def test_champollion_autodata(doc_folder):
+def test_directive_autodata(doc_folder):
     """Generate documentation from global data variables.
     """
     js_source = os.path.join(doc_folder, "example")
