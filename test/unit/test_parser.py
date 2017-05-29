@@ -15,13 +15,13 @@ def test_get_environment_error():
 
 def test_get_environment_empty(temporary_directory):
     """Return an empty environment."""
-    environment = dict(
-        modules={},
-        classes={},
-        functions={},
-        variables={},
-        files={}
-    )
+    environment = {
+        "module": {},
+        "class": {},
+        "function": {},
+        "data": {},
+        "file": {}
+    }
     assert champollion.parser.get_environment(
         temporary_directory
     ) == environment
@@ -34,7 +34,7 @@ def test_get_module_environment_from_file():
     ) == (
         "test.module.example",
         {
-            "modules": {
+            "module": {
                 "test.module.example": {
                     "id": "test.module.example",
                     "name": "example",
@@ -52,7 +52,7 @@ def test_get_module_environment_from_index_file():
     ) == (
         "test.module",
         {
-            "modules": {
+            "module": {
                 "test.module": {
                     "id": "test.module",
                     "name": "module",
@@ -71,7 +71,7 @@ def test_get_module_environment_from_file_with_adjacent_index():
     ) == (
         "test.module.example",
         {
-            "modules": {
+            "module": {
                 "test.module.example": {
                     "id": "test.module.example",
                     "name": "module.example",
@@ -84,30 +84,30 @@ def test_get_module_environment_from_file_with_adjacent_index():
 
 def test_get_module_environment_from_file_with_initial_environment():
     """Return module_id and updated environment from file id and module id."""
-    environment = dict(
-        modules={
+    environment = {
+        "module": {
             "test": {}
         },
-        classes={
+        "class": {
             "test.AwesomeClass": {}
         },
-        functions={
+        "function": {
             "test.doSomething": {}
         },
-        variables={
+        "data": {
             "test.DATA": {}
         },
-        files={
+        "file": {
             "path/to/other/example.js": {}
         }
-    )
+    }
 
     assert champollion.parser.get_module_environment(
         "test/module/index.js", [], environment
     ) == (
         "test.module",
         {
-            "modules": {
+            "module": {
                 "test": {},
                 "test.module": {
                     "id": "test.module",
@@ -115,16 +115,16 @@ def test_get_module_environment_from_file_with_initial_environment():
                     "file_id": "test/module/index.js"
                 }
             },
-            "files": {
+            "file": {
                 "path/to/other/example.js": {}
             },
-            "classes": {
+            "class": {
                 "test.AwesomeClass": {}
             },
-            "functions": {
+            "function": {
                 "test.doSomething": {}
             },
-            "variables": {
+            "data": {
                 "test.DATA": {}
             }
         }
@@ -139,21 +139,21 @@ def test_get_file_environment_empty(request):
     assert champollion.parser.get_file_environment(
         path, "path/to/example.js", "test.module"
     ) == {
-        "files": {
+        "file": {
             "path/to/example.js": {
                 "id": "path/to/example.js",
                 "module_id": "test.module",
                 "name": os.path.basename(path),
                 "path": path,
                 "content": "",
-                "classes": [],
-                "functions": [],
-                "variables": [],
+                "class": [],
+                "function": [],
+                "data": [],
             }
         },
-        "classes": {},
-        "functions": {},
-        "variables": {}
+        "class": {},
+        "function": {},
+        "data": {}
     }
 
     def cleanup():
@@ -172,28 +172,28 @@ def test_get_file_environment_empty_with_initial_environment(request):
     file_handle, path = tempfile.mkstemp(suffix=".js")
     os.close(file_handle)
 
-    environment = dict(
-        modules={
+    environment = {
+        "module": {
             "test.module": {}
         },
-        classes={
+        "class": {
             "test.module.AwesomeClass": {}
         },
-        functions={
+        "function": {
             "test.module.doSomething": {}
         },
-        variables={
+        "data": {
             "test.module.DATA": {}
         },
-        files={
+        "file": {
             "path/to/other/example.js": {}
         }
-    )
+    }
 
     assert champollion.parser.get_file_environment(
         path, "path/to/example.js", "test.module", environment
     ) == {
-        "files": {
+        "file": {
             "path/to/other/example.js": {},
             "path/to/example.js": {
                 "id": "path/to/example.js",
@@ -201,21 +201,21 @@ def test_get_file_environment_empty_with_initial_environment(request):
                 "name": os.path.basename(path),
                 "path": path,
                 "content": "",
-                "classes": [],
-                "functions": [],
-                "variables": [],
+                "class": [],
+                "function": [],
+                "data": [],
             }
         },
-        "modules": {
+        "module": {
             "test.module": {}
         },
-        "classes": {
+        "class": {
             "test.module.AwesomeClass": {}
         },
-        "functions": {
+        "function": {
             "test.module.doSomething": {}
         },
-        "variables": {
+        "data": {
             "test.module.DATA": {}
         }
     }
@@ -292,7 +292,7 @@ def test_get_class_environment():
             "default": False,
             "name": "MotherClass",
             "parent": None,
-            "line": 4,
+            "line_number": 4,
             "description": "Base Class"
         },
         "test.module.CustomWelcome": {
@@ -302,7 +302,7 @@ def test_get_class_environment():
             "default": False,
             "name": "CustomWelcome",
             "parent": None,
-            "line": 10,
+            "line_number": 10,
             "description": None
         },
         "test.module.AwesomeClass": {
@@ -312,7 +312,7 @@ def test_get_class_environment():
             "default": True,
             "name": "AwesomeClass",
             "parent": "MotherClass",
-            "line": 19,
+            "line_number": 19,
             "description": "Inherited class"
         },
     }
@@ -350,7 +350,7 @@ def test_get_function_environment():
             "default": False,
             "name": "doSomething",
             "arguments": [],
-            "line": 2,
+            "line_number": 2,
             "description": "test function"
         },
         "test.module.doSomethingElse": {
@@ -360,7 +360,7 @@ def test_get_function_environment():
             "default": False,
             "name": "doSomethingElse",
             "arguments": ["arg1", "arg2"],
-            "line": 9,
+            "line_number": 9,
             "description": "test function with arguments."
         },
         "test.module.doSomethingWithManyArguments": {
@@ -374,7 +374,7 @@ def test_get_function_environment():
                 "arg5", "arg6", "arg7", "arg8",
                 "arg9"
             ],
-            "line": 13,
+            "line_number": 13,
             "description": None
         },
     }
@@ -414,7 +414,7 @@ def test_get_variable_environment():
             "name": "test_list",
             "type": "const",
             "value": "[1, 2, 3]",
-            "line": 2,
+            "line_number": 2,
             "description": "test list variable"
         },
         "test.module.test_object": {
@@ -431,7 +431,7 @@ def test_get_variable_environment():
                 "   key3: value3,\n"
                 "}"
             ),
-            "line": 9,
+            "line_number": 9,
             "description": "test dictionary variable.\n\nDetailed description."
         },
         "test.module.test_string": {
@@ -442,7 +442,7 @@ def test_get_variable_environment():
             "name": "test_string",
             "type": "let",
             "value": "'youpi'",
-            "line": 16,
+            "line_number": 16,
             "description": "test string variable"
         },
         "test.module.test_int": {
@@ -453,7 +453,7 @@ def test_get_variable_environment():
             "name": "test_int",
             "type": "const",
             "value": "42",
-            "line": 18,
+            "line_number": 18,
             "description": None
         },
     }

@@ -49,13 +49,13 @@ def get_environment(path):
             "The javascript package directory is incorrect: {0}".format(path)
         )
 
-    environment = dict(
-        modules={},
-        classes={},
-        functions={},
-        variables={},
-        files={}
-    )
+    environment = {
+        "module": {},
+        "class": {},
+        "function": {},
+        "data": {},
+        "file": {}
+    }
 
     repository_name = os.path.basename(path)
 
@@ -107,7 +107,7 @@ def get_module_environment(file_id, files, environment=None):
     """
     if environment is None:
         environment = {
-            "modules": {}
+            "module": {}
         }
 
     hierarchy = file_id.split("/")
@@ -118,7 +118,7 @@ def get_module_environment(file_id, files, environment=None):
         module_name = guess_module_name(
             hierarchy[-1],
             hierarchy_folders=hierarchy[:-1],
-            module_names=environment["modules"].keys()
+            module_names=environment["module"].keys()
         )
 
     elif "index.js" in files:
@@ -127,7 +127,7 @@ def get_module_environment(file_id, files, environment=None):
         module_name = guess_module_name(
             ".".join([hierarchy[-1], name]),
             hierarchy_folders=hierarchy[:-1],
-            module_names=environment["modules"].keys()
+            module_names=environment["module"].keys()
         )
 
     else:
@@ -135,11 +135,11 @@ def get_module_environment(file_id, files, environment=None):
         module_id = ".".join(hierarchy + [name])
         module_name = name
 
-    environment["modules"][module_id] = dict(
-        id=module_id,
-        name=module_name,
-        file_id=file_id
-    )
+    environment["module"][module_id] = {
+        "id": module_id,
+        "name": module_name,
+        "file_id": file_id
+    }
 
     return module_id, environment
 
@@ -185,16 +185,16 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     if environment is None:
         environment = {}
 
-    file_environment = dict(
-        id=file_id,
-        module_id=module_id,
-        name=os.path.basename(file_path),
-        path=file_path,
-        content=None,
-        classes={},
-        functions={},
-        variables={},
-    )
+    file_environment = {
+        "id": file_id,
+        "module_id": module_id,
+        "name": os.path.basename(file_path),
+        "path": file_path,
+        "content": None,
+        "class": {},
+        "function": {},
+        "data": {},
+    }
     try:
         with open(file_path, "r") as f:
             content = f.read()
@@ -205,26 +205,26 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     functions = get_function_environment(content, module_id)
     variables = get_variable_environment(content, module_id)
 
-    file_environment["classes"] = classes.keys()
-    file_environment["functions"] = functions.keys()
-    file_environment["variables"] = variables.keys()
+    file_environment["class"] = classes.keys()
+    file_environment["function"] = functions.keys()
+    file_environment["data"] = variables.keys()
     file_environment["content"] = content
 
-    if "classes" not in environment.keys():
-        environment["classes"] = {}
-    environment["classes"].update(classes)
+    if "class" not in environment.keys():
+        environment["class"] = {}
+    environment["class"].update(classes)
 
-    if "functions" not in environment.keys():
-        environment["functions"] = {}
-    environment["functions"].update(functions)
+    if "function" not in environment.keys():
+        environment["function"] = {}
+    environment["function"].update(functions)
 
-    if "variables" not in environment.keys():
-        environment["variables"] = {}
-    environment["variables"].update(variables)
+    if "data" not in environment.keys():
+        environment["data"] = {}
+    environment["data"].update(variables)
 
-    if "files" not in environment.keys():
-        environment["files"] = {}
-    environment["files"][file_id] = file_environment
+    if "file" not in environment.keys():
+        environment["file"] = {}
+    environment["file"][file_id] = file_environment
 
     return environment
 
@@ -251,7 +251,7 @@ def get_class_environment(content, module_id):
         }
 
     """
-    environment = dict()
+    environment = {}
 
     lines = content.split("\n")
     content = filter_comments(content)
@@ -265,16 +265,16 @@ def get_class_environment(content, module_id):
         class_id = ".".join([module_id, class_name])
         line_number = content[:match.start()].count("\n")+1
 
-        class_environment = dict(
-            id=class_id,
-            module_id=module_id,
-            exported=match.group("export") is not None,
-            default=match.group("default") is not None,
-            name=class_name,
-            parent=match.group("mother_class"),
-            line=line_number,
-            description=get_docstring(line_number, lines)
-        )
+        class_environment = {
+            "id": class_id,
+            "module_id": module_id,
+            "exported": match.group("export") is not None,
+            "default": match.group("default") is not None,
+            "name": class_name,
+            "parent": match.group("mother_class"),
+            "line_number": line_number,
+            "description": get_docstring(line_number, lines)
+        }
         environment[class_id] = class_environment
 
     return environment
@@ -286,7 +286,7 @@ def get_function_environment(content, module_id):
     *module_id* represent the ID of the module.
 
     """
-    environment = dict()
+    environment = {}
 
     lines = content.split("\n")
     content = filter_comments(content)
@@ -303,16 +303,16 @@ def get_function_environment(content, module_id):
                 arg.strip() for arg in match.group("arguments").split(",")
             ])
 
-            function_environment = dict(
-                id=function_id,
-                module_id=module_id,
-                exported=match.group("export") is not None,
-                default=match.group("default") is not None,
-                name=match.group("function_name"),
-                arguments=arguments,
-                line=line_number,
-                description=get_docstring(line_number, lines)
-            )
+            function_environment = {
+                "id": function_id,
+                "module_id": module_id,
+                "exported": match.group("export") is not None,
+                "default": match.group("default") is not None,
+                "name": match.group("function_name"),
+                "arguments": arguments,
+                "line_number": line_number,
+                "description": get_docstring(line_number, lines)
+            }
             environment[function_id] = function_environment
 
     return environment
@@ -324,7 +324,7 @@ def get_variable_environment(content, module_id):
     *module_id* represent the ID of the module.
 
     """
-    environment = dict()
+    environment = {}
 
     lines = content.split("\n")
     content = filter_comments(content)
@@ -340,17 +340,17 @@ def get_variable_environment(content, module_id):
             "\n".join(lines[line_number-1:])
         )
 
-        variable_environment = dict(
-            id=variable_id,
-            module_id=module_id,
-            exported=match.group("export") is not None,
-            default=match.group("default") is not None,
-            name=match.group("variable_name"),
-            value=match_in_line.group("variable_value"),
-            type=match.group("variable_type"),
-            line=line_number,
-            description=get_docstring(line_number, lines)
-        )
+        variable_environment = {
+            "id": variable_id,
+            "module_id": module_id,
+            "exported": match.group("export") is not None,
+            "default": match.group("default") is not None,
+            "name": match.group("variable_name"),
+            "value": match_in_line.group("variable_value"),
+            "type": match.group("variable_type"),
+            "line_number": line_number,
+            "description": get_docstring(line_number, lines)
+        }
         environment[variable_id] = variable_environment
 
     return environment

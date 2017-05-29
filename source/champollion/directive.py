@@ -55,11 +55,11 @@ class AutoDataDirective(JSObject):
         # Initiate Javascript environment and raise an error if the
         # variable element is unavailable.
         js_env = self.state.document.settings.env.js_environment
-        if signature not in js_env["variables"].keys():
+        if signature not in js_env["data"].keys():
             raise RuntimeError("Unexisting variable: {}".format(signature))
 
-        self.variable_env = js_env["variables"][signature]
-        self.module_env = js_env["modules"]
+        self.variable_env = js_env["data"][signature]
+        self.module_env = js_env["module"]
 
         # Initiate content if description is available.
         if self.variable_env["description"]:
@@ -75,7 +75,7 @@ class AutoDataDirective(JSObject):
         variable_type = self.variable_env["type"]
         module_name = self.module_env[module_id]["name"]
 
-        node["type"] = "variables"
+        node["type"] = "data"
         node["id"] = self.variable_env["id"]
         node["module"] = module_name
         node['fullname'] = name

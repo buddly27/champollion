@@ -39,7 +39,7 @@ def add_source_code_links(app, doctree):
                     entries=dict()
                 )
 
-            lineno = js_env_element["line"]
+            lineno = js_env_element["line_number"]
             builder_env._js_modules[module_id]["entries"][lineno] = (
                 js_env_element["name"]
             )
@@ -68,8 +68,8 @@ def create_code_pages(app):
     if not hasattr(builder_env, "_js_modules"):
         return
 
-    module_env = app.env.js_environment["modules"]
-    file_env = app.env.js_environment["files"]
+    module_env = app.env.js_environment["module"]
+    file_env = app.env.js_environment["file"]
 
     highlighter = app.builder.highlighter
     urito = app.builder.get_relative_uri
@@ -139,7 +139,6 @@ def create_code_page_index(app, urito):
 
     stack = [""]
 
-    print "pouet"
     for module_id in sorted(builder_env._js_modules.keys()):
         if module_id.startswith(stack[-1]):
             stack.append(module_id + ".")
