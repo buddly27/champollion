@@ -380,14 +380,14 @@ def test_get_function_environment():
     }
 
 
-def test_get_variable_environment():
-    """Return variable environment from content."""
+def test_get_data_environment():
+    """Return data environment from content."""
     content = (
-        "/** test list variable */\n"
+        "/** test list data */\n"
         "const test_list = [1, 2, 3];\n"
         "\n"
         "/**\n"
-        " * test dictionary variable.\n"
+        " * test dictionary data.\n"
         " * \n"
         " * Detailed description.\n"
         " */\n"
@@ -397,13 +397,13 @@ def test_get_variable_environment():
         "   key3: value3,\n"
         "};\n"
         "\n"
-        "/** test string variable */\n"
+        "/** test string data */\n"
         "let test_string ='youpi';\n"
         "\n"
         "export const test_int = 42;\n"
     )
 
-    assert champollion.parser.get_variable_environment(
+    assert champollion.parser.get_data_environment(
         content, "test.module"
     ) == {
         "test.module.test_list": {
@@ -415,7 +415,7 @@ def test_get_variable_environment():
             "type": "const",
             "value": "[1, 2, 3]",
             "line_number": 2,
-            "description": "test list variable"
+            "description": "test list data"
         },
         "test.module.test_object": {
             "id": "test.module.test_object",
@@ -432,7 +432,7 @@ def test_get_variable_environment():
                 "}"
             ),
             "line_number": 9,
-            "description": "test dictionary variable.\n\nDetailed description."
+            "description": "test dictionary data.\n\nDetailed description."
         },
         "test.module.test_string": {
             "id": "test.module.test_string",
@@ -443,7 +443,7 @@ def test_get_variable_environment():
             "type": "let",
             "value": "'youpi'",
             "line_number": 16,
-            "description": "test string variable"
+            "description": "test string data"
         },
         "test.module.test_int": {
             "id": "test.module.test_int",
@@ -490,12 +490,12 @@ def test_get_variable_environment():
         ),
         (
             [
-                "/** A cool variable. */",
+                "/** A cool data. */",
                 "const Data = null",
             ],
             2,
             (
-                "A cool variable."
+                "A cool data."
             )
         ),
         (
@@ -546,7 +546,7 @@ def test_get_variable_environment():
         ),
         (
             [
-                "/** A cool variable. */",
+                "/** A cool data. */",
                 "const Data = null",
             ],
             1,
@@ -580,7 +580,7 @@ def test_filter_comments():
         "we put it on several lines.\n"
         "*/\n"
         "\n"
-        "// a variable docstring\n"
+        "// a data docstring\n"
         "const DATA = 1;\n"
         "\n"
         "/**\n"
@@ -655,11 +655,11 @@ def test_filter_comments():
             (
                 "class AwesomeClass {"
                 "    constructor() {"
-                "        this.variable = 1;"
+                "        this.data = 1;"
                 "    }"
                 ""
                 "    increase() {"
-                "        this.variable += 1;"
+                "        this.data += 1;"
                 "    }"
                 "}"
             ),

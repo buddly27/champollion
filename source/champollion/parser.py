@@ -12,7 +12,7 @@ MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
 #: Regular Expression pattern for classes
 CLASS_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"(class +(?P<class_name>\w+)|const +(?P<variable_name>\w+) *= *class +\w+)"
+    r"(class +(?P<class_name>\w+)|const +(?P<data_name>\w+) *= *class +\w+)"
     r"( +extends +(?P<mother_class>\w+))? *{"
 )
 
@@ -28,11 +28,11 @@ FUNCTION_ARROW_PATTERN = re.compile(
     r"const (?P<function_name>\w+) *= *\((?P<arguments>.*)\) *=> *{"
 )
 
-#: Regular Expression pattern for variables
-VARIABLES_PATTERN = re.compile(
+#: Regular Expression pattern for data
+DATA_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"(?P<variable_type>(const|let|var)) (?P<variable_name>\w+) "
-    r"*= *(?P<variable_value>[^;]+);"
+    r"(?P<data_type>(const|let|var)) (?P<data_name>\w+) "
+    r"*= *(?P<data_value>[^;]+);"
 )
 
 
@@ -157,22 +157,22 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     Otherwise return dictionary in the form of::
 
         {
-            "classes": {...},
-            "functions": {...},
-            "variables": {...},
-            "files": {
+            "class": {...},
+            "function": {...},
+            "data": {...},
+            "file": {
                 "path/to/file.js": {
                     "id": "path/to/file.js",
                     "name": "script.js",
                     "path": "/path/to/script.js",
                     "content": "'use strict'\\n\\n...",
-                    "classes": [
+                    "class": [
                         ...
                     ],
-                    "functions": [
+                    "function": [
                         ...
                     ]
-                    "variables": [
+                    "data": [
                         ...
                     ]
 
@@ -203,11 +203,11 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
 
     classes = get_class_environment(content, module_id)
     functions = get_function_environment(content, module_id)
-    variables = get_variable_environment(content, module_id)
+    data = get_data_environment(content, module_id)
 
     file_environment["class"] = classes.keys()
     file_environment["function"] = functions.keys()
-    file_environment["data"] = variables.keys()
+    file_environment["data"] = data.keys()
     file_environment["content"] = content
 
     if "class" not in environment.keys():
@@ -220,7 +220,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
 
     if "data" not in environment.keys():
         environment["data"] = {}
-    environment["data"].update(variables)
+    environment["data"].update(data)
 
     if "file" not in environment.keys():
         environment["file"] = {}
@@ -260,7 +260,7 @@ def get_class_environment(content, module_id):
     for match in CLASS_PATTERN.finditer(content):
         class_name = match.group("class_name")
         if class_name is None:
-            class_name = match.group("variable_name")
+            class_name = match.group("data_name")
 
         class_id = ".".join([module_id, class_name])
         line_number = content[:match.start()].count("\n")+1
@@ -318,8 +318,8 @@ def get_function_environment(content, module_id):
     return environment
 
 
-def get_variable_environment(content, module_id):
-    """Return variable environment from *content*.
+def get_data_environment(content, module_id):
+    """Return data environment from *content*.
 
     *module_id* represent the ID of the module.
 
@@ -330,28 +330,28 @@ def get_variable_environment(content, module_id):
     content = filter_comments(content)
     content = collapse_all(content)
 
-    for match in VARIABLES_PATTERN.finditer(content):
-        variable_id = ".".join([module_id, match.group("variable_name")])
+    for match in DATA_PATTERN.finditer(content):
+        data_id = ".".join([module_id, match.group("data_name")])
         line_number = content[:match.start()].count("\n")+1
 
         # As we collapsed all contexts to avoid noises, we need to get the
         # value from the original data in case it represents an object.
-        match_in_line = VARIABLES_PATTERN.search(
+        match_in_line = DATA_PATTERN.search(
             "\n".join(lines[line_number-1:])
         )
 
-        variable_environment = {
-            "id": variable_id,
+        data_environment = {
+            "id": data_id,
             "module_id": module_id,
             "exported": match.group("export") is not None,
             "default": match.group("default") is not None,
-            "name": match.group("variable_name"),
-            "value": match_in_line.group("variable_value"),
-            "type": match.group("variable_type"),
+            "name": match.group("data_name"),
+            "value": match_in_line.group("data_value"),
+            "type": match.group("data_type"),
             "line_number": line_number,
             "description": get_docstring(line_number, lines)
         }
-        environment[variable_id] = variable_environment
+        environment[data_id] = data_environment
 
     return environment
 
