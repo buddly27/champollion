@@ -2,7 +2,8 @@
 
 from sphinx import addnodes
 from sphinx.domains.javascript import JSObject, JSCallable
-from docutils.statemachine import StringList
+
+from helper import generate_content
 
 
 class AutoDataDirective(JSObject):
@@ -67,18 +68,15 @@ class AutoDataDirective(JSObject):
             self.data_env = js_env["data"][signature]
             self.module_env = js_env["module"]
 
-            self.content = StringList()
+            module_id = self.data_env["module_id"]
 
-            if self.data_env["exported"]:
-                self.content += self.get_import_statement(
-                    self.data_env["default"]
-                )
-
-            # Initiate content if description is available.
-            if self.data_env["description"]:
-                self.content += StringList(
-                    self.data_env["description"].split("\n")
-                )
+            self.content = generate_content(
+                self.data_env["name"],
+                self.module_env[module_id]["name"],
+                description=self.data_env["description"],
+                exported=self.data_env["exported"],
+                is_default=self.data_env["default"]
+            )
 
     def handle_signature(self, signature, node):
         """Update the signature node.
@@ -106,34 +104,6 @@ class AutoDataDirective(JSObject):
         """Return relevant index text.
         """
         return " (global variable or constant)"
-
-    def get_import_statement(self, is_default):
-        """Return import statement as a `StringList`.
-        """
-        module_id = self.data_env["module_id"]
-        module_name = self.module_env[module_id]["name"]
-
-        if is_default:
-            return StringList(
-                [
-                    "``import {name} from '{module}'``".format(
-                        name=self.data_env["name"],
-                        module=module_name
-                    ),
-                    ""
-                ]
-            )
-
-        else:
-            return StringList(
-                [
-                    "``import {{{name}}} from '{module}'``".format(
-                        name=self.data_env["name"],
-                        module=module_name
-                    ),
-                    ""
-                ]
-            )
 
 
 class AutoFunctionDirective(JSCallable):
@@ -198,18 +168,15 @@ class AutoFunctionDirective(JSCallable):
             self.function_env = js_env["function"][signature]
             self.module_env = js_env["module"]
 
-            self.content = StringList()
+            module_id = self.function_env["module_id"]
 
-            if self.function_env["exported"]:
-                self.content += self.get_import_statement(
-                    self.function_env["default"]
-                )
-
-            # Initiate content if description is available.
-            if self.function_env["description"]:
-                self.content += StringList(
-                    self.function_env["description"].split("\n")
-                )
+            self.content = generate_content(
+                self.function_env["name"],
+                self.module_env[module_id]["name"],
+                description=self.function_env["description"],
+                exported=self.function_env["exported"],
+                is_default=self.function_env["default"]
+            )
 
     def handle_signature(self, signature, node):
         """Update the signature node.
@@ -236,31 +203,3 @@ class AutoFunctionDirective(JSCallable):
         node += param_list
 
         return name, module_name
-
-    def get_import_statement(self, is_default):
-        """Return import statement as a `StringList`.
-        """
-        module_id = self.function_env["module_id"]
-        module_name = self.module_env[module_id]["name"]
-
-        if is_default:
-            return StringList(
-                [
-                    "``import {name} from '{module}'``".format(
-                        name=self.function_env["name"],
-                        module=module_name
-                    ),
-                    ""
-                ]
-            )
-
-        else:
-            return StringList(
-                [
-                    "``import {{{name}}} from '{module}'``".format(
-                        name=self.function_env["name"],
-                        module=module_name
-                    ),
-                    ""
-                ]
-            )
