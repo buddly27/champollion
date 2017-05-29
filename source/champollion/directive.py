@@ -34,7 +34,6 @@ class AutoDataDirective(JSObject):
         self.variable_env = js_env["variables"][signature]
         self.module_env = js_env["modules"]
 
-        self.content = None
         if self.variable_env["description"]:
             self.content = StringList(
                 self.variable_env["description"].split("\n")
