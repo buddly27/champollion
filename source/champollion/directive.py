@@ -52,7 +52,7 @@ class AutoDataDirective(JSObject):
         # The signature is always the first argument.
         signature = arguments[0]
 
-        self.variable_env = {}
+        self.data_env = {}
         self.module_env = {}
 
         # Initiate Javascript environment and raise an error if the
@@ -64,29 +64,36 @@ class AutoDataDirective(JSObject):
             ))
 
         else:
-            self.variable_env = js_env["data"][signature]
+            self.data_env = js_env["data"][signature]
             self.module_env = js_env["module"]
 
+            self.content = StringList()
+
+            if self.data_env["exported"]:
+                self.content += self.get_import_statement(
+                    self.data_env["default"]
+                )
+
             # Initiate content if description is available.
-            if self.variable_env["description"]:
-                self.content = StringList(
-                    self.variable_env["description"].split("\n")
+            if self.data_env["description"]:
+                self.content += StringList(
+                    self.data_env["description"].split("\n")
                 )
 
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
         for element in ["id", "name", "module_id", "type"]:
-            if element not in self.variable_env.keys():
+            if element not in self.data_env.keys():
                 return signature, ""
 
-        name = self.variable_env["name"]
-        module_id = self.variable_env["module_id"]
-        variable_type = self.variable_env["type"]
+        name = self.data_env["name"]
+        module_id = self.data_env["module_id"]
+        variable_type = self.data_env["type"]
         module_name = self.module_env[module_id]["name"]
 
         node["type"] = "data"
-        node["id"] = self.variable_env["id"]
+        node["id"] = self.data_env["id"]
         node["module"] = module_name
         node['fullname'] = name
 
@@ -99,3 +106,31 @@ class AutoDataDirective(JSObject):
         """Return relevant index text.
         """
         return " (global variable or constant)"
+
+    def get_import_statement(self, is_default):
+        """Return import statement as a `StringList`.
+        """
+        module_id = self.data_env["module_id"]
+        module_name = self.module_env[module_id]["name"]
+
+        if is_default:
+            return StringList(
+                [
+                    "``import {name} from \"{module}\"``".format(
+                        name=self.data_env["name"],
+                        module=module_name
+                    ),
+                    ""
+                ]
+            )
+
+        else:
+            return StringList(
+                [
+                    "``import {{{name}}} from \"{module}\"``".format(
+                        name=self.data_env["name"],
+                        module=module_name
+                    ),
+                    ""
+                ]
+            )
