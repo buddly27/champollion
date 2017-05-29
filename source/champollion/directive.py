@@ -43,6 +43,7 @@ class AutoDataDirective(JSObject):
     def handle_signature(self, sig, signode):
         name = self.variable_env["name"]
         module_id = self.variable_env["module_id"]
+        variable_type = self.variable_env["type"]
         module_name = self.module_env[module_id]["name"]
 
         signode["type"] = "variables"
@@ -50,8 +51,8 @@ class AutoDataDirective(JSObject):
         signode["module"] = module_name
         signode['fullname'] = name
 
-        signode += addnodes.desc_type("const ", "const ")
-        signode += addnodes.desc_addname(module_name + '.', module_name + '.')
+        signode += addnodes.desc_type(variable_type + " ", variable_type + " ")
+        signode += addnodes.desc_addname(module_name + ".", module_name + ".")
         signode += addnodes.desc_name(name, name)
         return name, module_name
 

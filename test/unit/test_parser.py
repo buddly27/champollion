@@ -412,6 +412,7 @@ def test_get_variable_environment():
             "exported": False,
             "default": False,
             "name": "test_list",
+            "type": "const",
             "value": "[1, 2, 3]",
             "line": 2,
             "description": "test list variable"
@@ -422,6 +423,7 @@ def test_get_variable_environment():
             "exported": True,
             "default": True,
             "name": "test_object",
+            "type": "var",
             "value": (
                 "{\n"
                 "   key1: value1,\n"
@@ -438,6 +440,7 @@ def test_get_variable_environment():
             "exported": False,
             "default": False,
             "name": "test_string",
+            "type": "let",
             "value": "'youpi'",
             "line": 16,
             "description": "test string variable"
@@ -448,6 +451,7 @@ def test_get_variable_environment():
             "exported": True,
             "default": False,
             "name": "test_int",
+            "type": "const",
             "value": "42",
             "line": 18,
             "description": None

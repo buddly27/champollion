@@ -31,7 +31,8 @@ FUNCTION_ARROW_PATTERN = re.compile(
 #: Regular Expression pattern for variables
 VARIABLES_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"(const|let|var) (?P<variable_name>\w+) *= *(?P<variable_value>[^;]+);"
+    r"(?P<variable_type>(const|let|var)) (?P<variable_name>\w+) "
+    r"*= *(?P<variable_value>[^;]+);"
 )
 
 
@@ -346,6 +347,7 @@ def get_variable_environment(content, module_id):
             default=match.group("default") is not None,
             name=match.group("variable_name"),
             value=match_in_line.group("variable_value"),
+            type=match.group("variable_type"),
             line=line_number,
             description=get_docstring(line_number, lines)
         )
