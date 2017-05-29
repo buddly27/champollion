@@ -6,8 +6,8 @@ from sphinx.util.osutil import cd
 import os
 
 
-def test_autojs_autodata(doc_folder):
-    """Generate documentation from global data variable.
+def test_champollion_autodata(doc_folder):
+    """Generate documentation from global data variables.
     """
     js_source = os.path.join(doc_folder, "example")
     with open(os.path.join(js_source, "index.js"), "w") as f:
