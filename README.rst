@@ -1,5 +1,5 @@
-####################
-sphinxcontrib-autojs
-####################
+###########
+Champollion
+###########
 
-Generate documentation from ES6 source files.
+Generate documentation from Javascript source files.
