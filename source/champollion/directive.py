@@ -13,9 +13,25 @@ class AutoDataDirective(JSObject):
         .. js:autodata:: my-data-id
 
     """
+    #: Only one ``variable id`` argument is required
     required_arguments = 1
+
+    #: No optional argument is available
     optional_arguments = 0
+
+    #: Content is automatically generated and can not be manually entered
     has_content = False
+
+    #: No nesting available
+    allow_nesting = False
+
+    #: Javascript data are not callable
+    has_arguments = False
+
+    #: No prefix is displayed right before the documentation entry
+    display_prefix = None
+
+    #: Define the Object type
     objtype = "data"
 
     def __init__(
