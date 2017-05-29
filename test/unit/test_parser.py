@@ -464,16 +464,24 @@ def test_get_variable_environment():
                 " * An function example.",
                 " *",
                 " * Detailed description.",
+                " *",
+                " * .. note::",
+                " *",
+                " *     A note.",
                 " */",
                 "function sum(a, b) {",
                 "    return a+b;",
                 "}",
             ],
-            6,
+            10,
             (
                 "An function example.\n"
                 "\n"
-                "Detailed description."
+                "Detailed description.\n"
+                "\n"
+                ".. note::\n"
+                "\n"
+                "    A note."
             )
         ),
         (

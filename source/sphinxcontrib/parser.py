@@ -404,8 +404,9 @@ def get_docstring(line_number, lines):
             docstring = []
 
         # Valid docstring line starts with a '*'
-        elif line.startswith("*"):
-            docstring.append(line[1:].strip())
+        elif re.search("^\*( *| +.+)$", line) is not None:
+            index = 2 if len(line) > 1 else 1
+            docstring.append(line[index:].rstrip())
 
         # Beginning of valid docstrings starts with '/**'
         elif line.startswith("/**"):
