@@ -19,7 +19,7 @@ def test_directive_autodata(doc_folder):
             " *\n"
             " *     A note.\n"
             " */\n"
-            "const TEST_INT = 42;\n"
+            "const VARIABLE_INT = 42;\n"
             "\n"
             "/**\n"
             " * Another variable\n"
@@ -28,23 +28,23 @@ def test_directive_autodata(doc_folder):
             " *\n"
             " *     A citation\n"
             " */\n"
-            "var TEST_OBJECT = {\n"
+            "var VARIABLE_OBJECT = {\n"
             "    key1: 'value1',\n"
             "    key2: 'value2',\n"
             "    key3: 'value3',\n"
             "};\n"
             "\n"
-            "let TEST_STRING = 'rosebud';\n"
+            "let VARIABLE_STRING = 'rosebud';\n"
         )
 
     index_file = os.path.join(doc_folder, "index.rst")
     with open(index_file, "w") as f:
         f.write(
-            ".. js:autodata:: example.TEST_INT\n"
+            ".. js:autodata:: example.VARIABLE_INT\n"
             "\n"
-            ".. js:autodata:: example.TEST_OBJECT\n"
+            ".. js:autodata:: example.VARIABLE_OBJECT\n"
             "\n"
-            ".. js:autodata:: example.TEST_STRING\n"
+            ".. js:autodata:: example.VARIABLE_STRING\n"
         )
 
     with cd(doc_folder):
@@ -52,13 +52,13 @@ def test_directive_autodata(doc_folder):
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
         assert f.read() == (
-            "const example.TEST_INT\n"
+            "const example.VARIABLE_INT\n"
             "\n"
             "   A variable\n"
             "\n"
             "   Note: A note.\n"
             "\n"
-            "var example.TEST_OBJECT\n"
+            "var example.VARIABLE_OBJECT\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -66,5 +66,33 @@ def test_directive_autodata(doc_folder):
             "\n"
             "      A citation\n"
             "\n"
-            "let example.TEST_STRING\n"
+            "let example.VARIABLE_STRING\n"
         )
+
+
+def test_directive_autodata_error(doc_folder):
+    js_source = os.path.join(doc_folder, "example")
+    with open(os.path.join(js_source, "index.js"), "w") as f:
+        f.write(
+            "/**\n"
+            " * A variable\n"
+            " *\n"
+            " * .. note::\n"
+            " *\n"
+            " *     A note.\n"
+            " */\n"
+            "const VARIABLE = 42;\n"
+        )
+
+    index_file = os.path.join(doc_folder, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autodata:: example.UNEXISTING_VARIABLE"
+        )
+
+    with cd(doc_folder):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    assert not os.path.isfile(
+        os.path.join(doc_folder, "_build", "index.txt")
+    )

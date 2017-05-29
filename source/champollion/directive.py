@@ -52,24 +52,34 @@ class AutoDataDirective(JSObject):
         # The signature is always the first argument.
         signature = arguments[0]
 
+        self.variable_env = {}
+        self.module_env = {}
+
         # Initiate Javascript environment and raise an error if the
         # variable element is unavailable.
         js_env = self.state.document.settings.env.js_environment
         if signature not in js_env["data"].keys():
-            raise RuntimeError("Unexisting variable: {}".format(signature))
+            raise self.error("The global data is unavailable: {0}".format(
+                signature
+            ))
 
-        self.variable_env = js_env["data"][signature]
-        self.module_env = js_env["module"]
+        else:
+            self.variable_env = js_env["data"][signature]
+            self.module_env = js_env["module"]
 
-        # Initiate content if description is available.
-        if self.variable_env["description"]:
-            self.content = StringList(
-                self.variable_env["description"].split("\n")
-            )
+            # Initiate content if description is available.
+            if self.variable_env["description"]:
+                self.content = StringList(
+                    self.variable_env["description"].split("\n")
+                )
 
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
+        for element in ["id", "name", "module_id", "type"]:
+            if element not in self.variable_env.keys():
+                return signature, ""
+
         name = self.variable_env["name"]
         module_id = self.variable_env["module_id"]
         variable_type = self.variable_env["type"]

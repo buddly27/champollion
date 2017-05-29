@@ -20,45 +20,57 @@ def add_source_code_links(app, doctree):
         builder_env._js_modules = {}
 
     # Loop through all js signature nodes
-    for objnode in doctree.traverse(addnodes.desc):
-        if objnode.get("domain") != "js":
+    for object_node in doctree.traverse(addnodes.desc):
+        if object_node.get("domain") != "js":
             continue
 
-        for signode in objnode:
-            if not isinstance(signode, addnodes.desc_signature):
+        for node in object_node:
+            if not isinstance(node, addnodes.desc_signature):
                 continue
 
-            js_env_element = js_env[signode.get("type")][signode.get("id")]
+            node_type = node.get("type", None)
+            if node_type not in js_env.keys():
+                continue
+
+            node_id = node.get("id", None)
+            if node_id not in js_env[node_type].keys():
+                continue
+
+            js_env_element = js_env[node_type][node_id]
+            for element in ["name", "module_id", "line_number"]:
+                if element not in js_env_element.keys():
+                    continue
+
             module_id = js_env_element["module_id"]
-            pagename = "_modules/{0}".format(module_id.replace(".", "/"))
+            page_name = "_modules/{0}".format(module_id.replace(".", "/"))
 
             if module_id not in builder_env._js_modules.keys():
-                builder_env._js_modules[module_id] = dict(
-                    pagename=pagename,
-                    docname=builder_env.docname,
-                    entries=dict()
-                )
+                builder_env._js_modules[module_id] = {
+                    "pagename": page_name,
+                    "docname": builder_env.docname,
+                    "entries": {}
+                }
 
-            lineno = js_env_element["line_number"]
-            builder_env._js_modules[module_id]["entries"][lineno] = (
+            line_number = js_env_element["line_number"]
+            builder_env._js_modules[module_id]["entries"][line_number] = (
                 js_env_element["name"]
             )
 
-            onlynode = addnodes.only(expr="html")
-            onlynode += addnodes.pending_xref(
+            link_node = addnodes.only(expr="html")
+            link_node += addnodes.pending_xref(
                 "",
                 reftype="viewcode",
                 refdomain="std",
                 refexplicit=False,
-                reftarget=pagename,
-                refid=signode.get("fullname"),
+                reftarget=page_name,
+                refid=node.get("fullname"),
                 refdoc=builder_env.docname
             )
-            onlynode[0] += nodes.inline(
+            link_node[0] += nodes.inline(
                 "", "[source]",
                 classes=["viewcode-link"]
             )
-            signode += onlynode
+            node += link_node
 
 
 def create_code_pages(app):
@@ -72,7 +84,7 @@ def create_code_pages(app):
     file_env = app.env.js_environment["file"]
 
     highlighter = app.builder.highlighter
-    urito = app.builder.get_relative_uri
+    uri = app.builder.get_relative_uri
 
     for module_id, element in builder_env._js_modules.items():
         file_id = module_env[module_id]["file_id"]
@@ -84,15 +96,15 @@ def create_code_pages(app):
         )
         lines = highlighted.splitlines()
 
-        for lineno, name in element["entries"].items():
-            link = urito(pagename, docname) + "#" + name
-            lines[lineno-1] = (
+        for line_number, name in element["entries"].items():
+            link = uri(pagename, docname) + "#" + name
+            lines[line_number-1] = (
                 "<div class='viewcode-block' id='{name}'>"
                 "<a class='viewcode-back' href='{link}'>[docs]</a>"
                 "{line}".format(
                     name=name,
                     link=link,
-                    line=lines[lineno-1]
+                    line=lines[line_number-1]
                 )
             )
 
@@ -100,14 +112,14 @@ def create_code_pages(app):
 
         for module_name in module_id.split(".")[:-1]:
             parents.append({
-                "link": urito(
+                "link": uri(
                     pagename, "_modules/" + module_name.replace(".", "/")
                 ),
                 "title": module_name
             })
 
         parents.append({
-            "link": urito(pagename, "_modules/index"),
+            "link": uri(pagename, "_modules/index"),
             "title": "Code"
         })
         parents.reverse()
@@ -125,7 +137,7 @@ def create_code_pages(app):
         }
         yield pagename, context, "page.html"
 
-    yield create_code_page_index(app, urito)
+    yield create_code_page_index(app, uri)
 
 
 def create_code_page_index(app, urito):
