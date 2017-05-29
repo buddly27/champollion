@@ -81,16 +81,20 @@ def test_directive_autodata(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
-        assert f.read() == (
-            "const example.VARIABLE_INT\n"
+        assert f.read().decode("ascii", "ignore") == (
+            "const example.VARIABLE_INT = 42\n"
             "\n"
-            "   \"import VARIABLE_INT from \'example\'\"\n"
+            "   \"import VARIABLE_INT from 'example'\"\n"
             "\n"
             "   A variable\n"
             "\n"
             "   Note: A note.\n"
             "\n"
-            "var example.VARIABLE_OBJECT\n"
+            "var example.VARIABLE_OBJECT = {\n"
+            "    key1: value1,\n"
+            "    key2: value2,\n"
+            "    key3: value3,\n"
+            "}\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -98,9 +102,9 @@ def test_directive_autodata(doc_folder):
             "\n"
             "      A citation\n"
             "\n"
-            "let example.VARIABLE_STRING\n"
+            "let example.VARIABLE_STRING = rosebud\n"
             "\n"
-            "   \"import {VARIABLE_STRING} from \'example\'\"\n"
+            "   \"import {VARIABLE_STRING} from 'example'\"\n"
         )
 
 
@@ -149,10 +153,10 @@ def test_directive_autofunction(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
-        assert f.read() == (
+        assert f.read().decode("ascii", "ignore") == (
             "example.doSomething1(arg1, arg2 = null)\n"
             "\n"
-            "   \"import doSomething1 from \'example\'\"\n"
+            "   \"import doSomething1 from 'example'\"\n"
             "\n"
             "   A function\n"
             "\n"
@@ -168,5 +172,5 @@ def test_directive_autofunction(doc_folder):
             "\n"
             "example.doSomething3()\n"
             "\n"
-            "   \"import {doSomething3} from \'example\'\"\n"
+            "   \"import {doSomething3} from 'example'\"\n"
         )

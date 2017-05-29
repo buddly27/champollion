@@ -86,6 +86,7 @@ class AutoDataDirective(JSObject):
                 return signature, ""
 
         name = self.data_env["name"]
+        value = self.data_env["value"]
         module_id = self.data_env["module_id"]
         variable_type = self.data_env["type"]
         module_name = self.module_env[module_id]["name"]
@@ -98,6 +99,7 @@ class AutoDataDirective(JSObject):
         node += addnodes.desc_type(variable_type + " ", variable_type + " ")
         node += addnodes.desc_addname(module_name + ".", module_name + ".")
         node += addnodes.desc_name(name, name)
+        node += addnodes.desc_annotation(" = " + value, " = " + value)
         return name, module_name
 
     def get_index_text(self, objectname, name_obj):
