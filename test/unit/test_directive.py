@@ -71,6 +71,8 @@ def test_directive_autodata(doc_folder):
 
 
 def test_directive_autodata_error(doc_folder):
+    """Do not generate doc for non existing data.
+    """
     js_source = os.path.join(doc_folder, "example")
     with open(os.path.join(js_source, "index.js"), "w") as f:
         f.write(
