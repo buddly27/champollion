@@ -4,7 +4,10 @@ import os
 
 from ._version import __version__
 
-from directive import AutoDataDirective
+from directive import (
+    AutoDataDirective,
+    AutoFunctionDirective
+)
 from viewcode import (
     add_source_code_links,
     create_code_pages,
@@ -29,6 +32,6 @@ def setup(app):
     app.connect("missing-reference", create_missing_code_link)
 
     app.add_directive_to_domain("js", "autodata", AutoDataDirective)
+    app.add_directive_to_domain("js", "autofunction", AutoFunctionDirective)
     # app.add_directive_to_domain("js", "automodule", AutoModuleDirective)
     # app.add_directive_to_domain("js", "autoclass", AutoClassDirective)
-    # app.add_directive_to_domain("js", "autofunction", AutoFunctionDirective)
