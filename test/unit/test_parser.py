@@ -626,7 +626,7 @@ def test_filter_comments():
             "let test = {a: 1, b: 2, c: 3};",
             "let test = {};",
             {
-                0: "{a: 1, b: 2, c: 3}"
+                1: "{a: 1, b: 2, c: 3}"
             }
         ),
         (
@@ -655,14 +655,14 @@ def test_filter_comments():
                 "\n"
             ),
             {
-                0: (
+                1: (
                     "{\n"
                     "    key1: value1,\n"
                     "    key2: value2,\n"
                     "    key3: value3,\n"
                     "}"
                 ),
-                6: "{\n"
+                7: "{\n"
                    "    return a+b\n"
                    "}"
             }
@@ -691,7 +691,7 @@ def test_filter_comments():
                 "\n"
             ),
             {
-                0: (
+                1: (
                     "{\n"
                     "    constructor() {}\n"
                     "\n"
@@ -702,12 +702,12 @@ def test_filter_comments():
                     "\n"
                     "}"
                 ),
-                1: (
+                2: (
                     "{\n"
                     "        this.data = 1;\n"
                     "    }"
                 ),
-                5: (
+                6: (
                     "{\n"
                     "        this.data += 1;\n"
                     "    }"

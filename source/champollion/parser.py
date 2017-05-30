@@ -451,7 +451,7 @@ def collapse_all(content):
     def _replace_comment(element):
         count = element.group().count("\n")
         if len(element.group()) > 2:
-            line_number = content[:element.start()].count("\n")
+            line_number = content[:element.start()].count("\n")+1
             collapsed_content[line_number] = (
                 element.group().replace("<>", "{}")
             )
