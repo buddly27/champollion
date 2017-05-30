@@ -693,13 +693,13 @@ def test_filter_comments():
             {
                 1: (
                     "{\n"
-                    "    constructor() {}\n"
+                    "    constructor() {\n"
+                    "        this.data = 1;\n"
+                    "    }\n"
                     "\n"
-                    "\n"
-                    "\n"
-                    "    increase() {}\n"
-                    "\n"
-                    "\n"
+                    "    increase() {\n"
+                    "        this.data += 1;\n"
+                    "    }\n"
                     "}"
                 ),
                 2: (

@@ -446,16 +446,27 @@ def collapse_all(content):
         The line numbers are preserved of the content.
 
     """
+    _initial_content = content
     collapsed_content = {}
 
     def _replace_comment(element):
+        # Guess line number
         count = element.group().count("\n")
+
+        # Ensure that the replacement string keep the same length that
+        # the original content to be able to use the match positions
+        _buffer = len(element.group()) - count - 2
+
         if len(element.group()) > 2:
             line_number = content[:element.start()].count("\n")+1
             collapsed_content[line_number] = (
-                element.group().replace("<>", "{}")
+                _initial_content[element.start():element.end()]
             )
-        return "<>{0}".format("\n" * count)
+
+        return "<>{buffer}{lines}".format(
+            buffer=" " * _buffer,
+            lines="\n" * count
+        )
 
     _content = None
 
@@ -463,7 +474,10 @@ def collapse_all(content):
         _content = content
         content = re.sub(r"{[^{}]*}", _replace_comment, content)
 
-    return content.replace("<>", "{}"), collapsed_content
+    # Remove the space buffer before returning the content
+    content = re.sub(r"<> *", lambda x: "{}", content)
+
+    return content, collapsed_content
 
 
 def guess_module_name(name, hierarchy_folders, module_names):
