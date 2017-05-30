@@ -293,7 +293,19 @@ def test_get_class_environment():
             "name": "MotherClass",
             "parent": None,
             "line_number": 4,
-            "description": "Base Class"
+            "description": "Base Class",
+            "method": {
+                "test.module.MotherClass.constructor": {
+                    "id": "test.module.MotherClass.constructor",
+                    "class_id": "test.module.MotherClass",
+                    "name": "constructor",
+                    "prefix": None,
+                    "arguments": [],
+                    "line_number": 5,
+                    "description": None
+                }
+            },
+            "attribute": {}
         },
         "test.module.CustomWelcome": {
             "id": "test.module.CustomWelcome",
@@ -303,7 +315,19 @@ def test_get_class_environment():
             "name": "CustomWelcome",
             "parent": None,
             "line_number": 10,
-            "description": None
+            "description": None,
+            "method": {
+                "test.module.CustomWelcome.greeting": {
+                    "id": "test.module.CustomWelcome.greeting",
+                    "class_id": "test.module.CustomWelcome",
+                    "name": "greeting",
+                    "prefix": None,
+                    "arguments": [],
+                    "line_number": 11,
+                    "description": None
+                }
+            },
+            "attribute": {}
         },
         "test.module.AwesomeClass": {
             "id": "test.module.AwesomeClass",
@@ -313,7 +337,74 @@ def test_get_class_environment():
             "name": "AwesomeClass",
             "parent": "MotherClass",
             "line_number": 19,
-            "description": "Inherited class"
+            "description": "Inherited class",
+            "method": {
+                "test.module.AwesomeClass.constructor": {
+                    "id": "test.module.AwesomeClass.constructor",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "constructor",
+                    "prefix": None,
+                    "arguments": ["name"],
+                    "line_number": 20,
+                    "description": None
+                },
+                "test.module.AwesomeClass.name.get": {
+                    "id": "test.module.AwesomeClass.name.get",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "name",
+                    "prefix": "get",
+                    "arguments": [],
+                    "line_number": 25,
+                    "description": None
+                },
+                "test.module.AwesomeClass.name.set": {
+                    "id": "test.module.AwesomeClass.name.set",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "name",
+                    "prefix": "set",
+                    "arguments": ["value"],
+                    "line_number": 29,
+                    "description": None
+                },
+                "test.module.AwesomeClass.awesomeMethod1": {
+                    "id": "test.module.AwesomeClass.awesomeMethod1",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "awesomeMethod1",
+                    "prefix": None,
+                    "arguments": [],
+                    "line_number": 33,
+                    "description": None
+                },
+                "test.module.AwesomeClass.awesomeMethod2": {
+                    "id": "test.module.AwesomeClass.awesomeMethod2",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "awesomeMethod2",
+                    "prefix": None,
+                    "arguments": ["arg1", "arg2"],
+                    "line_number": 37,
+                    "description": None
+                },
+                "test.module.AwesomeClass.staticMethod.static": {
+                    "id": "test.module.AwesomeClass.staticMethod.static",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "staticMethod",
+                    "prefix": "static",
+                    "arguments": [],
+                    "line_number": 41,
+                    "description": None
+                }
+            },
+            "attribute": {
+                "test.module.AwesomeClass.attribute.static": {
+                    "id": "test.module.AwesomeClass.attribute.static",
+                    "class_id": "test.module.AwesomeClass",
+                    "name": "attribute",
+                    "prefix": "static",
+                    "value": "42",
+                    "line_number": 45,
+                    "description": None
+                }
+            }
         },
     }
 

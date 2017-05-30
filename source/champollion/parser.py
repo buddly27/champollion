@@ -16,6 +16,24 @@ CLASS_PATTERN = re.compile(
     r"( +extends +(?P<mother_class>\w+))? *{"
 )
 
+#: Regular Expression pattern for class methods
+CLASS_METHOD_PATTERN = re.compile(
+    r"(?P<prefix>(static|get|set) +)?"
+    r"(?P<method_name>\w+) *\((?P<arguments>.*)\) *{"
+)
+
+#: Regular Expression pattern for class arrow methods
+CLASS_METHOD_ARROW_PATTERN = re.compile(
+    r"(?P<prefix>(static|get|set) +)?"
+    r"(?P<method_name>\w+) *= *\((?P<arguments>.*)\) *=> *{"
+)
+
+#: Regular Expression pattern for class attribute
+CLASS_ATTRIBUTE_PATTERN = re.compile(
+    r"(?P<prefix>static +)?(?P<attribute_name>\w+) "
+    r"*= *(?P<attribute_value>[^;>]+);"
+)
+
 #: Regular Expression pattern for function expressions
 FUNCTION_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
@@ -265,6 +283,14 @@ def get_class_environment(content, module_id):
         class_id = ".".join([module_id, class_name])
         line_number = content[:match.start()].count("\n")+1
 
+        class_content = collapsed_content[line_number][1:-1]
+        method_environment = get_class_methods_environment(
+            class_content, class_id, line_number=line_number-1
+        )
+        attribute_environment = get_class_attribute_environment(
+            class_content, class_id, line_number=line_number-1
+        )
+
         class_environment = {
             "id": class_id,
             "module_id": module_id,
@@ -273,9 +299,98 @@ def get_class_environment(content, module_id):
             "name": class_name,
             "parent": match.group("mother_class"),
             "line_number": line_number,
-            "description": get_docstring(line_number, lines)
+            "description": get_docstring(line_number, lines),
+            "method": method_environment,
+            "attribute": attribute_environment
         }
         environment[class_id] = class_environment
+
+    return environment
+
+
+def get_class_methods_environment(content, class_id, line_number=0):
+    """Return function environment from *content*.
+
+    *class_id* represent the ID of the class.
+
+    *line_number* is the first line number of content
+
+    """
+    environment = {}
+
+    lines = content.split("\n")
+    content = filter_comments(content)
+    content = collapse_all(content)[0]
+
+    for match_iter in (
+        CLASS_METHOD_ARROW_PATTERN.finditer(content),
+        CLASS_METHOD_PATTERN.finditer(content)
+    ):
+        for match in match_iter:
+            method_id = ".".join([class_id, match.group("method_name")])
+            prefix = match.group("prefix")
+            if prefix is not None:
+                prefix = prefix.strip()
+                method_id += "." + prefix
+
+            _line_number = content[:match.start()].count("\n")+1
+            arguments = filter(lambda x: len(x), [
+                arg.strip() for arg in match.group("arguments").split(",")
+            ])
+
+            function_environment = {
+                "id": method_id,
+                "class_id": class_id,
+                "name": match.group("method_name"),
+                "prefix": prefix,
+                "arguments": arguments,
+                "line_number": _line_number+line_number,
+                "description": get_docstring(_line_number, lines)
+            }
+            environment[method_id] = function_environment
+
+    return environment
+
+
+def get_class_attribute_environment(content, class_id, line_number=0):
+    """Return function environment from *content*.
+
+    *class_id* represent the ID of the class.
+
+    *line_number* is the first line number of content
+
+    """
+    environment = {}
+
+    lines = content.split("\n")
+    content = filter_comments(content)
+    content = collapse_all(content)[0]
+
+    for match in CLASS_ATTRIBUTE_PATTERN.finditer(content):
+        attribute_id = ".".join([class_id, match.group("attribute_name")])
+        prefix = match.group("prefix")
+        if prefix is not None:
+            prefix = prefix.strip()
+            attribute_id += "." + prefix
+
+        _line_number = content[:match.start()].count("\n")+1
+
+        # As we collapsed all contexts to avoid noises, we need to get the
+        # value from the original data in case it represents an object.
+        match_in_line = CLASS_ATTRIBUTE_PATTERN.search(
+            "\n".join(lines[_line_number-1:])
+        )
+
+        data_environment = {
+            "id": attribute_id,
+            "class_id": class_id,
+            "name": match.group("attribute_name"),
+            "prefix": prefix,
+            "value": match_in_line.group("attribute_value"),
+            "line_number": _line_number+line_number,
+            "description": get_docstring(_line_number, lines)
+        }
+        environment[attribute_id] = data_environment
 
     return environment
 
