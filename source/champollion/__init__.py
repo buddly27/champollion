@@ -36,3 +36,7 @@ def setup(app):
     app.add_directive_to_domain("js", "autofunction", AutoFunctionDirective)
     app.add_directive_to_domain("js", "autoclass", AutoClassDirective)
     # app.add_directive_to_domain("js", "automodule", AutoModuleDirective)
+
+    return {
+        "version": __version__
+    }
