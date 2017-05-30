@@ -227,8 +227,11 @@ class AutoClassDirective(JSCallable):
     #: Nesting available
     allow_nesting = True
 
-    #: No prefix is displayed right before the documentation entry
-    display_prefix = None
+    #: Javascript class is callable
+    has_arguments = True
+
+    #: 'class' prefix is displayed right before the documentation entry
+    display_prefix = "class "
 
     #: Define the Object type
     objtype = "class"
