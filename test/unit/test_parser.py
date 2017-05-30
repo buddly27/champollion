@@ -615,65 +615,104 @@ def test_filter_comments():
 
 
 @pytest.mark.parametrize(
-    ("content", "expected"),
+    ("content", "expected_content", "expected_collapsed_content"),
     [
         (
             "const emptyObject = {};",
             "const emptyObject = {};",
+            {}
         ),
         (
             "let test = {a: 1, b: 2, c: 3};",
-            "let test = {};"
+            "let test = {};",
+            {
+                0: "{a: 1, b: 2, c: 3}"
+            }
         ),
         (
             (
-                "const element = {"
-                "    key1: value1,"
-                "    key2: value2,"
-                "    key3: value3,"
-                "};"
-                ""
-                "function sum(a, b) {"
-                "    return a+b"
-                "}"
-                ""
+                "const element = {\n"
+                "    key1: value1,\n"
+                "    key2: value2,\n"
+                "    key3: value3,\n"
+                "};\n"
+                "\n"
+                "function sum(a, b) {\n"
+                "    return a+b\n"
+                "}\n"
+                "\n"
             ),
             (
-                "const element = {}"
-                ""
-                ""
-                ""
-                ";"
-                ""
-                "function sum(a, b) {}"
-                ""
-                ""
-                ""
-            )
+                "const element = {}\n"
+                "\n"
+                "\n"
+                "\n"
+                ";\n"
+                "\n"
+                "function sum(a, b) {}\n"
+                "\n"
+                "\n"
+                "\n"
+            ),
+            {
+                0: (
+                    "{\n"
+                    "    key1: value1,\n"
+                    "    key2: value2,\n"
+                    "    key3: value3,\n"
+                    "}"
+                ),
+                6: "{\n"
+                   "    return a+b\n"
+                   "}"
+            }
         ),
         (
             (
-                "class AwesomeClass {"
-                "    constructor() {"
-                "        this.data = 1;"
-                "    }"
-                ""
-                "    increase() {"
-                "        this.data += 1;"
-                "    }"
-                "}"
+                "class AwesomeClass {\n"
+                "    constructor() {\n"
+                "        this.data = 1;\n"
+                "    }\n"
+                "\n"
+                "    increase() {\n"
+                "        this.data += 1;\n"
+                "    }\n"
+                "}\n"
             ),
             (
-                "class AwesomeClass {}"
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-                ""
-            )
+                "class AwesomeClass {}\n"
+                "\n"
+                "\n"
+                "\n"
+                "\n"
+                "\n"
+                "\n"
+                "\n"
+                "\n"
+            ),
+            {
+                0: (
+                    "{\n"
+                    "    constructor() {}\n"
+                    "\n"
+                    "\n"
+                    "\n"
+                    "    increase() {}\n"
+                    "\n"
+                    "\n"
+                    "}"
+                ),
+                1: (
+                    "{\n"
+                    "        this.data = 1;\n"
+                    "    }"
+                ),
+                5: (
+                    "{\n"
+                    "        this.data += 1;\n"
+                    "    }"
+                )
+            }
         )
     ],
     ids=[
@@ -683,9 +722,11 @@ def test_filter_comments():
         "nested class"
     ]
 )
-def test_collapse_all(content, expected):
+def test_collapse_all(content, expected_content, expected_collapsed_content):
     """Collapse all objects, classes and functions."""
-    assert champollion.parser.collapse_all(content) == expected
+    assert champollion.parser.collapse_all(content) == (
+        expected_content, expected_collapsed_content
+    )
 
 
 @pytest.mark.parametrize(

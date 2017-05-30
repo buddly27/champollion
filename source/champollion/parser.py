@@ -255,7 +255,7 @@ def get_class_environment(content, module_id):
 
     lines = content.split("\n")
     content = filter_comments(content)
-    content = collapse_all(content)
+    content, collapsed_content = collapse_all(content)
 
     for match in CLASS_PATTERN.finditer(content):
         class_name = match.group("class_name")
@@ -290,7 +290,7 @@ def get_function_environment(content, module_id):
 
     lines = content.split("\n")
     content = filter_comments(content)
-    content = collapse_all(content)
+    content = collapse_all(content)[0]
 
     for match_iter in (
         FUNCTION_ARROW_PATTERN.finditer(content),
@@ -328,7 +328,7 @@ def get_data_environment(content, module_id):
 
     lines = content.split("\n")
     content = filter_comments(content)
-    content = collapse_all(content)
+    content = collapse_all(content)[0]
 
     for match in DATA_PATTERN.finditer(content):
         data_id = ".".join([module_id, match.group("data_name")])
@@ -438,15 +438,23 @@ def filter_comments(content):
 
 
 def collapse_all(content):
-    """Return *content* with the top level elements only.
+    """Return tuple of *content* with the top level elements only and dictionary
+    containing the collapsed content associated with the line number**.
 
     .. note::
 
-        The line numbers are preserved.
+        The line numbers are preserved of the content.
 
     """
+    collapsed_content = {}
+
     def _replace_comment(element):
         count = element.group().count("\n")
+        if len(element.group()) > 2:
+            line_number = content[:element.start()].count("\n")
+            collapsed_content[line_number] = (
+                element.group().replace("<>", "{}")
+            )
         return "<>{0}".format("\n" * count)
 
     _content = None
@@ -455,7 +463,7 @@ def collapse_all(content):
         _content = content
         content = re.sub(r"{[^{}]*}", _replace_comment, content)
 
-    return content.replace("<>", "{}")
+    return content.replace("<>", "{}"), collapsed_content
 
 
 def guess_module_name(name, hierarchy_folders, module_names):
