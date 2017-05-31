@@ -210,23 +210,47 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     except (IOError, OSError):
         return environment
 
-    classes = get_class_environment(content, module_id)
-    functions = get_function_environment(content, module_id)
-    data = get_data_environment(content, module_id)
+    class_environment = get_class_environment(content, module_id)
+
+    method_environment = {}
+    attribute_environment = {}
+
+    # Extract methods and attributes from class environment to set it in the
+    # top level environment. Replace the class methods and attributes entries
+    # with the list of IDs.
+    for _class in class_environment.values():
+        method_ids = _class["method"].keys()
+        method_environment.update(_class["method"].copy())
+        _class["method"] = method_ids
+
+        attribute_ids = _class["attribute"].keys()
+        attribute_environment.update(_class["attribute"].copy())
+        _class["attribute"] = attribute_ids
+
+    function_environment = get_function_environment(content, module_id)
+    data_environment = get_data_environment(content, module_id)
 
     file_environment["content"] = content
 
     if "class" not in environment.keys():
         environment["class"] = {}
-    environment["class"].update(classes)
+    environment["class"].update(class_environment)
+
+    if "method" not in environment.keys():
+        environment["method"] = {}
+    environment["method"].update(method_environment)
+
+    if "attribute" not in environment.keys():
+        environment["attribute"] = {}
+    environment["attribute"].update(attribute_environment)
 
     if "function" not in environment.keys():
         environment["function"] = {}
-    environment["function"].update(functions)
+    environment["function"].update(function_environment)
 
     if "data" not in environment.keys():
         environment["data"] = {}
-    environment["data"].update(data)
+    environment["data"].update(data_environment)
 
     if "file" not in environment.keys():
         environment["file"] = {}

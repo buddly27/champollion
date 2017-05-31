@@ -151,6 +151,8 @@ def test_get_file_environment_empty(request):
             }
         },
         "class": {},
+        "method": {},
+        "attribute": {},
         "function": {},
         "data": {}
     }
@@ -177,6 +179,12 @@ def test_get_file_environment_empty_with_initial_environment(request):
         },
         "class": {
             "test.module.AwesomeClass": {}
+        },
+        "method": {
+            "test.module.AwesomeClass.method": {}
+        },
+        "attribute": {
+            "test.module.AwesomeClass.ATTRIBUTE": {}
         },
         "function": {
             "test.module.doSomething": {}
@@ -207,6 +215,12 @@ def test_get_file_environment_empty_with_initial_environment(request):
         },
         "class": {
             "test.module.AwesomeClass": {}
+        },
+        "method": {
+            "test.module.AwesomeClass.method": {}
+        },
+        "attribute": {
+            "test.module.AwesomeClass.ATTRIBUTE": {}
         },
         "function": {
             "test.module.doSomething": {}
