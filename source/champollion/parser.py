@@ -70,6 +70,8 @@ def get_environment(path):
     environment = {
         "module": {},
         "class": {},
+        "method": {},
+        "attribute": {},
         "function": {},
         "data": {},
         "file": {}
@@ -176,6 +178,8 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
 
         {
             "class": {...},
+            "method": {...},
+            "attribute": {...},
             "function": {...},
             "data": {...},
             "file": {
@@ -325,7 +329,11 @@ def get_class_methods_environment(content, class_id, line_number=0):
             prefix = match.group("prefix")
             if prefix is not None:
                 prefix = prefix.strip()
-                method_id += "." + prefix
+
+                # Add the prefix to the method ID if the method if a getter or
+                # a setter as several method could have the same name.
+                if prefix in ["get", "set"]:
+                    method_id += "." + prefix
 
             _line_number = content[:match.start()].count("\n")+1
             arguments = filter(lambda x: len(x), [
@@ -365,7 +373,6 @@ def get_class_attribute_environment(content, class_id, line_number=0):
         prefix = match.group("prefix")
         if prefix is not None:
             prefix = prefix.strip()
-            attribute_id += "." + prefix
 
         _line_number = content[:match.start()].count("\n")+1
 

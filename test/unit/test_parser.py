@@ -18,6 +18,8 @@ def test_get_environment_empty(temporary_directory):
     environment = {
         "module": {},
         "class": {},
+        "method": {},
+        "attribute": {},
         "function": {},
         "data": {},
         "file": {}
@@ -378,8 +380,8 @@ def test_get_class_environment():
                     "line_number": 37,
                     "description": None
                 },
-                "test.module.AwesomeClass.staticMethod.static": {
-                    "id": "test.module.AwesomeClass.staticMethod.static",
+                "test.module.AwesomeClass.staticMethod": {
+                    "id": "test.module.AwesomeClass.staticMethod",
                     "class_id": "test.module.AwesomeClass",
                     "name": "staticMethod",
                     "prefix": "static",
@@ -389,8 +391,8 @@ def test_get_class_environment():
                 }
             },
             "attribute": {
-                "test.module.AwesomeClass.attribute.static": {
-                    "id": "test.module.AwesomeClass.attribute.static",
+                "test.module.AwesomeClass.attribute": {
+                    "id": "test.module.AwesomeClass.attribute",
                     "class_id": "test.module.AwesomeClass",
                     "name": "attribute",
                     "prefix": "static",
