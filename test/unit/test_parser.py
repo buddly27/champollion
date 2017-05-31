@@ -308,6 +308,7 @@ def test_get_class_environment():
                 "test.module.MotherClass.constructor": {
                     "id": "test.module.MotherClass.constructor",
                     "class_id": "test.module.MotherClass",
+                    "module_id": "test.module",
                     "name": "constructor",
                     "prefix": None,
                     "arguments": [],
@@ -330,6 +331,7 @@ def test_get_class_environment():
                 "test.module.CustomWelcome.greeting": {
                     "id": "test.module.CustomWelcome.greeting",
                     "class_id": "test.module.CustomWelcome",
+                    "module_id": "test.module",
                     "name": "greeting",
                     "prefix": None,
                     "arguments": [],
@@ -352,6 +354,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.constructor": {
                     "id": "test.module.AwesomeClass.constructor",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "constructor",
                     "prefix": None,
                     "arguments": ["name"],
@@ -361,6 +364,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.name.get": {
                     "id": "test.module.AwesomeClass.name.get",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "name",
                     "prefix": "get",
                     "arguments": [],
@@ -370,6 +374,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.name.set": {
                     "id": "test.module.AwesomeClass.name.set",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "name",
                     "prefix": "set",
                     "arguments": ["value"],
@@ -379,6 +384,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.awesomeMethod1": {
                     "id": "test.module.AwesomeClass.awesomeMethod1",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "awesomeMethod1",
                     "prefix": None,
                     "arguments": [],
@@ -388,6 +394,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.awesomeMethod2": {
                     "id": "test.module.AwesomeClass.awesomeMethod2",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "awesomeMethod2",
                     "prefix": None,
                     "arguments": ["arg1", "arg2"],
@@ -397,6 +404,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.staticMethod": {
                     "id": "test.module.AwesomeClass.staticMethod",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "staticMethod",
                     "prefix": "static",
                     "arguments": [],
@@ -408,6 +416,7 @@ def test_get_class_environment():
                 "test.module.AwesomeClass.attribute": {
                     "id": "test.module.AwesomeClass.attribute",
                     "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
                     "name": "attribute",
                     "prefix": "static",
                     "value": "42",

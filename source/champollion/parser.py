@@ -354,16 +354,17 @@ def get_class_methods_environment(content, class_id, line_number=0):
                 arg.strip() for arg in match.group("arguments").split(",")
             ])
 
-            function_environment = {
+            method_environment = {
                 "id": method_id,
                 "class_id": class_id,
+                "module_id": class_id.rsplit(".", 1)[0],
                 "name": match.group("method_name"),
                 "prefix": prefix,
                 "arguments": arguments,
                 "line_number": _line_number+line_number,
                 "description": get_docstring(_line_number, lines)
             }
-            environment[method_id] = function_environment
+            environment[method_id] = method_environment
 
     return environment
 
@@ -396,16 +397,17 @@ def get_class_attribute_environment(content, class_id, line_number=0):
             "\n".join(lines[_line_number-1:])
         )
 
-        data_environment = {
+        attribute_environment = {
             "id": attribute_id,
             "class_id": class_id,
+            "module_id": class_id.rsplit(".", 1)[0],
             "name": match.group("attribute_name"),
             "prefix": prefix,
             "value": match_in_line.group("attribute_value"),
             "line_number": _line_number+line_number,
             "description": get_docstring(_line_number, lines)
         }
-        environment[attribute_id] = data_environment
+        environment[attribute_id] = attribute_environment
 
     return environment
 
