@@ -263,31 +263,58 @@ def test_get_class_environment():
         " * Inherited class\n"
         " */\n"
         "export default class AwesomeClass extends MotherClass {\n"
+        "    /** AwesomeClass constructor */\n"
         "    constructor(name) {\n"
         "        super();\n"
         "        this.name = name;\n"
         "    }\n"
         "\n"
+        "    /**\n"
+        "     * Get the name.\n"
+        "     *\n"
+        "     * .. warning::\n"
+        "     *\n"
+        "     *     The name is awesome\n"
+        "     */\n"
         "    get name() {\n"
         "        return this.name;\n"
         "    }\n"
         "\n"
+        "    /**\n"
+        "     * Set the name.\n"
+        "     *\n"
+        "     * .. warning::\n"
+        "     *\n"
+        "     *     Keep the name awesome\n"
+        "     */\n"
         "    set name(value) {\n"
         "        this.name = value;\n"
         "    }\n"
         "\n"
+        "    /**\n"
+        "     * A first awesome method.\n"
+        "     */\n"
         "    awesomeMethod1 = () => {\n"
         "        console.log('Method 1 has been called');\n"
         "    };\n"
         "\n"
+        "    /**\n"
+        "     * A second awesome method.\n"
+        "     */\n"
         "    awesomeMethod2(arg1, arg2) {\n"
         "        console.log('Method 2 has been called');\n"
         "    }\n"
         "\n"
+        "    /**\n"
+        "     * A static method.\n"
+        "     */\n"
         "    static staticMethod() {\n"
         "        console.log('Static method has been called');\n"
         "    }\n"
         "\n"
+        "    /**\n"
+        "     * A static attribute.\n"
+        "     */\n"
         "    static attribute = 42;\n"
         "}\n"
     )
@@ -358,8 +385,8 @@ def test_get_class_environment():
                     "name": "constructor",
                     "prefix": None,
                     "arguments": ["name"],
-                    "line_number": 20,
-                    "description": None
+                    "line_number": 21,
+                    "description": "AwesomeClass constructor"
                 },
                 "test.module.AwesomeClass.name.get": {
                     "id": "test.module.AwesomeClass.name.get",
@@ -368,8 +395,14 @@ def test_get_class_environment():
                     "name": "name",
                     "prefix": "get",
                     "arguments": [],
-                    "line_number": 25,
-                    "description": None
+                    "line_number": 33,
+                    "description": (
+                        "Get the name.\n"
+                        "\n"
+                        ".. warning::\n"
+                        "\n"
+                        "    The name is awesome"
+                    )
                 },
                 "test.module.AwesomeClass.name.set": {
                     "id": "test.module.AwesomeClass.name.set",
@@ -378,8 +411,14 @@ def test_get_class_environment():
                     "name": "name",
                     "prefix": "set",
                     "arguments": ["value"],
-                    "line_number": 29,
-                    "description": None
+                    "line_number": 44,
+                    "description": (
+                        "Set the name.\n"
+                        "\n"
+                        ".. warning::\n"
+                        "\n"
+                        "    Keep the name awesome"
+                    )
                 },
                 "test.module.AwesomeClass.awesomeMethod1": {
                     "id": "test.module.AwesomeClass.awesomeMethod1",
@@ -388,8 +427,8 @@ def test_get_class_environment():
                     "name": "awesomeMethod1",
                     "prefix": None,
                     "arguments": [],
-                    "line_number": 33,
-                    "description": None
+                    "line_number": 51,
+                    "description": "A first awesome method."
                 },
                 "test.module.AwesomeClass.awesomeMethod2": {
                     "id": "test.module.AwesomeClass.awesomeMethod2",
@@ -398,8 +437,8 @@ def test_get_class_environment():
                     "name": "awesomeMethod2",
                     "prefix": None,
                     "arguments": ["arg1", "arg2"],
-                    "line_number": 37,
-                    "description": None
+                    "line_number": 58,
+                    "description": "A second awesome method."
                 },
                 "test.module.AwesomeClass.staticMethod": {
                     "id": "test.module.AwesomeClass.staticMethod",
@@ -408,8 +447,8 @@ def test_get_class_environment():
                     "name": "staticMethod",
                     "prefix": "static",
                     "arguments": [],
-                    "line_number": 41,
-                    "description": None
+                    "line_number": 65,
+                    "description": "A static method."
                 }
             },
             "attribute": {
@@ -420,8 +459,8 @@ def test_get_class_environment():
                     "name": "attribute",
                     "prefix": "static",
                     "value": "42",
-                    "line_number": 45,
-                    "description": None
+                    "line_number": 72,
+                    "description": "A static attribute."
                 }
             }
         },

@@ -284,8 +284,10 @@ def get_class_environment(content, module_id):
     environment = {}
 
     lines = content.split("\n")
-    content = filter_comments(content)
-    content, collapsed_content = collapse_all(content)
+
+    # The comment filter is made during the collapse content process to
+    # preserve the class content with all comments (and docstrings!)
+    content, collapsed_content = collapse_all(content, filter_comment=True)
 
     for match in CLASS_PATTERN.finditer(content):
         class_name = match.group("class_name")
@@ -295,13 +297,18 @@ def get_class_environment(content, module_id):
         class_id = ".".join([module_id, class_name])
         line_number = content[:match.start()].count("\n")+1
 
-        class_content = collapsed_content[line_number][1:-1]
-        method_environment = get_class_methods_environment(
-            class_content, class_id, line_number=line_number-1
-        )
-        attribute_environment = get_class_attribute_environment(
-            class_content, class_id, line_number=line_number-1
-        )
+        method_environment = {}
+        attribute_environment = {}
+
+        if line_number in collapsed_content.keys():
+            class_content = collapsed_content[line_number][1:-1]
+
+            method_environment = get_class_methods_environment(
+                class_content, class_id, line_number=line_number-1
+            )
+            attribute_environment = get_class_attribute_environment(
+                class_content, class_id, line_number=line_number-1
+            )
 
         class_environment = {
             "id": class_id,
@@ -551,8 +558,10 @@ def get_docstring(line_number, lines):
             return
 
 
-def filter_comments(content):
+def filter_comments(content, keep_content_size=False):
     """Return *content* without the comments.
+
+    If *keep_content_size* is set to True, the size of the content is preserved.
 
     .. note::
 
@@ -561,6 +570,9 @@ def filter_comments(content):
     """
     def _replace_comment(element):
         count = element.group().count("\n")
+        if keep_content_size:
+            _buffer = len(element.group()) - count
+            return " " * _buffer + "\n" * count
         return "\n" * count
 
     content = ONE_LINE_COMMENT_PATTERN.sub(_replace_comment, content)
@@ -569,9 +581,13 @@ def filter_comments(content):
     return content
 
 
-def collapse_all(content):
+def collapse_all(content, filter_comment=False):
     """Return tuple of *content* with the top level elements only and dictionary
     containing the collapsed content associated with the line number**.
+
+    If *filter_comment* is set to True, all comment are removed from the content
+    before collapsing the elements. The collapsed content dictionary preserve
+    the comments.
 
     .. note::
 
@@ -580,6 +596,10 @@ def collapse_all(content):
     """
     _initial_content = content
     collapsed_content = {}
+
+    if filter_comment:
+        # Filter comment before collapsing elements to prevent comment analysis
+        content = filter_comments(content, keep_content_size=True)
 
     def _replace_comment(element):
         # Guess line number
