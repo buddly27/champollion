@@ -208,10 +208,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
         "module_id": module_id,
         "name": os.path.basename(file_path),
         "path": file_path,
-        "content": None,
-        "class": {},
-        "function": {},
-        "data": {},
+        "content": None
     }
     try:
         with open(file_path, "r") as f:
@@ -223,9 +220,6 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     functions = get_function_environment(content, module_id)
     data = get_data_environment(content, module_id)
 
-    file_environment["class"] = classes.keys()
-    file_environment["function"] = functions.keys()
-    file_environment["data"] = data.keys()
     file_environment["content"] = content
 
     if "class" not in environment.keys():
