@@ -187,17 +187,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
                     "id": "path/to/file.js",
                     "name": "script.js",
                     "path": "/path/to/script.js",
-                    "content": "'use strict'\\n\\n...",
-                    "class": [
-                        ...
-                    ],
-                    "function": [
-                        ...
-                    ]
-                    "data": [
-                        ...
-                    ]
-
+                    "content": "'use strict'\\n\\n..."
                 },
                 ...
             }
