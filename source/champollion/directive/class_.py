@@ -33,19 +33,28 @@ class AutoClassDirective(BaseDirective):
         self.content = self._generate_import_statement()
         self.content += self._generate_description()
 
-        for attribute_id in self._env["attribute"]:
-            attribute_rst = (
-                "\n.. js:autoattribute:: {}\n\n".format(attribute_id)
-            )
-            attribute_content = StringList(attribute_rst.split("\n"))
-            self.content += attribute_content
+        nested_elements = {}
 
-        for method_id in self._env["method"]:
-            method_rst = (
-                "\n.. js:automethod:: {}\n\n".format(method_id)
+        for attribute_environment in self._env["attribute"].values():
+            line_number = attribute_environment["line_number"]
+            nested_elements[line_number] = (
+                "autoattribute", attribute_environment["id"]
             )
-            method_content = StringList(method_rst.split("\n"))
-            self.content += method_content
+
+        for method_environment in self._env["method"].values():
+            line_number = method_environment["line_number"]
+            nested_elements[line_number] = (
+                "automethod", method_environment["id"]
+            )
+
+        for line_number in sorted(nested_elements.keys()):
+            directive, element_id = nested_elements[line_number]
+            element_rst = (
+                "\n.. js:{directive}:: {id}\n\n".format(
+                    directive=directive, id=element_id
+                )
+            )
+            self.content += StringList(element_rst.split("\n"))
 
     def handle_signature(self, signature, node):
         """Update the signature node.
