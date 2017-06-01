@@ -257,6 +257,13 @@ def test_directive_autoclass(doc_folder):
             "     * attribute.\n"
             "     */\n"
             "    static attribute = 42;\n"
+            "\n"
+            "    /**\n"
+            "     * another attribute.\n"
+            "     */\n"
+            "    classicAttribute = {\n"
+            "        test: 'a test',\n"
+            "    };\n"
             "}\n"
         )
 
@@ -322,4 +329,10 @@ def test_directive_autoclass(doc_folder):
             "   static attribute = 42\n"
             "\n"
             "      attribute.\n"
+            "\n"
+            "   classicAttribute = {\n"
+            "           test: a test,\n"
+            "       }\n"
+            "\n"
+            "      another attribute.\n"
         )
