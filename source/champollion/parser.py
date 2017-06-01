@@ -216,16 +216,10 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     attribute_environment = {}
 
     # Extract methods and attributes from class environment to set it in the
-    # top level environment. Replace the class methods and attributes entries
-    # with the list of IDs.
+    # top level environment.
     for _class in class_environment.values():
-        method_ids = _class["method"].keys()
         method_environment.update(_class["method"].copy())
-        _class["method"] = method_ids
-
-        attribute_ids = _class["attribute"].keys()
         attribute_environment.update(_class["attribute"].copy())
-        _class["attribute"] = attribute_ids
 
     function_environment = get_function_environment(content, module_id)
     data_environment = get_data_environment(content, module_id)
