@@ -174,7 +174,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     Update the *environment* is available and return it as-is if the file
     is not readable.
 
-    Otherwise return dictionary in the form of::
+    Return dictionary in the form of::
 
         {
             "class": {...},
