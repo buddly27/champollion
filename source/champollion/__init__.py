@@ -4,12 +4,13 @@ import os
 
 from ._version import __version__
 
-from directive import (
-    AutoDataDirective,
-    AutoFunctionDirective,
-    AutoClassDirective
-)
-from viewcode import (
+from .directive.data import AutoDataDirective
+from .directive.function import AutoFunctionDirective
+from .directive.class_ import AutoClassDirective
+from .directive.method import AutoMethodDirective
+from .directive.attribute import AutoAttributeDirective
+
+from .viewcode import (
     add_source_code_links,
     create_code_pages,
     create_missing_code_link
@@ -35,6 +36,8 @@ def setup(app):
     app.add_directive_to_domain("js", "autodata", AutoDataDirective)
     app.add_directive_to_domain("js", "autofunction", AutoFunctionDirective)
     app.add_directive_to_domain("js", "autoclass", AutoClassDirective)
+    app.add_directive_to_domain("js", "automethod", AutoMethodDirective)
+    app.add_directive_to_domain("js", "autoattribute", AutoAttributeDirective)
     # app.add_directive_to_domain("js", "automodule", AutoModuleDirective)
 
     return {
