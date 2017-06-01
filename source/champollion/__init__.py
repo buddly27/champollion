@@ -15,13 +15,13 @@ from .viewcode import (
     create_code_pages,
     create_missing_code_link
 )
-import parser
+from .parser import get_environment
 
 
 def parse_js_source(app):
     """Parse the javascript source path."""
     path = os.path.abspath(app.config.js_source)
-    app.env.js_environment = parser.get_environment(path)
+    app.env.js_environment = get_environment(path)
 
 
 def setup(app):
