@@ -13,7 +13,7 @@ MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
 CLASS_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
     r"(class +(?P<class_name>\w+)|const +(?P<data_name>\w+) *= *class +\w+)"
-    r"( +extends +(?P<mother_class>\w+))? *{"
+    r"( +extends +(?P<mother_class>[\w._-]+))? *{"
 )
 
 #: Regular Expression pattern for class methods
