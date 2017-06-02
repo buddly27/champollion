@@ -522,7 +522,7 @@ def get_docstring(line_number, lines):
 
     for index in reversed(range(line_number-1)):
         line = lines[index].strip()
-        if len(line) == 0:
+        if len(line) == 0 or line.startswith("//"):
             continue
 
         # Start of the docstring (from the end)
