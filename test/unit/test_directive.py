@@ -31,9 +31,8 @@ def test_directive_error(doc_folder):
     with cd(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    assert not os.path.isfile(
-        os.path.join(doc_folder, "_build", "index.txt")
-    )
+    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+        assert f.read().decode("ascii", "ignore") == ""
 
 
 def test_directive_autodata(doc_folder):
