@@ -15,15 +15,21 @@ in docstrings in the form of:
     /**
      * Return a temperature converted from Fahrenheit to Celsius.
      *
-     * .. seealso:: https://en.wikipedia.org/wiki/Celsius
+     * :param f: integer
+     * :return: integer
      */
     function toCelsius(f) {
         return (5/9) * (f-32);
     }
 
 
-The documentation generated will be as follow:
+The documentation generated will be as follow (if using the `readthedocs
+<https://pypi.python.org/pypi/sphinx_rtd_theme>`_ template):
 
 .. image:: /image/doc-example.png
    :alt: Documentation generated from function
    :scale: 50 %
+
+.. seealso::
+
+    `Who is Champollion? <https://en.wikipedia.org/wiki/Jean-Fran%C3%A7ois_Champollion>`_
