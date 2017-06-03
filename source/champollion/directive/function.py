@@ -19,32 +19,18 @@ class AutoFunctionDirective(BaseDirective):
     #: Define the Object type
     objtype = "function"
 
-    def __init__(
-        self, name, arguments, options, content, lineno, content_offset,
-        block_text, state, state_machine
-    ):
-        """Initiate the directive.
-
-        Raise an error if the variable id is unavailable within the Javascript
-        environment parsed.
-
-        """
-        super(AutoFunctionDirective, self).__init__(
-            name, arguments, options, content, lineno, content_offset,
-            block_text, state, state_machine
-        )
-        self.content = self._generate_import_statement()
-        self.content += self._generate_description()
-
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
-        name = self._env["name"]
-        module_id = self._env["module_id"]
-        module_name = self._module_env[module_id]["name"]
+        env = self.state.document.settings.env.element_environment
+        module_env = self.state.document.settings.env.module_environment
+
+        name = env["name"]
+        module_id = env["module_id"]
+        module_name = module_env[module_id]["name"]
 
         node["type"] = "function"
-        node["id"] = self._env["id"]
+        node["id"] = env["id"]
         node["module"] = module_name
         node['fullname'] = name
 
@@ -52,8 +38,17 @@ class AutoFunctionDirective(BaseDirective):
         node += addnodes.desc_name(name, name)
 
         param_list = addnodes.desc_parameterlist()
-        for argument in self._env["arguments"]:
+        for argument in env["arguments"]:
             param_list += addnodes.desc_parameter(argument, argument)
         node += param_list
 
         return name, module_name
+
+    def before_content(self):
+        """Compute the description.
+        """
+        env = self.state.document.settings.env.element_environment
+        module_env = self.state.document.settings.env.module_environment
+
+        self.content = self._generate_import_statement(env, module_env)
+        self.content += self._generate_description(env)

@@ -19,34 +19,20 @@ class AutoDataDirective(BaseDirective):
     #: Define the Object type
     objtype = "data"
 
-    def __init__(
-        self, name, arguments, options, content, lineno, content_offset,
-        block_text, state, state_machine
-    ):
-        """Initiate the directive.
-
-        Raise an error if the variable id is unavailable within the Javascript
-        environment parsed.
-
-        """
-        super(AutoDataDirective, self).__init__(
-            name, arguments, options, content, lineno, content_offset,
-            block_text, state, state_machine
-        )
-        self.content = self._generate_import_statement()
-        self.content += self._generate_description()
-
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
-        name = self._env["name"]
-        value = self._env["value"]
-        module_id = self._env["module_id"]
-        variable_type = self._env["type"]
-        module_name = self._module_env[module_id]["name"]
+        env = self.state.document.settings.env.element_environment
+        module_env = self.state.document.settings.env.module_environment
+
+        name = env["name"]
+        value = env["value"]
+        module_id = env["module_id"]
+        variable_type = env["type"]
+        module_name = module_env[module_id]["name"]
 
         node["type"] = "data"
-        node["id"] = self._env["id"]
+        node["id"] = env["id"]
         node["module"] = module_name
         node['fullname'] = name
 
@@ -60,3 +46,12 @@ class AutoDataDirective(BaseDirective):
         """Return relevant index text.
         """
         return " (global variable or constant)"
+
+    def before_content(self):
+        """Compute the description.
+        """
+        env = self.state.document.settings.env.element_environment
+        module_env = self.state.document.settings.env.module_environment
+
+        self.content = self._generate_import_statement(env, module_env)
+        self.content += self._generate_description(env)

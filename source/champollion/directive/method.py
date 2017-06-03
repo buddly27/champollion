@@ -19,30 +19,16 @@ class AutoMethodDirective(BaseDirective):
     #: Define the Object type
     objtype = "method"
 
-    def __init__(
-        self, name, arguments, options, content, lineno, content_offset,
-        block_text, state, state_machine
-    ):
-        """Initiate the directive.
-
-        Raise an error if the variable id is unavailable within the Javascript
-        environment parsed.
-
-        """
-        super(AutoMethodDirective, self).__init__(
-            name, arguments, options, content, lineno, content_offset,
-            block_text, state, state_machine
-        )
-        self.content = self._generate_description()
-
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
-        name = self._env["name"]
-        prefix = self._env["prefix"]
+        env = self.state.document.settings.env.element_environment
+
+        name = env["name"]
+        prefix = env["prefix"]
 
         node["type"] = "method"
-        node["id"] = self._env["id"]
+        node["id"] = env["id"]
         node['fullname'] = name
 
         if prefix is not None:
@@ -50,8 +36,15 @@ class AutoMethodDirective(BaseDirective):
         node += addnodes.desc_name(name, name)
 
         param_list = addnodes.desc_parameterlist()
-        for argument in self._env["arguments"]:
+        for argument in env["arguments"]:
             param_list += addnodes.desc_parameter(argument, argument)
         node += param_list
 
         return name, None
+
+    def before_content(self):
+        """Compute the description.
+        """
+        env = self.state.document.settings.env.element_environment
+
+        self.content = self._generate_description(env)

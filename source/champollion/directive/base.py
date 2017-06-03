@@ -22,28 +22,18 @@ class BaseDirective(JSObject):
     #: No prefix is displayed right before the documentation entry
     display_prefix = None
 
-    def __init__(
-        self, name, arguments, options, content, lineno, content_offset,
-        block_text, state, state_machine
-    ):
-        """Initiate the base directive.
+    def run(self):
+        """Run the directive."""
+        if not hasattr(
+            self.state.document.settings.env, "js_environment"
+        ):
+            raise self.error(
+                "The javascript environment has not been parsed properly"
+            )
 
-        Raise an error if the variable id is unavailable within the Javascript
-        environment parsed.
-
-        """
-        super(BaseDirective, self).__init__(
-            name, arguments, options, content, lineno, content_offset,
-            block_text, state, state_machine
-        )
         # The signature is always the first argument.
-        signature = arguments[0]
+        signature = self.arguments[0]
 
-        self._env = {}
-        self._module_env = {}
-
-        # Initiate Javascript environment and raise an error if the
-        # element is unavailable.
         js_env = self.state.document.settings.env.js_environment
         if signature not in js_env[self.objtype].keys():
             raise self.error(
@@ -53,18 +43,28 @@ class BaseDirective(JSObject):
                 )
             )
 
-        else:
-            self._env = js_env[self.objtype][signature]
-            self._module_env = js_env["module"]
+        self.state.document.settings.env.element_environment = (
+            js_env[self.objtype][signature]
+        )
+        self.state.document.settings.env.module_environment = (
+            js_env["module"]
+        )
 
-    def _generate_import_statement(self):
+        return super(BaseDirective, self).run()
+
+    def before_content(self):
+        """Compute the description and nested element.
+        """
+        pass
+
+    def _generate_import_statement(self, environment, module_environment):
         """Return the `StringList` import statement.
         """
-        name = self._env["name"]
-        module_id = self._env["module_id"]
-        module_name = self._module_env[module_id]["name"]
-        exported = self._env["exported"]
-        is_default = self._env["default"]
+        name = environment["name"]
+        module_id = environment["module_id"]
+        module_name = module_environment[module_id]["name"]
+        exported = environment["exported"]
+        is_default = environment["default"]
 
         if exported and is_default:
             return StringList([
@@ -84,10 +84,10 @@ class BaseDirective(JSObject):
 
         return StringList()
 
-    def _generate_description(self):
+    def _generate_description(self, environment):
         """Return the `StringList` description.
         """
-        description = self._env["description"]
+        description = environment["description"]
 
         content = StringList()
         if description:
