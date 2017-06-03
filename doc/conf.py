@@ -62,8 +62,6 @@ modindex_common_prefix = [
 
 html_theme = "sphinx_rtd_theme"
 
-html_static_path = ["_static"]
-
 # If True, copy source rst files to output for reference.
 html_copy_source = True
 
