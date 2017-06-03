@@ -19,13 +19,18 @@ from .parser import get_environment
 
 
 def parse_js_source(app):
-    """Parse the javascript source path."""
+    """Parse the javascript source path and store it in *app* environment.
+
+    This function is called with the ``builder-inited`` Sphinx event, emitted
+    when the builder object is created.
+
+    """
     path = os.path.abspath(app.config.js_source)
     app.env.js_environment = get_environment(path)
 
 
 def setup(app):
-    """Register the javascript autodoc directives."""
+    """Register callbacks and directives."""
     app.add_config_value("js_source", None, "env")
 
     app.connect("builder-inited", parse_js_source)

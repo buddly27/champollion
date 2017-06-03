@@ -8,16 +8,20 @@ from sphinx.util.nodes import make_refnode
 def add_source_code_links(app, doctree):
     """Parse *doctree* and add source code link when available.
 
-    Create temporary '_js_modules' to store all module information
-    which will be used to create the code page links.
+    Create temporary 'js_modules' in *app* builder environment to store all
+    module information which will be used to create the code page links.
+
+    This function is called with the ``doctree-read`` Sphinx event, emitted
+    when a *doctree* has been parsed and read by the  environment, and is
+    about to be pickled
 
     """
     js_env = app.env.js_environment
     builder_env = app.builder.env
 
     # Store the module information to ease the source pages creation
-    if not hasattr(builder_env, "_js_modules"):
-        builder_env._js_modules = {}
+    if not hasattr(builder_env, "js_modules"):
+        builder_env.js_modules = {}
 
     # Loop through all js signature nodes
     for object_node in doctree.traverse(addnodes.desc):
@@ -44,15 +48,15 @@ def add_source_code_links(app, doctree):
             module_id = js_env_element["module_id"]
             page_name = "_modules/{0}".format(module_id.replace(".", "/"))
 
-            if module_id not in builder_env._js_modules.keys():
-                builder_env._js_modules[module_id] = {
+            if module_id not in builder_env.js_modules.keys():
+                builder_env.js_modules[module_id] = {
                     "pagename": page_name,
                     "docname": builder_env.docname,
                     "entries": {}
                 }
 
             line_number = js_env_element["line_number"]
-            builder_env._js_modules[module_id]["entries"][line_number] = (
+            builder_env.js_modules[module_id]["entries"][line_number] = (
                 js_env_element["name"]
             )
 
@@ -67,17 +71,20 @@ def add_source_code_links(app, doctree):
                 refdoc=builder_env.docname
             )
             link_node[0] += nodes.inline(
-                "", "[source]",
-                classes=["viewcode-link"]
+                "", "[source]", classes=["viewcode-link"]
             )
             node += link_node
 
 
 def create_code_pages(app):
     """Create all code pages and the links to the documentation.
+
+    This function is called with the ``html-collect-pages`` Sphinx event,
+    emitted when the HTML builder is starting to write non-document pages.
+
     """
     builder_env = app.builder.env
-    if not hasattr(builder_env, "_js_modules"):
+    if not hasattr(builder_env, "js_modules"):
         return
 
     module_env = app.env.js_environment["module"]
@@ -86,10 +93,12 @@ def create_code_pages(app):
     highlighter = app.builder.highlighter
     uri = app.builder.get_relative_uri
 
-    for module_id, element in builder_env._js_modules.items():
+    all_pages = [elt["pagename"] for elt in builder_env.js_modules.values()]
+
+    for module_id, element in builder_env.js_modules.items():
         file_id = module_env[module_id]["file_id"]
-        pagename = element["pagename"]
-        docname = element["docname"]
+        page_name = element["pagename"]
+        doc_name = element["docname"]
 
         if builder_env.config.highlight_language in ("js", "default", "none"):
             lexer = builder_env.config.highlight_language
@@ -102,7 +111,7 @@ def create_code_pages(app):
         lines = highlighted.splitlines()
 
         for line_number, name in element["entries"].items():
-            link = uri(pagename, docname) + "#" + name
+            link = uri(page_name, doc_name) + "#" + name
             lines[line_number-1] = (
                 "<div class='viewcode-block' id='{name}'>"
                 "<a class='viewcode-back' href='{link}'>[docs]</a>"
@@ -115,16 +124,16 @@ def create_code_pages(app):
 
         parents = []
 
-        for module_name in module_id.split(".")[:-1]:
-            parents.append({
-                "link": uri(
-                    pagename, "_modules/" + module_name.replace(".", "/")
-                ),
-                "title": module_name
-            })
+        for module_name in reversed(module_id.split(".")[:-1]):
+            link_page = "_modules/{0}".format(module_name.replace(".", "/"))
+            if link_page in all_pages:
+                parents.append({
+                    "link": uri(page_name, link_page),
+                    "title": module_name
+                })
 
         parents.append({
-            "link": uri(pagename, "_modules/index"),
+            "link": uri(page_name, "_modules/index"),
             "title": "Code"
         })
         parents.reverse()
@@ -140,23 +149,22 @@ def create_code_pages(app):
                 )
             ),
         }
-        yield pagename, context, "page.html"
+        yield page_name, context, "page.html"
 
-    yield create_code_page_index(app, uri)
+    yield create_code_page_index(app)
 
 
-def create_code_page_index(app, urito):
-    """Create index code pages.
+def create_code_page_index(app):
+    """Create page index regrouping all code page links.
     """
     builder_env = app.builder.env
-    if not hasattr(builder_env, "_js_modules"):
+    if not hasattr(builder_env, "js_modules"):
         return
 
     body = ["\n"]
-
     stack = [""]
 
-    for module_id in sorted(builder_env._js_modules.keys()):
+    for module_id in sorted(builder_env.js_modules.keys()):
         if module_id.startswith(stack[-1]):
             stack.append(module_id + ".")
             body.append("<ul>")
@@ -166,11 +174,13 @@ def create_code_page_index(app, urito):
                 stack.pop()
                 body.append("</ul>")
             stack.append(module_id + ".")
+
+        link_page = "_modules/{0}".format(module_id.replace(".", "/"))
+        uri = app.builder.get_relative_uri
+
         body.append(
             "<li><a href='{link}'>{name}</a></li>\n".format(
-                link=urito(
-                    "_modules/index", "_modules/" + module_id.replace(".", "/")
-                ),
+                link=uri("_modules/index", link_page),
                 name=module_id
             )
         )
@@ -189,14 +199,19 @@ def create_code_page_index(app, urito):
     return "_modules/index", context, "page.html"
 
 
-def create_missing_code_link(app, env, node, contnode):
-    """Create code link if missing.
+def create_missing_code_link(app, env, node, content_node):
+    """Resolve all '[source]' links in Api documentation pages.
+
+    This function is called with the ``missing-reference`` Sphinx event,
+    emitted when a cross-reference to a Python module or object cannot be
+    resolved.
+
     """
-    if node["reftype"] == 'viewcode':
+    if node["reftype"] == "viewcode":
         return make_refnode(
             app.builder,
-            node['refdoc'],
-            node['reftarget'],
-            node['refid'],
-            contnode
+            node["refdoc"],
+            node["reftarget"],
+            node["refid"],
+            content_node
         )
