@@ -4,7 +4,8 @@
 Champollion
 ###########
 
-Generate Sphynx documentation from Javascript source files.
+Sphinx extension which provides an automatic way to document javascript code Edit
+Add topics
 
 .. toctree::
     :maxdepth: 1
