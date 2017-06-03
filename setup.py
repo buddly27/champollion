@@ -63,7 +63,7 @@ setup(
     tests_require=TEST_REQUIRES,
     extras_require={
         "doc": DOC_REQUIRES,
-        "sub_module": TEST_REQUIRES,
+        "test": TEST_REQUIRES,
         "dev": DOC_REQUIRES + TEST_REQUIRES
     },
     zip_safe=False,
