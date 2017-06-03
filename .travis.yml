@@ -5,12 +5,9 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
-  # PyPy versions
-  - "pypy"  # PyPy2 2.5.0
-  - "pypy3" # Pypy3 2.4.0
+  - "pypy"
+  - "pypy3"
   - "pypy-5.3.1"
-# command to install dependencies
 install:
   - pip install .[test]
-# command to run tests
 script: pytest
