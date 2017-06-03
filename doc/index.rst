@@ -14,7 +14,7 @@ Add topics
     installing
     tutorial
     api_reference/index
-    release/index
+    release_notes
     glossary
 
 ******************
