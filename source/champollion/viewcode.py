@@ -161,20 +161,9 @@ def create_code_page_index(app):
     if not hasattr(builder_env, "js_modules"):
         return
 
-    body = ["\n"]
-    stack = [""]
+    body = ["\n<ul>"]
 
     for module_id in sorted(builder_env.js_modules.keys()):
-        if module_id.startswith(stack[-1]):
-            stack.append(module_id + ".")
-            body.append("<ul>")
-        else:
-            stack.pop()
-            while not module_id.startswith(stack[-1]):
-                stack.pop()
-                body.append("</ul>")
-            stack.append(module_id + ".")
-
         link_page = "_modules/{0}".format(module_id.replace(".", "/"))
         uri = app.builder.get_relative_uri
 
@@ -185,7 +174,7 @@ def create_code_page_index(app):
             )
         )
 
-    body.append("</ul>" * (len(stack) - 1))
+    body.append("</ul>")
 
     context = {
         "title": "Overview: module code",
