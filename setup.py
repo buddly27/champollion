@@ -49,10 +49,10 @@ if os.environ.get("READTHEDOCS", None) == "True":
 setup(
     name="champollion",
     version=VERSION,
-    description="Generate documentation from ES6 source files.",
+    description="Sphinx extension to document javascript code.",
     long_description=open(README_PATH).read(),
     url="http://github.com/buddly27/champollion",
-    keywords="",
+    keywords=["sphinx", "javascript", "es6", "restructuredtext", "auto"],
     author="Jeremy Retailleau",
     packages=find_packages(SOURCE_PATH),
     package_dir={
