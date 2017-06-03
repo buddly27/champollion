@@ -39,6 +39,13 @@ TEST_REQUIRES = [
     "pytest-cov >= 2, < 3"
 ]
 
+
+# Readthedocs requires Sphinx extensions to be specified as part of
+# install_requires in order to build properly.
+if os.environ.get("READTHEDOCS", None) == "True":
+    INSTALL_REQUIRES.extend(DOC_REQUIRES)
+
+
 setup(
     name="champollion",
     version=VERSION,
