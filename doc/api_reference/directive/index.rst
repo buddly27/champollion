@@ -8,5 +8,4 @@ champollion.directive
     :maxdepth: 1
     :glob:
 
-    */index
     *
