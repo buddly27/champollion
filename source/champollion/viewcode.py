@@ -91,8 +91,13 @@ def create_code_pages(app):
         pagename = element["pagename"]
         docname = element["docname"]
 
+        if builder_env.config.highlight_language in ("js", "default", "none"):
+            lexer = builder_env.config.highlight_language
+        else:
+            lexer = "js"
+
         highlighted = highlighter.highlight_block(
-            file_env[file_id]["content"], "js", linenos=False
+            file_env[file_id]["content"], lexer, linenos=False
         )
         lines = highlighted.splitlines()
 
