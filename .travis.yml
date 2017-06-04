@@ -10,4 +10,4 @@ python:
   - "pypy-5.3.1"
 install:
   - pip install -e .[test]
-script: pytest
+script: py.test
