@@ -32,6 +32,8 @@ class AutoClassDirective(BaseDirective):
     option_spec = {
         "members": _parse_members,
         "skip-constructor": lambda x: True,
+        "undoc-members": lambda x: True,
+        "private-members": lambda x: True,
     }
 
     def handle_signature(self, signature, node):
@@ -72,6 +74,8 @@ class AutoClassDirective(BaseDirective):
         self.content += self._generate_description(env)
 
         skip_constructor = self.options.get("skip-constructor", False)
+        undoc_members = self.options.get("undoc-members", False)
+        private_members = self.options.get("private-members", False)
 
         members = self.options.get("members")
         if members is None:
@@ -82,6 +86,13 @@ class AutoClassDirective(BaseDirective):
         # Gather class attributes
         for attribute_environment in env["attribute"].values():
             name = attribute_environment["name"]
+            description = attribute_environment["description"]
+            if description is None and not undoc_members:
+                continue
+
+            if name.startswith("_") and not private_members:
+                continue
+
             if members is True or name in members:
                 line_number = attribute_environment["line_number"]
                 nested_elements[line_number] = (
@@ -92,6 +103,13 @@ class AutoClassDirective(BaseDirective):
         for method_environment in env["method"].values():
             name = method_environment["name"]
             if name == "constructor" and skip_constructor:
+                continue
+
+            description = method_environment["description"]
+            if description is None and not undoc_members:
+                continue
+
+            if name.startswith("_") and not private_members:
                 continue
 
             if members is True or name in members:
