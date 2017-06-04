@@ -17,7 +17,7 @@ class BaseDirective(JSObject):
     has_content = False
 
     #: Nested element is automatically generated and can not be manually entered
-    allow_nesting = True
+    allow_nesting = False
 
     #: No prefix is displayed right before the documentation entry
     display_prefix = None
