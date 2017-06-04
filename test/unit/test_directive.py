@@ -307,7 +307,7 @@ def test_directive_autoclass(doc_folder):
             "\n"
             "   greeting()\n"
             "\n"
-            "class example.AwesomeClass()\n"
+            "class example.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"example\"\"\n"
             "\n"
