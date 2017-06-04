@@ -47,11 +47,11 @@ js:automethod
 
 .. sourcecode:: rest
 
-    .. js:autodata:: example.AwesomeClass.myMethod
+    .. js:automethod:: example.AwesomeClass.myMethod
 
 js:autoattribute
 ================
 
 .. sourcecode:: rest
 
-    .. js:autodata:: example.AwesomeClass.myAttribute
+    .. js:autoattribute:: example.AwesomeClass.myAttribute
