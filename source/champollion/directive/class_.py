@@ -3,7 +3,15 @@
 from sphinx import addnodes
 from docutils.statemachine import StringList
 
+
 from .base import BaseDirective
+
+
+def _parse_members(argument):
+    """Convert the :members: options to class directive."""
+    if argument is None:
+        return True
+    return [arg.strip() for arg in argument.split(",")]
 
 
 class AutoClassDirective(BaseDirective):
@@ -19,6 +27,12 @@ class AutoClassDirective(BaseDirective):
 
     #: Define the Object type
     objtype = "class"
+
+    #: Validator functions
+    option_spec = {
+        "members": _parse_members,
+        "skip-constructor": lambda x: True,
+    }
 
     def handle_signature(self, signature, node):
         """Update the signature node.
@@ -57,20 +71,36 @@ class AutoClassDirective(BaseDirective):
         self.content = self._generate_import_statement(env, module_env)
         self.content += self._generate_description(env)
 
+        skip_constructor = self.options.get("skip-constructor", False)
+
+        members = self.options.get("members")
+        if members is None:
+            return
+
         nested_elements = {}
 
+        # Gather class attributes
         for attribute_environment in env["attribute"].values():
-            line_number = attribute_environment["line_number"]
-            nested_elements[line_number] = (
-                "autoattribute", attribute_environment["id"]
-            )
+            name = attribute_environment["name"]
+            if members is True or name in members:
+                line_number = attribute_environment["line_number"]
+                nested_elements[line_number] = (
+                    "autoattribute", attribute_environment["id"]
+                )
 
+        # Gather class methods
         for method_environment in env["method"].values():
-            line_number = method_environment["line_number"]
-            nested_elements[line_number] = (
-                "automethod", method_environment["id"]
-            )
+            name = method_environment["name"]
+            if name == "constructor" and skip_constructor:
+                continue
 
+            if members is True or name in members:
+                line_number = method_environment["line_number"]
+                nested_elements[line_number] = (
+                    "automethod", method_environment["id"]
+                )
+
+        # Add attributes and methods to content while respecting the line order
         for line_number in sorted(nested_elements.keys()):
             directive, element_id = nested_elements[line_number]
             element_rst = (
