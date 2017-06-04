@@ -38,7 +38,13 @@ class AutoClassDirective(BaseDirective):
         node += addnodes.desc_type("class ", "class ")
         node += addnodes.desc_addname(module_name + ".", module_name + ".")
         node += addnodes.desc_name(name, name)
-        node += addnodes.desc_parameterlist()
+
+        param_list = addnodes.desc_parameterlist()
+        for method_environment in env["method"].values():
+            if method_environment["name"] == "constructor":
+                for argument in method_environment["arguments"]:
+                    param_list += addnodes.desc_parameter(argument, argument)
+        node += param_list
 
         return name, module_name
 
