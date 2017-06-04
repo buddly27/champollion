@@ -1,11 +1,12 @@
 # :coding: utf-8
 
+import pytest
 import champollion.parser.function
 
 
-def test_get_function_environment():
-    """Return function environment from content."""
-    content = (
+@pytest.fixture()
+def content():
+    return (
         "/** test function */\n"
         "export function doSomething() {\n"
         "    console.log('something');\n"
@@ -25,6 +26,9 @@ def test_get_function_environment():
         ""
     )
 
+
+def test_get_function_environment(content):
+    """Return function environment from content."""
     assert champollion.parser.function.get_function_environment(
         content, "test.module"
     ) == {

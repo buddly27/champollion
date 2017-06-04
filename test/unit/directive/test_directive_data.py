@@ -1,42 +1,48 @@
 # :coding: utf-8
 
-from sphinx.cmdline import main as sphinx_main
-from sphinx.util.osutil import cd
-
+import pytest
 import os
 import sys
 
+from sphinx.cmdline import main as sphinx_main
+from sphinx.util.osutil import cd
 
-def test_directive_autodata(doc_folder):
+
+@pytest.fixture()
+def content():
+    return (
+        "/**\n"
+        " * A variable\n"
+        " *\n"
+        " * .. note::\n"
+        " *\n"
+        " *     A note.\n"
+        " */\n"
+        "export default const VARIABLE_INT = 42;\n"
+        "\n"
+        "/**\n"
+        " * Another variable\n"
+        " *\n"
+        " * A citation::\n"
+        " *\n"
+        " *     A citation\n"
+        " */\n"
+        "var VARIABLE_OBJECT = {\n"
+        "    key1: 'value1',\n"
+        "    key2: 'value2',\n"
+        "    key3: 'value3',\n"
+        "};\n"
+        "\n"
+        "export let VARIABLE_STRING = 'rosebud';\n"
+    )
+
+
+def test_directive_autodata(doc_folder, content):
     """Generate documentation from global data variables.
     """
     js_source = os.path.join(doc_folder, "example")
     with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(
-            "/**\n"
-            " * A variable\n"
-            " *\n"
-            " * .. note::\n"
-            " *\n"
-            " *     A note.\n"
-            " */\n"
-            "export default const VARIABLE_INT = 42;\n"
-            "\n"
-            "/**\n"
-            " * Another variable\n"
-            " *\n"
-            " * A citation::\n"
-            " *\n"
-            " *     A citation\n"
-            " */\n"
-            "var VARIABLE_OBJECT = {\n"
-            "    key1: 'value1',\n"
-            "    key2: 'value2',\n"
-            "    key3: 'value3',\n"
-            "};\n"
-            "\n"
-            "export let VARIABLE_STRING = 'rosebud';\n"
-        )
+        f.write(content)
 
     index_file = os.path.join(doc_folder, "index.rst")
     with open(index_file, "w") as f:

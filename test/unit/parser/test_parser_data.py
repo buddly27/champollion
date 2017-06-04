@@ -1,11 +1,13 @@
 # :coding: utf-8
 
+import pytest
+
 import champollion.parser.data
 
 
-def test_get_data_environment():
-    """Return data environment from content."""
-    content = (
+@pytest.fixture()
+def content():
+    return (
         "/** test list data */\n"
         "const test_list = [1, 2, 3];\n"
         "\n"
@@ -26,6 +28,9 @@ def test_get_data_environment():
         "export const test_int = 42;\n"
     )
 
+
+def test_get_data_environment(content):
+    """Return data environment from content."""
     assert champollion.parser.data.get_data_environment(
         content, "test.module"
     ) == {

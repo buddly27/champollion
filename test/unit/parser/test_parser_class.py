@@ -1,11 +1,13 @@
 # :coding: utf-8
 
+import pytest
+
 import champollion.parser.class_
 
 
-def test_get_class_environment():
-    """Return class environment from content."""
-    content = (
+@pytest.fixture()
+def content():
+    return (
         "/**\n"
         " * Base Class\n"
         " */\n"
@@ -81,6 +83,9 @@ def test_get_class_environment():
         "}\n"
     )
 
+
+def test_get_class_environment(content):
+    """Return class environment from content."""
     assert champollion.parser.class_.get_class_environment(
         content, "test.module"
     ) == {

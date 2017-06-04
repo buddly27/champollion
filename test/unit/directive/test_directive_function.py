@@ -1,42 +1,48 @@
 # :coding: utf-8
 
-from sphinx.cmdline import main as sphinx_main
-from sphinx.util.osutil import cd
-
+import pytest
 import os
 import sys
 
+from sphinx.cmdline import main as sphinx_main
+from sphinx.util.osutil import cd
 
-def test_directive_autofunction(doc_folder):
+
+@pytest.fixture()
+def content():
+    return (
+        "/**\n"
+        " * A function\n"
+        " *\n"
+        " * .. note::\n"
+        " *\n"
+        " *     A note.\n"
+        " */\n"
+        "export default function doSomething1(arg1, arg2 = null) {\n"
+        "    console.log('test1')\n"
+        "}\n"
+        "\n"
+        "/**\n"
+        " * Another function\n"
+        " *\n"
+        " * A citation::\n"
+        " *\n"
+        " *     A citation\n"
+        " */\n"
+        "const doSomething2 = (arg) => {\n"
+        "    console.log('test2')\n"
+        "};\n"
+        "\n"
+        "export const doSomething3 = () => {};\n"
+    )
+
+
+def test_directive_autofunction(doc_folder, content):
     """Generate documentation from functions.
     """
     js_source = os.path.join(doc_folder, "example")
     with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(
-            "/**\n"
-            " * A function\n"
-            " *\n"
-            " * .. note::\n"
-            " *\n"
-            " *     A note.\n"
-            " */\n"
-            "export default function doSomething1(arg1, arg2 = null) {\n"
-            "    console.log('test1')\n"
-            "}\n"
-            "\n"
-            "/**\n"
-            " * Another function\n"
-            " *\n"
-            " * A citation::\n"
-            " *\n"
-            " *     A citation\n"
-            " */\n"
-            "const doSomething2 = (arg) => {\n"
-            "    console.log('test2')\n"
-            "};\n"
-            "\n"
-            "export const doSomething3 = () => {};\n"
-        )
+        f.write(content)
 
     index_file = os.path.join(doc_folder, "index.rst")
     with open(index_file, "w") as f:
