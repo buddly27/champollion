@@ -3,7 +3,6 @@
 from sphinx import addnodes
 from docutils.statemachine import StringList
 
-
 from .base import BaseDirective
 
 
@@ -73,12 +72,22 @@ class AutoClassDirective(BaseDirective):
         self.content = self._generate_import_statement(env, module_env)
         self.content += self._generate_description(env)
 
-        skip_constructor = self.options.get("skip-constructor", False)
-        undoc_members = self.options.get("undoc-members", False)
-        private_members = self.options.get("private-members", False)
+        # Automatic boolean options
+        options = self.env.config.js_class_options
 
-        members = self.options.get("members")
-        if members is None:
+        # Options manually set
+        skip_constructor = self.options.get(
+            "skip-constructor", "skip-constructor" in options
+        )
+        undoc_members = self.options.get(
+            "undoc-members", "undoc-members" in options
+        )
+        private_members = self.options.get(
+            "private-members", "private-members" in options
+        )
+
+        members = self.options.get("members", "members" in options)
+        if not members:
             return
 
         nested_elements = {}

@@ -32,6 +32,7 @@ def parse_js_source(app):
 def setup(app):
     """Register callbacks and directives."""
     app.add_config_value("js_source", None, "env")
+    app.add_config_value("js_class_options", [], "env")
 
     app.connect("builder-inited", parse_js_source)
     app.connect("doctree-read", add_source_code_links)
