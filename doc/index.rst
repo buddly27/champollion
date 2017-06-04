@@ -4,8 +4,7 @@
 Champollion
 ###########
 
-Sphinx extension which provides an automatic way to document javascript code Edit
-Add topics
+Sphinx extension which provides an automatic way to document javascript code.
 
 .. toctree::
     :maxdepth: 1
