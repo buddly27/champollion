@@ -2,6 +2,9 @@
 Champollion
 ###########
 
+.. image:: https://api.travis-ci.org/buddly27/champollion.svg?branch=master
+    :target: https://travis-ci.org/buddly27/champollion
+
 Sphinx extension which provides an automatic way to document javascript code Edit
 Add topics
 
