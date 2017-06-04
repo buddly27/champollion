@@ -29,8 +29,8 @@ Release Notes
 
     .. change:: new
 
-        Added :mod:`champollion.parser` to analyse :term:`Javascript` source
-        code
+        Added :mod:`champollion.parser` to parse :term:`Javascript` source
+        code.
 
     .. change:: new
 
