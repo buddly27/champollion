@@ -8,8 +8,7 @@ Champollion
 .. image:: https://coveralls.io/repos/github/buddly27/champollion/badge.svg?branch=master
     :target: https://coveralls.io/github/buddly27/champollion?branch=master
 
-Sphinx extension which provides an automatic way to document javascript code Edit
-Add topics
+Sphinx extension which provides an automatic way to document javascript code
 
 *************
 Documentation
