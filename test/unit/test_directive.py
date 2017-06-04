@@ -4,6 +4,7 @@ from sphinx.cmdline import main as sphinx_main
 from sphinx.util.osutil import cd
 
 import os
+import sys
 
 
 def test_directive_error(doc_folder):
@@ -32,7 +33,7 @@ def test_directive_error(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
-        assert f.read().decode("ascii", "ignore") == ""
+        assert f.read() == ""
 
 
 def test_directive_autodata(doc_folder):
@@ -80,7 +81,12 @@ def test_directive_autodata(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
-        assert f.read().decode("ascii", "ignore") == (
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
             "const example.VARIABLE_INT = 42\n"
             "\n"
             "   \"import VARIABLE_INT from \"example\"\"\n"
@@ -152,7 +158,12 @@ def test_directive_autofunction(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
-        assert f.read().decode("ascii", "ignore") == (
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"
             "\n"
             "   \"import doSomething1 from \"example\"\"\n"
@@ -280,7 +291,12 @@ def test_directive_autoclass(doc_folder):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
-        assert f.read().decode("ascii", "ignore") == (
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
             "class example.MotherClass()\n"
             "\n"
             "   Base Class\n"

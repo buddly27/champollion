@@ -351,9 +351,9 @@ def get_class_methods_environment(content, class_id, line_number=0):
                     method_id += "." + prefix
 
             _line_number = content[:match.start()].count("\n")+1
-            arguments = filter(lambda x: len(x), [
+            arguments = list(filter(lambda x: len(x), [
                 arg.strip() for arg in match.group("arguments").split(",")
-            ])
+            ]))
 
             method_environment = {
                 "id": method_id,
@@ -432,9 +432,9 @@ def get_function_environment(content, module_id):
         for match in match_iter:
             function_id = ".".join([module_id, match.group("function_name")])
             line_number = content[:match.start()].count("\n")+1
-            arguments = filter(lambda x: len(x), [
+            arguments = list(filter(lambda x: len(x), [
                 arg.strip() for arg in match.group("arguments").split(",")
-            ])
+            ]))
 
             function_environment = {
                 "id": function_id,
