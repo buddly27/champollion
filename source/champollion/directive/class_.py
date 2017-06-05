@@ -27,7 +27,7 @@ class AutoClassDirective(BaseDirective):
     #: Define the Object type
     objtype = "class"
 
-    #: Validator functions
+    #: classes options
     option_spec = {
         "members": _parse_members,
         "skip-constructor": lambda x: True,
