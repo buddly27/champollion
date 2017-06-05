@@ -45,7 +45,10 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
         "module_id": module_id,
         "name": os.path.basename(file_path),
         "path": file_path,
-        "content": None
+        "content": None,
+        "class": {},
+        "data": {},
+        "function": {},
     }
     try:
         with open(file_path, "r") as f:
@@ -53,25 +56,23 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     except (IOError, OSError):
         return environment
 
-    class_environment = get_class_environment(content, module_id)
+    file_environment["class"] = get_class_environment(content, module_id)
+    file_environment["function"] = get_function_environment(content, module_id)
+    file_environment["data"] = get_data_environment(content, module_id)
+    file_environment["content"] = content
 
     method_environment = {}
     attribute_environment = {}
 
     # Extract methods and attributes from class environment to set it in the
     # top level environment.
-    for _class in class_environment.values():
+    for _class in file_environment["class"].values():
         method_environment.update(_class["method"].copy())
         attribute_environment.update(_class["attribute"].copy())
 
-    function_environment = get_function_environment(content, module_id)
-    data_environment = get_data_environment(content, module_id)
-
-    file_environment["content"] = content
-
     if "class" not in environment.keys():
         environment["class"] = {}
-    environment["class"].update(class_environment)
+    environment["class"].update(file_environment["class"])
 
     if "method" not in environment.keys():
         environment["method"] = {}
@@ -83,11 +84,11 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
 
     if "function" not in environment.keys():
         environment["function"] = {}
-    environment["function"].update(function_environment)
+    environment["function"].update(file_environment["function"])
 
     if "data" not in environment.keys():
         environment["data"] = {}
-    environment["data"].update(data_environment)
+    environment["data"].update(file_environment["data"])
 
     if "file" not in environment.keys():
         environment["file"] = {}

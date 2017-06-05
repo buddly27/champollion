@@ -20,7 +20,10 @@ def test_get_file_environment_empty(request):
                 "module_id": "test.module",
                 "name": os.path.basename(path),
                 "path": path,
-                "content": ""
+                "content": "",
+                "class": {},
+                "function": {},
+                "data": {}
             }
         },
         "class": {},
@@ -80,7 +83,10 @@ def test_get_file_environment_empty_with_initial_environment(request):
                 "module_id": "test.module",
                 "name": os.path.basename(path),
                 "path": path,
-                "content": ""
+                "content": "",
+                "class": {},
+                "function": {},
+                "data": {}
             }
         },
         "module": {
