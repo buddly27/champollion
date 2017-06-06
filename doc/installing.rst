@@ -19,7 +19,7 @@ Installing from source
 
 You can also install manually from the source for more control. First obtain a
 copy of the source by either downloading the
-`zipball <http://github.com/buddly27/champollion/repository/archive.zip?ref=master>`_ or
+`zipball <https://github.com/buddly27/champollion/archive/master.zip>`_ or
 cloning the public repository::
 
     git clone github.com:buddly27/champollion.git
