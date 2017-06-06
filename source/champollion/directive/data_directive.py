@@ -2,7 +2,7 @@
 
 from sphinx import addnodes
 
-from .base import BaseDirective
+from .base_directive import BaseDirective
 
 
 class AutoDataDirective(BaseDirective):

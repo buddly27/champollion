@@ -2,39 +2,37 @@
 
 from sphinx import addnodes
 
-from .base import BaseDirective
+from .base_directive import BaseDirective
 
 
-class AutoFunctionDirective(BaseDirective):
-    """Generate reStructuredText from JavaScript function.
+class AutoMethodDirective(BaseDirective):
+    """Generate reStructuredText from JavaScript class.
 
     .. sourcecode:: rest
 
-        .. js:autofunction:: my-function-id
+        .. js:automethod:: my-method-id
 
     """
-    #: Javascript function is callable
+    #: Javascript method is callable
     has_arguments = True
 
     #: Define the Object type
-    objtype = "function"
+    objtype = "method"
 
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
         env = self.state.document.settings.env.element_environment
-        module_env = self.state.document.settings.env.module_environment
 
         name = env["name"]
-        module_id = env["module_id"]
-        module_name = module_env[module_id]["name"]
+        prefix = env["prefix"]
 
-        node["type"] = "function"
+        node["type"] = "method"
         node["id"] = env["id"]
-        node["module"] = module_name
         node['fullname'] = name
 
-        node += addnodes.desc_addname(module_name + ".", module_name + ".")
+        if prefix is not None:
+            node += addnodes.desc_type(prefix + " ", prefix + " ")
         node += addnodes.desc_name(name, name)
 
         param_list = addnodes.desc_parameterlist()
@@ -42,13 +40,11 @@ class AutoFunctionDirective(BaseDirective):
             param_list += addnodes.desc_parameter(argument, argument)
         node += param_list
 
-        return name, module_name
+        return name, None
 
     def before_content(self):
         """Compute the description.
         """
         env = self.state.document.settings.env.element_environment
-        module_env = self.state.document.settings.env.module_environment
 
-        self.content = self._generate_import_statement(env, module_env)
-        self.content += self._generate_description(env)
+        self.content = self._generate_description(env)

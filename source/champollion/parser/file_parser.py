@@ -2,9 +2,9 @@
 
 import os
 
-from .class_ import get_class_environment
-from .function import get_function_environment
-from .data import get_data_environment
+from .class_parser import get_class_environment
+from .function_parser import get_function_environment
+from .data_parser import get_data_environment
 
 
 def get_file_environment(file_path, file_id, module_id, environment=None):

@@ -2,8 +2,8 @@
 
 import os
 
-from .module_ import get_module_environment
-from .file_ import get_file_environment
+from .module_parser import get_module_environment
+from .file_parser import get_file_environment
 
 
 def get_environment(path):

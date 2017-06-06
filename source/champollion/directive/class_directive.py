@@ -3,7 +3,7 @@
 from sphinx import addnodes
 from docutils.statemachine import StringList
 
-from .base import BaseDirective
+from .base_directive import BaseDirective
 
 
 def _parse_members(argument):

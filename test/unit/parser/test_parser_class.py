@@ -2,7 +2,7 @@
 
 import pytest
 
-import champollion.parser.class_
+import champollion.parser.class_parser
 
 
 @pytest.fixture()
@@ -86,7 +86,7 @@ def content():
 
 def test_get_class_environment(content):
     """Return class environment from content."""
-    assert champollion.parser.class_.get_class_environment(
+    assert champollion.parser.class_parser.get_class_environment(
         content, "test.module"
     ) == {
         "test.module.MotherClass": {

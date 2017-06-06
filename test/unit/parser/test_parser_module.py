@@ -2,12 +2,12 @@
 
 import pytest
 
-import champollion.parser.module_
+import champollion.parser.module_parser
 
 
 def test_get_module_environment_from_file():
     """Return module_id and environment from file id."""
-    assert champollion.parser.module_.get_module_environment(
+    assert champollion.parser.module_parser.get_module_environment(
         "test/module/example.js", []
     ) == (
         "test.module.example",
@@ -153,6 +153,6 @@ def test_get_module_environment_from_file_with_initial_environment():
 )
 def test_guess_module_name(name, hierarchy_folders, module_names, expected):
     """Return module name from initial name, hierarchy folders and modules."""
-    assert champollion.parser.module_.guess_module_name(
+    assert champollion.parser.module_parser.guess_module_name(
         name, hierarchy_folders, module_names
     ) == expected

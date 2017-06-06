@@ -2,7 +2,7 @@
 
 import pytest
 
-import champollion.parser.data
+import champollion.parser.data_parser
 
 
 @pytest.fixture()
@@ -31,7 +31,7 @@ def content():
 
 def test_get_data_environment(content):
     """Return data environment from content."""
-    assert champollion.parser.data.get_data_environment(
+    assert champollion.parser.data_parser.get_data_environment(
         content, "test.module"
     ) == {
         "test.module.test_list": {

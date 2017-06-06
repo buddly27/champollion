@@ -1,7 +1,7 @@
 # :coding: utf-8
 
 import pytest
-import champollion.parser.function
+import champollion.parser.function_parser
 
 
 @pytest.fixture()
@@ -29,7 +29,7 @@ def content():
 
 def test_get_function_environment(content):
     """Return function environment from content."""
-    assert champollion.parser.function.get_function_environment(
+    assert champollion.parser.function_parser.get_function_environment(
         content, "test.module"
     ) == {
         "test.module.doSomething": {

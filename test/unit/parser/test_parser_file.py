@@ -3,7 +3,7 @@
 import tempfile
 import os
 
-import champollion.parser.file_
+import champollion.parser.file_parser
 
 
 def test_get_file_environment_empty(request):
@@ -11,7 +11,7 @@ def test_get_file_environment_empty(request):
     file_handle, path = tempfile.mkstemp(suffix=".js")
     os.close(file_handle)
 
-    assert champollion.parser.file_.get_file_environment(
+    assert champollion.parser.file_parser.get_file_environment(
         path, "path/to/example.js", "test.module"
     ) == {
         "file": {
@@ -73,7 +73,7 @@ def test_get_file_environment_empty_with_initial_environment(request):
         }
     }
 
-    assert champollion.parser.file_.get_file_environment(
+    assert champollion.parser.file_parser.get_file_environment(
         path, "path/to/example.js", "test.module", environment
     ) == {
         "file": {
