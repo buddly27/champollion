@@ -4,6 +4,47 @@
 Release Notes
 *************
 
+.. release:: 0.3.0
+    :date: 2017-06-05
+
+    .. change:: new
+        :tags: directive
+
+        Added :class:`~champollion.directive.module_directive.AutoModuleDirective`
+        :term:`directive <Directive>` to generate the documentation from a module
+        id representing a module (a file name without the '.js' extension or a
+        directory with an 'index.js' file) parsed within the :term:`Javascript`
+        source code.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:members:`` option to the
+        :class:`js:automodule <champollion.directive.module_directive.AutoModuleDirective>`
+        directive to provide a way to document all or part of the members
+        contained within a module.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:undoc-members:`` option to the
+        :class:`js:automodule <champollion.directive.module_directive.AutoModuleDirective>`
+        directive to provide a way to document the module members without
+        docstrings.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:private-members:`` option to the
+        :class:`js:automodule <champollion.directive.module_directive.AutoModuleDirective>`
+        directive to provide a way to document the private module members.
+
+    .. change:: new
+        :tags: documentation
+
+        Added :ref:`usage <using>` documentation.
+
+
 .. release:: 0.2.0
     :date: 2017-06-04
 
@@ -11,7 +52,7 @@ Release Notes
         :tags: directive
 
         Added ``:members:`` option to the
-        :class:`js:autoclass <champollion.directive.class_.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.class_directive.AutoClassDirective>`
         directive to provide a way to document all or part of the members
         contained within a class.
 
@@ -19,7 +60,7 @@ Release Notes
         :tags: directive
 
         Added ``:skip-constructor:`` option to the
-        :class:`js:autoclass <champollion.directive.class_.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.class_directive.AutoClassDirective>`
         directive to provide a way to filter a class constructor in the
         documentation generated.
 
@@ -27,7 +68,7 @@ Release Notes
         :tags: directive
 
         Added ``:undoc-members:`` option to the
-        :class:`js:autoclass <champollion.directive.class_.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.class_directive.AutoClassDirective>`
         directive to provide a way to document the class members without
         docstrings.
 
@@ -35,7 +76,7 @@ Release Notes
         :tags: directive
 
         Added ``:private-members:`` option to the
-        :class:`js:autoclass <champollion.directive.class_.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.class_directive.AutoClassDirective>`
         directive to provide a way to document the private class members.
 
     .. change:: new
@@ -71,59 +112,44 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.data.AutoDataDirective`
+        Added :class:`~champollion.directive.data_directive.AutoDataDirective`
         :term:`directive <Directive>` to generate the documentation from a data
         id representing a variable parsed within the :term:`Javascript` source
         code.
 
-        .. sourcecode:: rest
-
-            .. js:autodata:: example.DATA
-
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.function.AutoFunctionDirective`
+        Added :class:`~champollion.directive.function_directive.AutoFunctionDirective`
         :term:`directive <Directive>` to generate the documentation from a
         function id representing a function parsed within the :term:`Javascript`
         source code.
 
-        .. sourcecode:: rest
-
-            .. js:autofunction:: example.doSomething
-
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.class_.AutoClassDirective`
+        Added :class:`~champollion.directive.class_directive.AutoClassDirective`
         :term:`directive <Directive>` to generate the documentation from a
         class id representing a class parsed within the :term:`Javascript`
         source code.
 
-        .. sourcecode:: rest
-
-            .. js:autoclass:: example.AwesomeClass
-
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.method.AutoMethodDirective`
+        Added :class:`~champollion.directive.method_directive.AutoMethodDirective`
         :term:`directive <Directive>` to generate the documentation from a
         method id representing a class method parsed within the
         :term:`Javascript` source code.
 
-        .. sourcecode:: rest
-
-            .. js:automethod:: example.AwesomeClass.myMethod
-
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.attribute.AutoAttributeDirective`
+        Added :class:`~champollion.directive.attribute_directive.AutoAttributeDirective`
         :term:`directive <Directive>` to generate the documentation from an
         attribute id representing a class attribute parsed within the
         :term:`Javascript` source code.
 
-        .. sourcecode:: rest
+    .. change:: new
+        :tags: documentation
 
-            .. js:autoattribute:: example.AwesomeClass.myAttribute
+        Added :ref:`installation <installing>` documentation.
