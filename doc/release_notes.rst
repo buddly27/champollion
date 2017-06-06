@@ -44,6 +44,10 @@ Release Notes
 
         Added :ref:`usage <using>` documentation.
 
+    .. change:: fixed
+        :tags: documentation
+
+        Fix the zipball link in the :ref:`installation <installing>` documentation.
 
 .. release:: 0.2.0
     :date: 2017-06-04
