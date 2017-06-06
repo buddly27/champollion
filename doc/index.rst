@@ -11,7 +11,7 @@ Sphinx extension which provides an automatic way to document javascript code.
 
     introduction
     installing
-    tutorial
+    using
     api_reference/index
     release_notes
     glossary
