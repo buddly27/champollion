@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 import re
+import functools
 
 from .helper import collapse_all
 from .helper import get_docstring
@@ -42,7 +43,7 @@ def get_data_environment(content, module_id):
             "exported": match.group("export") is not None,
             "default": match.group("default") is not None,
             "name": match.group("data_name"),
-            "value": reduce(_clean_value, value.split('\n')).strip(),
+            "value": functools.reduce(_clean_value, value.split('\n')).strip(),
             "type": match.group("data_type"),
             "line_number": line_number,
             "description": get_docstring(line_number, lines)
