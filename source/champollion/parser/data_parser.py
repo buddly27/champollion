@@ -42,7 +42,7 @@ def get_data_environment(content, module_id):
             "exported": match.group("export") is not None,
             "default": match.group("default") is not None,
             "name": match.group("data_name"),
-            "value": value,
+            "value": reduce(_clean_value, value.split('\n')).strip(),
             "type": match.group("data_type"),
             "line_number": line_number,
             "description": get_docstring(line_number, lines)
@@ -50,3 +50,15 @@ def get_data_environment(content, module_id):
         environment[data_id] = data_environment
 
     return environment
+
+
+def _clean_value(line1, line2):
+    """Clean up variable value for display."""
+    _line1 = line1.strip()
+    _line2 = line2.strip()
+
+    # Let trailing space to make the code easier to read
+    if _line1[-1:] in ["{", "}", "(", ")", "[", "]", ";", ","]:
+        _line1 += " "
+
+    return _line1 + _line2
