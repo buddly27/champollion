@@ -2,7 +2,6 @@
 
 import re
 
-from .helper import filter_comments
 from .helper import collapse_all
 from .helper import get_docstring
 
@@ -24,18 +23,18 @@ def get_data_environment(content, module_id):
     environment = {}
 
     lines = content.split("\n")
-    content = filter_comments(content)
-    content = collapse_all(content)[0]
+
+    # The comment filter is made during the collapse content process to
+    # preserve the entire value (with semi-colons and docstrings!)
+    content, collapsed_content = collapse_all(content, filter_comment=True)
 
     for match in DATA_PATTERN.finditer(content):
         data_id = ".".join([module_id, match.group("data_name")])
         line_number = content[:match.start()].count("\n")+1
 
-        # As we collapsed all contexts to avoid noises, we need to get the
-        # value from the original data in case it represents an object.
-        match_in_line = DATA_PATTERN.search(
-            "\n".join(lines[line_number-1:])
-        )
+        value = match.group("data_value")
+        if "{}" in value and line_number in collapsed_content.keys():
+            value = value.replace("{}", collapsed_content[line_number])
 
         data_environment = {
             "id": data_id,
@@ -43,7 +42,7 @@ def get_data_environment(content, module_id):
             "exported": match.group("export") is not None,
             "default": match.group("default") is not None,
             "name": match.group("data_name"),
-            "value": match_in_line.group("data_value"),
+            "value": value,
             "type": match.group("data_type"),
             "line_number": line_number,
             "description": get_docstring(line_number, lines)
