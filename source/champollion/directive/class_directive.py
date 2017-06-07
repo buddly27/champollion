@@ -94,6 +94,11 @@ class AutoClassDirective(BaseDirective):
 
         # Gather class attributes
         for attribute_environment in env["attribute"].values():
+            # As a method can also be a variable, use the method directive
+            # by default when available
+            if attribute_environment["id"] in env["method"].keys():
+                continue
+
             name = attribute_environment["name"]
             description = attribute_environment["description"]
             if description is None and not undoc_members:

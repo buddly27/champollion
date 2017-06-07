@@ -109,6 +109,11 @@ class AutoModuleDirective(Directive):
 
             # Gather variables
             for data_environment in env["data"].values():
+                # As a function can also be a variable, use the function
+                # directive by default when available
+                if data_environment["id"] in env["function"].keys():
+                    continue
+
                 name = data_environment["name"]
                 description = data_environment["description"]
                 if description is None and not undoc_members:

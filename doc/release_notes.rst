@@ -15,6 +15,17 @@ Release Notes
 
         Format the value on one line to ease the display.
 
+    .. change:: fixed
+        :tags: directive
+
+        As an `arrow-type function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>`_
+        can be also be considered as a variable, ensure that the
+        :class:`js:automodule <champollion.directive.module_directive.AutoModuleDirective>`
+        and :class:`js:autoclass <champollion.directive.class_directive.AutoClassDirective>`
+        directives use the :class:`~champollion.directive.function_directive.AutoFunctionDirective`
+        and :class:`~champollion.directive.method_directive.AutoMethodDirective`
+        in priority when available.
+
 .. release:: 0.3.0
     :date: 2017-06-05
 
