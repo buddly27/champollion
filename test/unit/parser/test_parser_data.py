@@ -52,13 +52,7 @@ def test_get_data_environment(content):
             "default": True,
             "name": "test_object",
             "type": "var",
-            "value": (
-                "{\n"
-                "   key1: value1,\n"
-                "   key2: value2,\n"
-                "   key3: value3,\n"
-                "}"
-            ),
+            "value": "{ key1: value1, key2: value2, key3: value3, }",
             "line_number": 9,
             "description": "test dictionary data.\n\nDetailed description."
         },
