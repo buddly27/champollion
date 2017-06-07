@@ -4,6 +4,17 @@
 Release Notes
 *************
 
+.. release:: 0.3.1
+    :date: 2017-06-06
+
+    .. change:: fixed
+        :tags: javascript-parser
+
+        Fix :func:`champollion.parser.data_parser.get_data_environment` to
+        preserve the data value with all of its potential nested elements.
+
+        Format the value on one line to ease the display.
+
 .. release:: 0.3.0
     :date: 2017-06-05
 
