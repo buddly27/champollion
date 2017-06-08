@@ -124,7 +124,10 @@ js:autofunction
 Document a function declaration using one of the following way:
 
 * `function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function>`_
+* `function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function>`_
 * `arrow-type function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>`_
+* `function* statement <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*>`_
+* `function* expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function*>`_
 
 Example:
 
@@ -148,10 +151,7 @@ Example:
 
     These function declaration statements are not supported at the moment:
 
-    * `function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function>`_
     * `Function object <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function>`_
-    * `function* statement <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*>`_
-    * `function* expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function*>`_
     * `GeneratorFunction object <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction>`_
     * `async function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function>`_
     * `async function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/async_function>`_

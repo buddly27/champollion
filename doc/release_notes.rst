@@ -36,6 +36,12 @@ Release Notes
         and :class:`~champollion.directive.function_directive.AutoFunctionDirective`
         to support anonymous function.
 
+    .. change:: changed
+        :tags: documentation
+
+        Update :ref:`usage <using>` documentation.
+
+
 .. release:: 0.3.1
     :date: 2017-06-06
 
