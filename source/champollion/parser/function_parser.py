@@ -17,7 +17,7 @@ FUNCTION_PATTERN = re.compile(
 #: Regular Expression pattern for arrow functions
 FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"const (?P<function_name>\w+) *= *\((?P<arguments>.*)\) *=> *{"
+    r"(const|let|var) (?P<function_name>\w+) *= *\((?P<arguments>.*)\) *=> *{"
 )
 
 
