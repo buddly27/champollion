@@ -12,7 +12,15 @@ Release Notes
 
         Added support for
         `function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function>`_
+        in :func:`function parser <champollion.parser.function_parser.get_function_environment>`.
+
+    .. change:: changed
+        :tags: javascript-parser, directive
+
+        Added support for
+        `function generator <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*>`_
         in :func:`function parser <champollion.parser.function_parser.get_function_environment>`
+        and :class:`~champollion.directive.function_directive.AutoFunctionDirective`.
 
     .. change:: fixed
         :tags: javascript-parser
