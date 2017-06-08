@@ -34,6 +34,9 @@ class AutoFunctionDirective(BaseDirective):
         node["module"] = module_name
         node['fullname'] = name
 
+        if env["generator"]:
+            node += addnodes.desc_type("function* ", "function* ")
+
         if env["anonymous"]:
             node += addnodes.desc_name(name, name)
         else:

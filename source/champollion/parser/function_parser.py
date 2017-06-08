@@ -45,6 +45,10 @@ def get_function_environment(content, module_id):
                 if _name is not None:
                     name = _name
 
+            generator = False
+            if "generator" in match.groupdict().keys():
+                generator = match.group("generator") is not None
+
             if name is None:
                 name = "__ANONYMOUS_FUNCTION__"
 
@@ -61,6 +65,7 @@ def get_function_environment(content, module_id):
                 "default": match.group("default") is not None,
                 "name": name,
                 "anonymous": name == "__ANONYMOUS_FUNCTION__",
+                "generator": generator,
                 "arguments": arguments,
                 "line_number": line_number,
                 "description": get_docstring(line_number, lines)
