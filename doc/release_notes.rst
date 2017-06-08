@@ -4,6 +4,23 @@
 Release Notes
 *************
 
+.. release:: 0.3.2
+    :date: 2017-06-07
+
+    .. change:: changed
+        :tags: javascript-parser
+
+        Added support for
+        `function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function>`_
+        in :func:`function parser <champollion.parser.function_parser.get_function_environment>`
+
+    .. change:: fixed
+        :tags: javascript-parser
+
+        Fixed :func:`function parser <champollion.parser.function_parser.get_function_environment>`
+        to recognize arrow-type function expression assigned to **let** and
+        **var** variables.
+
 .. release:: 0.3.1
     :date: 2017-06-06
 
