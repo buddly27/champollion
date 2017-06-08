@@ -11,7 +11,8 @@ from .helper import get_docstring
 FUNCTION_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
     r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
-    r"function (?P<function_name>[\w_-]+)? *\((?P<arguments>.*)\) *{"
+    r"function *(?P<generator>\* *)?(?P<function_name>[\w_-]+)? "
+    r"*\((?P<arguments>.*)\) *{"
 )
 
 #: Regular Expression pattern for arrow functions
@@ -38,17 +39,20 @@ def get_function_environment(content, module_id):
         FUNCTION_PATTERN.finditer(content)
     ):
         for match in match_iter:
-            function_id = ".".join([module_id, match.group("function_name")])
-            line_number = content[:match.start()].count("\n")+1
-            arguments = list(filter(lambda x: len(x), [
-                arg.strip() for arg in match.group("arguments").split(",")
-            ]))
-
             name = match.group("function_name")
             if "data_name" in match.groupdict().keys():
                 _name = match.group("data_name")
                 if _name is not None:
                     name = _name
+
+            if name is None:
+                name = "__ANONYMOUS_FUNCTION__"
+
+            function_id = ".".join([module_id, name])
+            line_number = content[:match.start()].count("\n")+1
+            arguments = list(filter(lambda x: len(x), [
+                arg.strip() for arg in match.group("arguments").split(",")
+            ]))
 
             function_environment = {
                 "id": function_id,
@@ -56,6 +60,7 @@ def get_function_environment(content, module_id):
                 "exported": match.group("export") is not None,
                 "default": match.group("default") is not None,
                 "name": name,
+                "anonymous": name == "__ANONYMOUS_FUNCTION__",
                 "arguments": arguments,
                 "line_number": line_number,
                 "description": get_docstring(line_number, lines)

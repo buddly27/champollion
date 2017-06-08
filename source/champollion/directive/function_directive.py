@@ -34,8 +34,11 @@ class AutoFunctionDirective(BaseDirective):
         node["module"] = module_name
         node['fullname'] = name
 
-        node += addnodes.desc_addname(module_name + ".", module_name + ".")
-        node += addnodes.desc_name(name, name)
+        if env["anonymous"]:
+            node += addnodes.desc_name(name, name)
+        else:
+            node += addnodes.desc_addname(module_name + ".", module_name + ".")
+            node += addnodes.desc_name(name, name)
 
         param_list = addnodes.desc_parameterlist()
         for argument in env["arguments"]:
@@ -50,5 +53,7 @@ class AutoFunctionDirective(BaseDirective):
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        self.content = self._generate_import_statement(env, module_env)
+        if not env["anonymous"]:
+            self.content = self._generate_import_statement(env, module_env)
+
         self.content += self._generate_description(env)
