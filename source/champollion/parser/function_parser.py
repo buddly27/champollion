@@ -10,7 +10,8 @@ from .helper import get_docstring
 #: Regular Expression pattern for function expressions
 FUNCTION_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"function (?P<function_name>\w+) *\((?P<arguments>.*)\) *{"
+    r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
+    r"function (?P<function_name>[\w_-]+)? *\((?P<arguments>.*)\) *{"
 )
 
 #: Regular Expression pattern for arrow functions
@@ -43,12 +44,18 @@ def get_function_environment(content, module_id):
                 arg.strip() for arg in match.group("arguments").split(",")
             ]))
 
+            name = match.group("function_name")
+            if "data_name" in match.groupdict().keys():
+                _name = match.group("data_name")
+                if _name is not None:
+                    name = _name
+
             function_environment = {
                 "id": function_id,
                 "module_id": module_id,
                 "exported": match.group("export") is not None,
                 "default": match.group("default") is not None,
-                "name": match.group("function_name"),
+                "name": name,
                 "arguments": arguments,
                 "line_number": line_number,
                 "description": get_docstring(line_number, lines)
