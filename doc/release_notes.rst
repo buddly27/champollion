@@ -4,6 +4,15 @@
 Release Notes
 *************
 
+.. release:: 0.3.3
+    :date: 2017-06-07
+
+    .. change:: fixed
+        :tags: javascript-parser
+
+        Fixed unit tests for
+        :func:`function parser <champollion.parser.function_parser.get_function_environment>`
+
 .. release:: 0.3.2
     :date: 2017-06-07
 
