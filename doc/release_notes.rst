@@ -21,6 +21,13 @@ Release Notes
         to recognize arrow-type function expression assigned to **let** and
         **var** variables.
 
+    .. change:: fixed
+        :tags: javascript-parser, directive
+
+        Fixed :func:`function parser <champollion.parser.function_parser.get_function_environment>`
+        and :class:`~champollion.directive.function_directive.AutoFunctionDirective`
+        to support anonymous function.
+
 .. release:: 0.3.1
     :date: 2017-06-06
 
