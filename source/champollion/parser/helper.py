@@ -9,6 +9,9 @@ ONE_LINE_COMMENT_PATTERN = re.compile(r"//.*?\n")
 #: Regular Expression pattern for multi-line comments
 MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
 
+#: Regular Expression pattern for nested element symbols
+NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]+}")
+
 
 def filter_comments(content, keep_content_size=False):
     """Return *content* without the comments.
@@ -53,7 +56,7 @@ def collapse_all(content, filter_comment=False):
         # Filter comment before collapsing elements to prevent comment analysis
         content = filter_comments(content, keep_content_size=True)
 
-    def _replace_comment(element):
+    def _replace_element(element):
         # Guess line number
         count = element.group().count("\n")
 
@@ -76,7 +79,7 @@ def collapse_all(content, filter_comment=False):
 
     while _content != content:
         _content = content
-        content = re.sub(r"{[^{}]*}", _replace_comment, content)
+        content = NESTED_ELEMENT_PATTERN.sub(_replace_element, content)
 
     # Remove the space buffer before returning the content
     content = re.sub(r"<> *", lambda x: "{}", content)
