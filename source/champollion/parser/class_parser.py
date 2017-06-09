@@ -9,7 +9,7 @@ from .helper import get_docstring
 
 #: Regular Expression pattern for classes
 CLASS_PATTERN = re.compile(
-    r"(?P<export>export +)?(?P<default>default +)?"
+    r"(\n|^) *(?P<export>export +)?(?P<default>default +)?"
     r"(class +(?P<class_name>\w+)|(const|let|var) +(?P<data_name>\w+) "
     r"*= *class +\w+)"
     r"( +extends +(?P<mother_class>[\w._-]+))? *{"
@@ -17,8 +17,8 @@ CLASS_PATTERN = re.compile(
 
 #: Regular Expression pattern for class methods
 CLASS_METHOD_PATTERN = re.compile(
-    r"(?P<prefix>(static|get|set) +)?"
-    r"(?P<method_name>\w+) *\((?P<arguments>.*)\) *{"
+    r"(\n|^) *(?P<prefix>(static|get|set) +)?"
+    r"(?P<method_name>[\w._-]+) *\((\n| )*(?P<arguments>.*)(\n| )*\) *{"
 )
 
 #: Regular Expression pattern for class arrow methods
@@ -70,7 +70,10 @@ def get_class_environment(content, module_id):
             class_name = match.group("data_name")
 
         class_id = ".".join([module_id, class_name])
-        line_number = content[:match.start()].count("\n")+1
+
+        line_number = (
+            content[:match.start()].count("\n") + match.group().count("\n") + 1
+        )
 
         method_environment = {}
         attribute_environment = {}
@@ -131,7 +134,11 @@ def get_class_methods_environment(content, class_id, line_number=0):
                 if prefix in ["get", "set"]:
                     method_id += "." + prefix
 
-            _line_number = content[:match.start()].count("\n")+1
+            _line_number = (
+                content[:match.start()].count("\n") +
+                match.group().count("\n") + 1
+            )
+
             arguments = list(filter(lambda x: len(x), [
                 arg.strip() for arg in match.group("arguments").split(",")
             ]))

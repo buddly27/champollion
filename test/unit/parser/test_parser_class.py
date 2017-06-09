@@ -242,6 +242,10 @@ def test_get_class_environment(content):
             None
         ),
         (
+            "const test= 'class AwesomeClass {}';",
+            None
+        ),
+        (
             "class AwesomeClass {}",
             {
                 "export": None,
@@ -282,18 +286,19 @@ def test_get_class_environment(content):
             }
         ),
         (
-            "let MyClass1= class AwesomeClass {}",
+            "let MyClass1= class AwesomeClass extends Test2 {}",
             {
                 "export": None,
                 "default": None,
                 "class_name": None,
                 "data_name": "MyClass1",
-                "mother_class": None,
+                "mother_class": "Test2",
             }
         ),
     ],
     ids=[
         "invalid class",
+        "invalid class string",
         "valid class",
         "valid class with inheritance",
         "valid class exported by default",
@@ -304,6 +309,79 @@ def test_get_class_environment(content):
 def test_class_pattern(content, expected):
     """Match a class."""
     match = champollion.parser.class_parser.CLASS_PATTERN.search(content)
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "function invalidMethod() {}",
+            None
+        ),
+        (
+            "invalidMethod()",
+            None
+        ),
+        (
+            "invalidMethod {}",
+            None
+        ),
+        (
+            "valid-Method (arg1) {}",
+            {
+                "arguments": "arg1",
+                "method_name": "valid-Method",
+                "prefix": None
+            }
+        ),
+        (
+            "static valid_method() {}",
+            {
+                "arguments": "",
+                "method_name": "valid_method",
+                "prefix": "static "
+            }
+        ),
+        (
+            "get valid_method2(){}",
+            {
+                "arguments": "",
+                "method_name": "valid_method2",
+                "prefix": "get "
+            }
+        ),
+        (
+            (
+                "set validMethod( \n"
+                "    arg1, arg2, arg3, arg4, arg5,\n"
+                "){\n"
+                "    console.log('test');\n"
+                "}\n"
+            ),
+            {
+                "arguments": "arg1, arg2, arg3, arg4, arg5,",
+                "method_name": "validMethod",
+                "prefix": "set "
+            }
+        ),
+    ],
+    ids=[
+        "invalid method with 'function' statement",
+        "invalid method without nested element",
+        "invalid method without argument",
+        "valid method",
+        "valid static method",
+        "valid getter method",
+        "valid setter method",
+    ]
+)
+def test_class_method_pattern(content, expected):
+    """Match a class method."""
+    match = champollion.parser.class_parser.CLASS_METHOD_PATTERN.search(content)
     if expected is None:
         assert match is None
     else:
