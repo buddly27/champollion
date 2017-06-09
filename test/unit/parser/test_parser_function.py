@@ -41,10 +41,6 @@ def content():
 
 def test_get_function_environment(content):
     """Return function environment from content."""
-    import pprint
-    pprint.pprint(champollion.parser.function_parser.get_function_environment(
-        content, "test.module"
-    ))
     assert champollion.parser.function_parser.get_function_environment(
         content, "test.module"
     ) == {
