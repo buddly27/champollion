@@ -220,8 +220,112 @@ def test_get_function_environment(content):
     ]
 )
 def test_function_pattern(content, expected):
-    """Match a class method."""
+    """Match a function."""
     match = champollion.parser.function_parser.FUNCTION_PATTERN.search(content)
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "const arrow_type_function = (arg1) => {};",
+            {
+                "arguments": "arg1",
+                "single_argument": None,
+                "function_name": "arrow_type_function",
+                "default": None,
+                "export": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            "let arrow_type_function2 = arg1 => {};",
+            {
+                "arguments": None,
+                "single_argument": "arg1",
+                "function_name": "arrow_type_function2",
+                "default": None,
+                "export": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            "export const arrow_type_function = (arg1) => {};",
+            {
+                "arguments": "arg1",
+                "single_argument": None,
+                "function_name": "arrow_type_function",
+                "default": None,
+                "export": "export ",
+                "start_regex": ""
+            }
+        ),
+        (
+            "export default var arrow_type_function3 = (arg1, arg2) => {};",
+            {
+                "arguments": "arg1, arg2",
+                "single_argument": None,
+                "function_name": "arrow_type_function3",
+                "default": "default ",
+                "export": "export ",
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "export const arrow_type_function = (\n"
+                "    arg1, arg2, arg3, arg4, arg5, agr6,\n"
+                ") => {\n"
+                "    console.log('youpi');\n"
+                "};\n"
+            ),
+            {
+                "arguments": "arg1, arg2, arg3, arg4, arg5, agr6,",
+                "single_argument": None,
+                "function_name": "arrow_type_function",
+                "default": None,
+                "export": "export ",
+                "start_regex": ""
+            }
+        ),
+        (
+            "arrow_type_function = (arg1) => {}",
+            None
+        ),
+        (
+            "const test = 'const arrow_type_function = (arg1) => {}'",
+            None
+        ),
+        (
+            "(arg1) => {}",
+            None
+        ),
+        (
+            "const arrow_type_function = arg1, arg2 => {};",
+            None
+        ),
+    ],
+    ids=[
+        "valid function with one argument and brackets",
+        "valid function with one argument and no brackets",
+        "valid exported function",
+        "valid function with two arguments",
+        "valid function with multiple arguments",
+        "invalid arrow-type function without type",
+        "invalid arrow-type function string",
+        "invalid unassigned arrow-type function",
+        "invalid arrow-type function with multiple argument and no brackets",
+    ]
+)
+def test_function_arrow_pattern(content, expected):
+    """Match an arrow-type function."""
+    match = champollion.parser.function_parser.FUNCTION_ARROW_PATTERN.search(
+        content
+    )
     if expected is None:
         assert match is None
     else:

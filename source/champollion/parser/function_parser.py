@@ -18,8 +18,9 @@ FUNCTION_PATTERN = re.compile(
 #: Regular Expression pattern for arrow functions
 FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
-    r"(const|let|var) (?P<function_name>\w+) *= "
-    r"*\([\n ]*(?P<arguments>.*)[\n ]*\) *=> *{"
+    r"(const|let|var) (?P<function_name>\w+) *= *"
+    r"(\([\n ]*(?P<arguments>.*)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
+    r"=> *{"
 )
 
 
@@ -60,8 +61,12 @@ def get_function_environment(content, module_id):
                 match.group("start_regex").count("\n") + 1
             )
 
+            arguments_matched = match.group("arguments")
+            if arguments_matched is None:
+                arguments_matched = match.group("single_argument")
+
             arguments = list(filter(lambda x: len(x), [
-                arg.strip() for arg in match.group("arguments").split(",")
+                arg.strip() for arg in arguments_matched.split(",")
             ]))
 
             function_environment = {
