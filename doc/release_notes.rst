@@ -5,7 +5,7 @@ Release Notes
 *************
 
 .. release:: 0.3.4
-    :date: 2017-06-08
+    :date: 2017-06-09
 
     .. change:: fixed
         :tags: javascript-parser
@@ -16,7 +16,15 @@ Release Notes
     .. change:: new
         :tags: javascript-parser
 
-        Added unit tests for :data:`~champollion.parser.class_parser.CLASS_PATTERN`
+        Added unit tests for:
+
+        * :data:`champollion.parser.class_parser.CLASS_PATTERN`
+        * :data:`champollion.parser.class_parser.CLASS_METHOD_PATTERN`
+        * :data:`champollion.parser.class_parser.CLASS_METHOD_ARROW_PATTERN`
+        * :data:`champollion.parser.class_parser.CLASS_ATTRIBUTE_PATTERN`
+        * :data:`champollion.parser.function_parser.FUNCTION_PATTERN`
+        * :data:`champollion.parser.function_parser.FUNCTION_ARROW_PATTERN`
+        * :data:`champollion.parser.data_parser.DATA_PATTERN`
 
 .. release:: 0.3.3
     :date: 2017-06-07
