@@ -109,3 +109,120 @@ def test_get_function_environment(content):
             "description": "test generator function."
         },
     }
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "export default function(arg1) {}",
+            {
+                "arguments": "arg1",
+                "data_name": None,
+                "default": "default ",
+                "export": "export ",
+                "function_name": None,
+                "generator": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            "export function doSomething_1() {}",
+            {
+                "arguments": "",
+                "data_name": None,
+                "default": None,
+                "export": "export ",
+                "function_name": "doSomething_1",
+                "generator": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "function doSomething_Else(\n"
+                "    arg1, arg2, arg3, arg3, arg4, arg5,\n"
+                ") {\n"
+                "    console.log('test')\n"
+                "}"
+            ),
+            {
+                "arguments": "arg1, arg2, arg3, arg3, arg4, arg5,",
+                "data_name": None,
+                "default": None,
+                "export": None,
+                "function_name": "doSomething_Else",
+                "generator": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "const aFunction=function saySomething(text) {\n"
+                "    console.log(text)\n"
+                "}"
+            ),
+            {
+                "arguments": "text",
+                "data_name": "aFunction",
+                "default": None,
+                "export": None,
+                "function_name": "saySomething",
+                "generator": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "let aFunction=function* saySomething(text) {\n"
+                "    console.log(text)\n"
+                "}"
+            ),
+            {
+                "arguments": "text",
+                "data_name": "aFunction",
+                "default": None,
+                "export": None,
+                "function_name": "saySomething",
+                "generator": "* ",
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "function* saySomething(text) {\n"
+                "    console.log(text)\n"
+                "}"
+            ),
+            {
+                "arguments": "text",
+                "data_name": None,
+                "default": None,
+                "export": None,
+                "function_name": "saySomething",
+                "generator": "* ",
+                "start_regex": ""
+            }
+        ),
+        (
+            "const test = 'const test = function() {}'",
+            None
+        )
+    ],
+    ids=[
+        "valid anonymous function",
+        "valid named function",
+        "valid named function with multiple arguments",
+        "valid function expression",
+        "valid function generator expression",
+        "valid function generator",
+        "valid function string",
+    ]
+)
+def test_function_pattern(content, expected):
+    """Match a class method."""
+    match = champollion.parser.function_parser.FUNCTION_PATTERN.search(content)
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected

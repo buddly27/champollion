@@ -9,17 +9,17 @@ from .helper import get_docstring
 
 #: Regular Expression pattern for function expressions
 FUNCTION_PATTERN = re.compile(
-    r"(?P<export>export +)?(?P<default>default +)?"
+    r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
     r"function *(?P<generator>\* *)?(?P<function_name>[\w_-]+)? "
-    r"*\((\n| )*(?P<arguments>.*)(\n| )*\) *{",
+    r"*\([\n ]*(?P<arguments>.*)[\n ]*\) *{",
 )
 
 #: Regular Expression pattern for arrow functions
 FUNCTION_ARROW_PATTERN = re.compile(
-    r"(?P<export>export +)?(?P<default>default +)?"
+    r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(const|let|var) (?P<function_name>\w+) *= "
-    r"*\((\n| )*(?P<arguments>.*)(\n| )*\) *=> *{"
+    r"*\([\n ]*(?P<arguments>.*)[\n ]*\) *=> *{"
 )
 
 
@@ -54,7 +54,12 @@ def get_function_environment(content, module_id):
                 name = "__ANONYMOUS_FUNCTION__"
 
             function_id = ".".join([module_id, name])
-            line_number = content[:match.start()].count("\n")+1
+
+            line_number = (
+                content[:match.start()].count("\n") +
+                match.group("start_regex").count("\n") + 1
+            )
+
             arguments = list(filter(lambda x: len(x), [
                 arg.strip() for arg in match.group("arguments").split(",")
             ]))
