@@ -80,6 +80,21 @@ def content():
         "     * A static attribute.\n"
         "     */\n"
         "    static attribute = 42;\n"
+        "\n"
+        "    /**\n"
+        "     * A first arrow-type method.\n"
+        "     */\n"
+        "    anArrowType_method1 = (arg1, arg2 = true) => {\n"
+        "        console.log('test1');\n"
+        "    };\n"
+        "\n"
+        "\n"
+        "    /**\n"
+        "     * A second arrow-type method.\n"
+        "     */\n"
+        "    anArrowType_method2 = arg => {\n"
+        "        console.log('test2');\n"
+        "    };\n"
         "}\n"
     )
 
@@ -216,7 +231,27 @@ def test_get_class_environment(content):
                     "arguments": [],
                     "line_number": 65,
                     "description": "A static method."
-                }
+                },
+                "test.module.AwesomeClass.anArrowType_method1": {
+                    "id": "test.module.AwesomeClass.anArrowType_method1",
+                    "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
+                    "name": "anArrowType_method1",
+                    "prefix": None,
+                    "arguments": ["arg1", "arg2 = true"],
+                    "line_number": 77,
+                    "description": "A first arrow-type method."
+                },
+                "test.module.AwesomeClass.anArrowType_method2": {
+                    "id": "test.module.AwesomeClass.anArrowType_method2",
+                    "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
+                    "name": "anArrowType_method2",
+                    "prefix": None,
+                    "arguments": ["arg"],
+                    "line_number": 85,
+                    "description": "A second arrow-type method."
+                },
             },
             "attribute": {
                 "test.module.AwesomeClass.attribute": {
@@ -229,7 +264,7 @@ def test_get_class_environment(content):
                     "line_number": 72,
                     "description": "A static attribute."
                 }
-            }
+            },
         },
     }
 
@@ -382,6 +417,100 @@ def test_class_pattern(content, expected):
 def test_class_method_pattern(content, expected):
     """Match a class method."""
     match = champollion.parser.class_parser.CLASS_METHOD_PATTERN.search(content)
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "arrow_type_method = (arg1) => {};",
+            {
+                "arguments": "arg1",
+                "single_argument": None,
+                "method_name": "arrow_type_method",
+                "prefix": None
+            }
+        ),
+        (
+            "arrow_type_method2 = arg1 => {};",
+            {
+                "arguments": None,
+                "single_argument": "arg1",
+                "method_name": "arrow_type_method2",
+                "prefix": None
+            }
+        ),
+        (
+            "static arrow_type_method = (arg1) => {};",
+            {
+                "arguments": "arg1",
+                "single_argument": None,
+                "method_name": "arrow_type_method",
+                "prefix": "static "
+            }
+        ),
+        (
+            "arrow_type_method3 = (arg1, arg2) => {};",
+            {
+                "arguments": "arg1, arg2",
+                "single_argument": None,
+                "method_name": "arrow_type_method3",
+                "prefix": None
+            }
+        ),
+        (
+            (
+                "arrow_type_method3 = (\n"
+                "    arg1, arg2, arg3, arg4, arg5, agr6,\n"
+                ") => {\n"
+                "    console.log('youpi');\n"
+                "};\n"
+            ),
+            {
+                "arguments": "arg1, arg2, arg3, arg4, arg5, agr6,",
+                "single_argument": None,
+                "method_name": "arrow_type_method3",
+                "prefix": None
+            }
+        ),
+        (
+            "const arrow_type_method = (arg1) => {}",
+            None
+        ),
+        (
+            "const test = 'arrow_type_method = (arg1) => {}'",
+            None
+        ),
+        (
+            "(arg1) => {}",
+            None
+        ),
+        (
+            "const arrow_type_method = arg1, arg2 => {};",
+            None
+        ),
+    ],
+    ids=[
+        "valid method with one argument and brackets",
+        "valid method with one argument and no brackets",
+        "valid static method",
+        "valid method with two arguments",
+        "valid method with multiple arguments",
+        "invalid arrow-type method with type",
+        "invalid arrow-type method string",
+        "invalid unassigned arrow-type method",
+        "invalid arrow-type method with multiple argument and no brackets",
+    ]
+)
+def test_class_method_arrow_pattern(content, expected):
+    """Match a class arrow-type method."""
+    match = champollion.parser.class_parser.CLASS_METHOD_ARROW_PATTERN.search(
+        content
+    )
     if expected is None:
         assert match is None
     else:

@@ -23,8 +23,9 @@ CLASS_METHOD_PATTERN = re.compile(
 
 #: Regular Expression pattern for class arrow methods
 CLASS_METHOD_ARROW_PATTERN = re.compile(
-    r"(?P<prefix>(static|get|set) +)?"
-    r"(?P<method_name>\w+) *= *\((?P<arguments>.*)\) *=> *{"
+    r"(\n|^) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
+    r"(\((\n| )*(?P<arguments>.*)(\n| )*\)|(?P<single_argument>[\w._-]+)) *"
+    r"=> *{"
 )
 
 #: Regular Expression pattern for class attribute
@@ -139,8 +140,12 @@ def get_class_methods_environment(content, class_id, line_number=0):
                 match.group().count("\n") + 1
             )
 
+            arguments_matched = match.group("arguments")
+            if arguments_matched is None:
+                arguments_matched = match.group("single_argument")
+
             arguments = list(filter(lambda x: len(x), [
-                arg.strip() for arg in match.group("arguments").split(",")
+                arg.strip() for arg in arguments_matched.split(",")
             ]))
 
             method_environment = {
