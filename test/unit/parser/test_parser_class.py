@@ -345,6 +345,7 @@ def test_get_class_environment(content):
                 "class_name": "AwesomeClass",
                 "data_name": None,
                 "mother_class": None,
+                "start_regex": ""
             }
         ),
         (
@@ -355,6 +356,7 @@ def test_get_class_environment(content):
                 "class_name": "Awesome_Class",
                 "data_name": None,
                 "mother_class": "module.Mother-Class",
+                "start_regex": ""
             }
         ),
         (
@@ -365,6 +367,7 @@ def test_get_class_environment(content):
                 "class_name": "AwesomeClass",
                 "data_name": None,
                 "mother_class": None,
+                "start_regex": ""
             }
         ),
         (
@@ -375,6 +378,7 @@ def test_get_class_environment(content):
                 "class_name": None,
                 "data_name": "MyClass1",
                 "mother_class": None,
+                "start_regex": ""
             }
         ),
         (
@@ -385,6 +389,7 @@ def test_get_class_environment(content):
                 "class_name": None,
                 "data_name": "MyClass1",
                 "mother_class": "Test2",
+                "start_regex": ""
             }
         ),
     ],
@@ -427,7 +432,8 @@ def test_class_pattern(content, expected):
             {
                 "arguments": "arg1",
                 "method_name": "valid-Method",
-                "prefix": None
+                "prefix": None,
+                "start_regex": ""
             }
         ),
         (
@@ -435,7 +441,8 @@ def test_class_pattern(content, expected):
             {
                 "arguments": "",
                 "method_name": "valid_method",
-                "prefix": "static "
+                "prefix": "static ",
+                "start_regex": ""
             }
         ),
         (
@@ -443,7 +450,8 @@ def test_class_pattern(content, expected):
             {
                 "arguments": "",
                 "method_name": "valid_method2",
-                "prefix": "get "
+                "prefix": "get ",
+                "start_regex": ""
             }
         ),
         (
@@ -457,7 +465,8 @@ def test_class_pattern(content, expected):
             {
                 "arguments": "arg1, arg2, arg3, arg4, arg5,",
                 "method_name": "validMethod",
-                "prefix": "set "
+                "prefix": "set ",
+                "start_regex": ""
             }
         ),
     ],
@@ -489,7 +498,8 @@ def test_class_method_pattern(content, expected):
                 "arguments": "arg1",
                 "single_argument": None,
                 "method_name": "arrow_type_method",
-                "prefix": None
+                "prefix": None,
+                "start_regex": ""
             }
         ),
         (
@@ -498,7 +508,8 @@ def test_class_method_pattern(content, expected):
                 "arguments": None,
                 "single_argument": "arg1",
                 "method_name": "arrow_type_method2",
-                "prefix": None
+                "prefix": None,
+                "start_regex": ""
             }
         ),
         (
@@ -507,7 +518,8 @@ def test_class_method_pattern(content, expected):
                 "arguments": "arg1",
                 "single_argument": None,
                 "method_name": "arrow_type_method",
-                "prefix": "static "
+                "prefix": "static ",
+                "start_regex": ""
             }
         ),
         (
@@ -516,7 +528,8 @@ def test_class_method_pattern(content, expected):
                 "arguments": "arg1, arg2",
                 "single_argument": None,
                 "method_name": "arrow_type_method3",
-                "prefix": None
+                "prefix": None,
+                "start_regex": ""
             }
         ),
         (
@@ -531,7 +544,8 @@ def test_class_method_pattern(content, expected):
                 "arguments": "arg1, arg2, arg3, arg4, arg5, agr6,",
                 "single_argument": None,
                 "method_name": "arrow_type_method3",
-                "prefix": None
+                "prefix": None,
+                "start_regex": ""
             }
         ),
         (
@@ -582,7 +596,8 @@ def test_class_method_arrow_pattern(content, expected):
             {
                 "attribute_name": "attribute_test1",
                 "attribute_value": "42",
-                "prefix": None
+                "prefix": None,
+                "start_regex": ""
             }
         )
     ],

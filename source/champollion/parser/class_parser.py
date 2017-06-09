@@ -9,7 +9,7 @@ from .helper import get_docstring
 
 #: Regular Expression pattern for classes
 CLASS_PATTERN = re.compile(
-    r"(\n|^) *(?P<export>export +)?(?P<default>default +)?"
+    r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(class +(?P<class_name>\w+)|(const|let|var) +(?P<data_name>\w+) "
     r"*= *class +\w+)"
     r"( +extends +(?P<mother_class>[\w._-]+))? *{"
@@ -17,20 +17,21 @@ CLASS_PATTERN = re.compile(
 
 #: Regular Expression pattern for class methods
 CLASS_METHOD_PATTERN = re.compile(
-    r"(\n|^) *(?P<prefix>(static|get|set) +)?"
-    r"(?P<method_name>[\w._-]+) *\((\n| )*(?P<arguments>.*)(\n| )*\) *{"
+    r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|get|set) +)?"
+    r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*)[\n ]*\) *{"
 )
 
 #: Regular Expression pattern for class arrow methods
 CLASS_METHOD_ARROW_PATTERN = re.compile(
-    r"(\n|^) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
-    r"(\((\n| )*(?P<arguments>.*)(\n| )*\)|(?P<single_argument>[\w._-]+)) *"
+    r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
+    r"(\([\n ]*(?P<arguments>.*)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
     r"=> *{"
 )
 
 #: Regular Expression pattern for class attribute
 CLASS_ATTRIBUTE_PATTERN = re.compile(
-    r"(\n|^) *(?P<prefix>static +)?(?P<attribute_name>[\w._-]+) *= *"
+    r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?"
+    r"(?P<attribute_name>[\w._-]+) *= *"
     r"(?P<attribute_value>(\[(\n|.)+\]|\((\n|.)+\) *=> *{}|\((\n|.)+\)|.+))"
 )
 
@@ -74,7 +75,7 @@ def get_class_environment(content, module_id):
 
         line_number = (
             content[:match.start()].count("\n") +
-            match.group().count("\n") + 1
+            match.group("start_regex").count("\n") + 1
         )
 
         method_environment = {}
@@ -138,7 +139,7 @@ def get_class_methods_environment(content, class_id, line_number=0):
 
             _line_number = (
                 content[:match.start()].count("\n") +
-                match.group().count("\n") + 1
+                match.group("start_regex").count("\n") + 1
             )
 
             arguments_matched = match.group("arguments")
@@ -190,7 +191,7 @@ def get_class_attribute_environment(content, class_id, line_number=0):
 
         _line_number = (
             content[:match.start()].count("\n") +
-            match.group().count("\n") - value.count("\n") + 1
+            match.group("start_regex").count("\n") + 1
         )
 
         if "{}" in value and _line_number in collapsed_content.keys():
