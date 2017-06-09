@@ -4,6 +4,20 @@
 Release Notes
 *************
 
+.. release:: 0.3.4
+    :date: 2017-06-08
+
+    .. change:: fixed
+        :tags: javascript-parser
+
+        Fixed :func:`class parser <champollion.parser.class_parser.get_class_environment>`
+        to recognize class expression assigned to **let** and **var** variables.
+
+    .. change:: new
+        :tags: javascript-parser
+
+        Added unit tests for :data:`~champollion.parser.class_parser.CLASS_PATTERN`
+
 .. release:: 0.3.3
     :date: 2017-06-07
 
@@ -49,7 +63,6 @@ Release Notes
         :tags: documentation
 
         Update :ref:`usage <using>` documentation.
-
 
 .. release:: 0.3.1
     :date: 2017-06-06
