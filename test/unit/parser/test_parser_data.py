@@ -79,3 +79,79 @@ def test_get_data_environment(content):
             "description": None
         },
     }
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "const data_test = 42",
+            {
+                "name": "data_test",
+                "type": "const",
+                "value": "42",
+                "export": None,
+                "default": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "export let data_test2 = {\n"
+                "    key: 'value',\n"
+                "}"
+            ),
+            {
+                "name": "data_test2",
+                "type": "let",
+                "value": (
+                    "{\n"
+                    "    key: 'value',\n"
+                    "}"
+                ),
+                "export": "export ",
+                "default": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "var dataTest3 = [\n"
+                "    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n"
+                "]"
+            ),
+            {
+                "name": "dataTest3",
+                "type": "var",
+                "value": (
+                    "[\n"
+                    "    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n"
+                    "]"
+                ),
+                "export": None,
+                "default": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            "'const attribute = 42'",
+            None
+        )
+
+    ],
+    ids=[
+        "valid data",
+        "valid object data",
+        "valid list data",
+        "invalid data string",
+    ]
+)
+def test_data_pattern(content, expected):
+    """Match an variable."""
+    match = champollion.parser.data_parser.DATA_PATTERN.search(
+        content
+    )
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected

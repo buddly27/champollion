@@ -9,9 +9,9 @@ from .helper import get_docstring
 
 #: Regular Expression pattern for data
 DATA_PATTERN = re.compile(
-    r"(?P<export>export +)?(?P<default>default +)?"
-    r"(?P<data_type>(const|let|var)) (?P<data_name>\w+) "
-    r"*= *(?P<data_value>[^;]+);"
+    r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
+    r"(?P<type>(const|let|var)) (?P<name>[\w_-]+) *= *"
+    r"(?P<value>(\((\n|.)+\) *=> *{.*}|\[(\n|.)+\]|{(\n|.)*}|\((\n|.)+\)|.+))"
 )
 
 
@@ -30,21 +30,29 @@ def get_data_environment(content, module_id):
     content, collapsed_content = collapse_all(content, filter_comment=True)
 
     for match in DATA_PATTERN.finditer(content):
-        data_id = ".".join([module_id, match.group("data_name")])
-        line_number = content[:match.start()].count("\n")+1
+        data_id = ".".join([module_id, match.group("name")])
 
-        value = match.group("data_value")
+        line_number = (
+            content[:match.start()].count("\n") +
+            match.group("start_regex").count("\n") + 1
+        )
+
+        value = match.group("value")
         if "{}" in value and line_number in collapsed_content.keys():
             value = value.replace("{}", collapsed_content[line_number])
+
+        # Do not keep semi-colon in value
+        if value.endswith(";"):
+            value = value[:-1]
 
         data_environment = {
             "id": data_id,
             "module_id": module_id,
             "exported": match.group("export") is not None,
             "default": match.group("default") is not None,
-            "name": match.group("data_name"),
+            "name": match.group("name"),
             "value": functools.reduce(_clean_value, value.split('\n')).strip(),
-            "type": match.group("data_type"),
+            "type": match.group("type"),
             "line_number": line_number,
             "description": get_docstring(line_number, lines)
         }
