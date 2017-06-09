@@ -10,7 +10,8 @@ from .helper import get_docstring
 #: Regular Expression pattern for classes
 CLASS_PATTERN = re.compile(
     r"(?P<export>export +)?(?P<default>default +)?"
-    r"(class +(?P<class_name>\w+)|const +(?P<data_name>\w+) *= *class +\w+)"
+    r"(class +(?P<class_name>\w+)|(const|let|var) +(?P<data_name>\w+) "
+    r"*= *class +\w+)"
     r"( +extends +(?P<mother_class>[\w._-]+))? *{"
 )
 

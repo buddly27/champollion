@@ -232,3 +232,79 @@ def test_get_class_environment(content):
             }
         },
     }
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "class AwesomeClass",
+            None
+        ),
+        (
+            "class AwesomeClass {}",
+            {
+                "export": None,
+                "default": None,
+                "class_name": "AwesomeClass",
+                "data_name": None,
+                "mother_class": None,
+            }
+        ),
+        (
+            "class Awesome_Class extends module.Mother-Class{}",
+            {
+                "export": None,
+                "default": None,
+                "class_name": "Awesome_Class",
+                "data_name": None,
+                "mother_class": "module.Mother-Class",
+            }
+        ),
+        (
+            "export default class AwesomeClass {}",
+            {
+                "export": "export ",
+                "default": "default ",
+                "class_name": "AwesomeClass",
+                "data_name": None,
+                "mother_class": None,
+            }
+        ),
+        (
+            "export const MyClass1= class AwesomeClass {}",
+            {
+                "export": "export ",
+                "default": None,
+                "class_name": None,
+                "data_name": "MyClass1",
+                "mother_class": None,
+            }
+        ),
+        (
+            "let MyClass1= class AwesomeClass {}",
+            {
+                "export": None,
+                "default": None,
+                "class_name": None,
+                "data_name": "MyClass1",
+                "mother_class": None,
+            }
+        ),
+    ],
+    ids=[
+        "invalid class",
+        "valid class",
+        "valid class with inheritance",
+        "valid class exported by default",
+        "valid class expression exported",
+        "another valid class expression",
+    ]
+)
+def test_class_pattern(content, expected):
+    """Match a class."""
+    match = champollion.parser.class_parser.CLASS_PATTERN.search(content)
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected
