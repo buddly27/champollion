@@ -31,8 +31,8 @@ CLASS_METHOD_ARROW_PATTERN = re.compile(
 #: Regular Expression pattern for class attribute
 CLASS_ATTRIBUTE_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?"
-    r"(?P<attribute_name>[\w._-]+) *= *"
-    r"(?P<attribute_value>(\[(\n|.)+\]|\((\n|.)+\) *=> *{}|\((\n|.)+\)|.+))"
+    r"(?P<name>[\w._-]+) *= *"
+    r"(?P<value>(\((\n|.)+\) *=> *{.*}|\[(\n|.)+\]|{(\n|.)*}|\((\n|.)+\)|.+))"
 )
 
 
@@ -182,12 +182,12 @@ def get_class_attribute_environment(content, class_id, line_number=0):
     content, collapsed_content = collapse_all(content, filter_comment=True)
 
     for match in CLASS_ATTRIBUTE_PATTERN.finditer(content):
-        attribute_id = ".".join([class_id, match.group("attribute_name")])
+        attribute_id = ".".join([class_id, match.group("name")])
         prefix = match.group("prefix")
         if prefix is not None:
             prefix = prefix.strip()
 
-        value = match.group("attribute_value")
+        value = match.group("value")
 
         _line_number = (
             content[:match.start()].count("\n") +
@@ -205,7 +205,7 @@ def get_class_attribute_environment(content, class_id, line_number=0):
             "id": attribute_id,
             "class_id": class_id,
             "module_id": class_id.rsplit(".", 1)[0],
-            "name": match.group("attribute_name"),
+            "name": match.group("name"),
             "prefix": prefix,
             "value": value,
             "line_number": _line_number+line_number,

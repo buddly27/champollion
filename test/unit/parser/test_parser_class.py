@@ -594,15 +594,57 @@ def test_class_method_arrow_pattern(content, expected):
         (
             "attribute_test1 = 42",
             {
-                "attribute_name": "attribute_test1",
-                "attribute_value": "42",
+                "name": "attribute_test1",
+                "value": "42",
                 "prefix": None,
                 "start_regex": ""
             }
+        ),
+        (
+            (
+                "static attribute_test2 = {\n"
+                "    key: 'value',\n"
+                "}"
+            ),
+            {
+                "name": "attribute_test2",
+                "value": (
+                    "{\n"
+                    "    key: 'value',\n"
+                    "}"
+                ),
+                "prefix": "static ",
+                "start_regex": ""
+            }
+        ),
+        (
+            (
+                "attribute_test3 = [\n"
+                "    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n"
+                "]"
+            ),
+            {
+                "name": "attribute_test3",
+                "value": (
+                    "[\n"
+                    "    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n"
+                    "]"
+                ),
+                "prefix": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            "const test = 'static attribute = 42'",
+            None
         )
+
     ],
     ids=[
         "valid attribute",
+        "valid static object attribute",
+        "valid static object attribute",
+        "invalid attribute string",
     ]
 )
 def test_class_attribute_pattern(content, expected):
