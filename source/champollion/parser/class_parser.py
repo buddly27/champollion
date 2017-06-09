@@ -30,8 +30,8 @@ CLASS_METHOD_ARROW_PATTERN = re.compile(
 
 #: Regular Expression pattern for class attribute
 CLASS_ATTRIBUTE_PATTERN = re.compile(
-    r"(?P<prefix>static +)?(?P<attribute_name>\w+) "
-    r"*= *(?P<attribute_value>[^;>]+);"
+    r"(\n|^) *(?P<prefix>static +)?(?P<attribute_name>[\w._-]+) *= *"
+    r"(?P<attribute_value>(\[(\n|.)+\]|\((\n|.)+\) *=> *{}|\((\n|.)+\)|.+))"
 )
 
 
@@ -73,7 +73,8 @@ def get_class_environment(content, module_id):
         class_id = ".".join([module_id, class_name])
 
         line_number = (
-            content[:match.start()].count("\n") + match.group().count("\n") + 1
+            content[:match.start()].count("\n") +
+            match.group().count("\n") + 1
         )
 
         method_environment = {}
@@ -174,8 +175,10 @@ def get_class_attribute_environment(content, class_id, line_number=0):
     environment = {}
 
     lines = content.split("\n")
-    content = filter_comments(content)
-    content = collapse_all(content)[0]
+
+    # The comment filter is made during the collapse content process to
+    # preserve the entire value (with semi-colons and docstrings!)
+    content, collapsed_content = collapse_all(content, filter_comment=True)
 
     for match in CLASS_ATTRIBUTE_PATTERN.finditer(content):
         attribute_id = ".".join([class_id, match.group("attribute_name")])
@@ -183,13 +186,19 @@ def get_class_attribute_environment(content, class_id, line_number=0):
         if prefix is not None:
             prefix = prefix.strip()
 
-        _line_number = content[:match.start()].count("\n")+1
+        value = match.group("attribute_value")
 
-        # As we collapsed all contexts to avoid noises, we need to get the
-        # value from the original data in case it represents an object.
-        match_in_line = CLASS_ATTRIBUTE_PATTERN.search(
-            "\n".join(lines[_line_number-1:])
+        _line_number = (
+            content[:match.start()].count("\n") +
+            match.group().count("\n") - value.count("\n") + 1
         )
+
+        if "{}" in value and _line_number in collapsed_content.keys():
+            value = value.replace("{}", collapsed_content[_line_number])
+
+        # Do not keep semi-colon in value
+        if value.endswith(";"):
+            value = value[:-1]
 
         attribute_environment = {
             "id": attribute_id,
@@ -197,7 +206,7 @@ def get_class_attribute_environment(content, class_id, line_number=0):
             "module_id": class_id.rsplit(".", 1)[0],
             "name": match.group("attribute_name"),
             "prefix": prefix,
-            "value": match_in_line.group("attribute_value"),
+            "value": value,
             "line_number": _line_number+line_number,
             "description": get_docstring(_line_number, lines)
         }

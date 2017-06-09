@@ -56,17 +56,10 @@ def content():
         "    }\n"
         "\n"
         "    /**\n"
-        "     * A first awesome method.\n"
+        "     * An awesome method.\n"
         "     */\n"
-        "    awesomeMethod1 = () => {\n"
-        "        console.log('Method 1 has been called');\n"
-        "    };\n"
-        "\n"
-        "    /**\n"
-        "     * A second awesome method.\n"
-        "     */\n"
-        "    awesomeMethod2(arg1, arg2) {\n"
-        "        console.log('Method 2 has been called');\n"
+        "    awesomeMethod(arg1, arg2) {\n"
+        "        console.log('Method has been called');\n"
         "    }\n"
         "\n"
         "    /**\n"
@@ -75,11 +68,6 @@ def content():
         "    static staticMethod() {\n"
         "        console.log('Static method has been called');\n"
         "    }\n"
-        "\n"
-        "    /**\n"
-        "     * A static attribute.\n"
-        "     */\n"
-        "    static attribute = 42;\n"
         "\n"
         "    /**\n"
         "     * A first arrow-type method.\n"
@@ -95,6 +83,27 @@ def content():
         "    anArrowType_method2 = arg => {\n"
         "        console.log('test2');\n"
         "    };\n"
+        "\n"
+        "    /**\n"
+        "     * A static attribute.\n"
+        "     */\n"
+        "    static attribute1 = 42;\n"
+        "\n"
+        "    /**\n"
+        "     * An object attribute.\n"
+        "     */\n"
+        "    attribute2 = {\n"
+        "        key1: 'value1',\n"
+        "        key2: 'value2',\n"
+        "    };\n"
+        "\n"
+        "    /**\n"
+        "     * A list attribute.\n"
+        "     */\n"
+        "    attribute3 = [\n"
+        "        'value1',\n"
+        "        'value2',\n"
+        "    ]\n"
         "}\n"
     )
 
@@ -202,25 +211,15 @@ def test_get_class_environment(content):
                         "    Keep the name awesome"
                     )
                 },
-                "test.module.AwesomeClass.awesomeMethod1": {
-                    "id": "test.module.AwesomeClass.awesomeMethod1",
+                "test.module.AwesomeClass.awesomeMethod": {
+                    "id": "test.module.AwesomeClass.awesomeMethod",
                     "class_id": "test.module.AwesomeClass",
                     "module_id": "test.module",
-                    "name": "awesomeMethod1",
-                    "prefix": None,
-                    "arguments": [],
-                    "line_number": 51,
-                    "description": "A first awesome method."
-                },
-                "test.module.AwesomeClass.awesomeMethod2": {
-                    "id": "test.module.AwesomeClass.awesomeMethod2",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "awesomeMethod2",
+                    "name": "awesomeMethod",
                     "prefix": None,
                     "arguments": ["arg1", "arg2"],
-                    "line_number": 58,
-                    "description": "A second awesome method."
+                    "line_number": 51,
+                    "description": "An awesome method."
                 },
                 "test.module.AwesomeClass.staticMethod": {
                     "id": "test.module.AwesomeClass.staticMethod",
@@ -229,7 +228,7 @@ def test_get_class_environment(content):
                     "name": "staticMethod",
                     "prefix": "static",
                     "arguments": [],
-                    "line_number": 65,
+                    "line_number": 58,
                     "description": "A static method."
                 },
                 "test.module.AwesomeClass.anArrowType_method1": {
@@ -239,7 +238,7 @@ def test_get_class_environment(content):
                     "name": "anArrowType_method1",
                     "prefix": None,
                     "arguments": ["arg1", "arg2 = true"],
-                    "line_number": 77,
+                    "line_number": 65,
                     "description": "A first arrow-type method."
                 },
                 "test.module.AwesomeClass.anArrowType_method2": {
@@ -249,21 +248,79 @@ def test_get_class_environment(content):
                     "name": "anArrowType_method2",
                     "prefix": None,
                     "arguments": ["arg"],
-                    "line_number": 85,
+                    "line_number": 73,
                     "description": "A second arrow-type method."
                 },
             },
             "attribute": {
-                "test.module.AwesomeClass.attribute": {
-                    "id": "test.module.AwesomeClass.attribute",
+                "test.module.AwesomeClass.attribute1": {
+                    "id": "test.module.AwesomeClass.attribute1",
                     "class_id": "test.module.AwesomeClass",
                     "module_id": "test.module",
-                    "name": "attribute",
+                    "name": "attribute1",
                     "prefix": "static",
                     "value": "42",
-                    "line_number": 72,
+                    "line_number": 80,
                     "description": "A static attribute."
-                }
+                },
+                "test.module.AwesomeClass.attribute2": {
+                    "id": "test.module.AwesomeClass.attribute2",
+                    "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
+                    "name": "attribute2",
+                    "prefix": None,
+                    "value": (
+                        "{\n"
+                        "        key1: 'value1',\n"
+                        "        key2: 'value2',\n"
+                        "    }"
+                    ),
+                    "line_number": 85,
+                    "description": "An object attribute."
+                },
+                "test.module.AwesomeClass.attribute3": {
+                    "id": "test.module.AwesomeClass.attribute3",
+                    "class_id": "test.module.AwesomeClass",
+                    "module_id": "test.module",
+                    "name": "attribute3",
+                    "prefix": None,
+                    "value": (
+                        "[\n"
+                        "        'value1',\n"
+                        "        'value2',\n"
+                        "    ]"
+                    ),
+                    "line_number": 93,
+                    "description": "A list attribute."
+                },
+                "test.module.AwesomeClass.anArrowType_method1": {
+                    "description": "A first arrow-type method.",
+                    "class_id": "test.module.AwesomeClass",
+                    "id": "test.module.AwesomeClass.anArrowType_method1",
+                    "line_number": 65,
+                    "module_id": "test.module",
+                    "name": "anArrowType_method1",
+                    "prefix": None,
+                    "value": (
+                        "(arg1, arg2 = true) => {\n"
+                        "        console.log('test1');\n"
+                        "    }"
+                    ),
+                },
+                "test.module.AwesomeClass.anArrowType_method2": {
+                    "description": "A second arrow-type method.",
+                    "class_id": "test.module.AwesomeClass",
+                    "id": "test.module.AwesomeClass.anArrowType_method2",
+                    "line_number": 73,
+                    "module_id": "test.module",
+                    "name": "anArrowType_method2",
+                    "prefix": None,
+                    "value": (
+                        "arg => {\n"
+                        "        console.log('test2');\n"
+                        "    }"
+                    ),
+                },
             },
         },
     }
@@ -509,6 +566,33 @@ def test_class_method_pattern(content, expected):
 def test_class_method_arrow_pattern(content, expected):
     """Match a class arrow-type method."""
     match = champollion.parser.class_parser.CLASS_METHOD_ARROW_PATTERN.search(
+        content
+    )
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "attribute_test1 = 42",
+            {
+                "attribute_name": "attribute_test1",
+                "attribute_value": "42",
+                "prefix": None
+            }
+        )
+    ],
+    ids=[
+        "valid attribute",
+    ]
+)
+def test_class_attribute_pattern(content, expected):
+    """Match a class attribute."""
+    match = champollion.parser.class_parser.CLASS_ATTRIBUTE_PATTERN.search(
         content
     )
     if expected is None:
