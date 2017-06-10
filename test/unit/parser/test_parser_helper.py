@@ -273,3 +273,548 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
     assert champollion.parser.helper.collapse_all(content) == (
         expected_content, expected_collapsed_content
     )
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "import defaultMember from \"module-name\"",
+            {
+                "defaultMember": {
+                    "id": "defaultMember",
+                    "module": "test.module.module-name",
+                    "name": "defaultMember",
+                    "alias": None,
+                    "partial": False
+                },
+            },
+        ),
+        (
+            (
+                "import name1 from \"./module-name1\"\n"
+                "import name2 from '../module-name2'\n"
+            ),
+            {
+                "name1": {
+                    "id": "name1",
+                    "module": "test.module.module-name1",
+                    "name": "name1",
+                    "alias": None,
+                    "partial": False
+                },
+                "name2": {
+                    "id": "name2",
+                    "module": "test.module-name2",
+                    "name": "name2",
+                    "alias": None,
+                    "partial": False
+                },
+            },
+        ),
+        (
+            (
+                "import {\n"
+                "    name_1 as alias_1,\n"
+                "    name_2,\n"
+                "    name_3,\n"
+                "} from 'module-name'"
+            ),
+            {
+                "alias_1": {
+                    "id": "alias_1",
+                    "module": "test.module.module-name",
+                    "name": "name_1",
+                    "alias": "alias_1",
+                    "partial": True
+                },
+                "name_2": {
+                    "id": "name_2",
+                    "module": "test.module.module-name",
+                    "name": "name_2",
+                    "alias": None,
+                    "partial": True
+                },
+                "name_3": {
+                    "id": "name_3",
+                    "module": "test.module.module-name",
+                    "name": "name_3",
+                    "alias": None,
+                    "partial": True
+                },
+            }
+        ),
+        (
+            (
+                "import {name1 as alias1}, name2, {name3} from \"./module\"\n"
+            ),
+            {
+                "alias1": {
+                    "id": "alias1",
+                    "module": "test.module.module",
+                    "name": "name1",
+                    "alias": "alias1",
+                    "partial": True
+                },
+                "name2": {
+                    "id": "name2",
+                    "module": "test.module.module",
+                    "name": "name2",
+                    "alias": None,
+                    "partial": False
+                },
+                "name3": {
+                    "id": "name3",
+                    "module": "test.module.module",
+                    "name": "name3",
+                    "alias": None,
+                    "partial": True
+                }
+            }
+        ),
+        (
+            (
+                "import * from 'module1'\n"
+                "import * from 'module2'"
+            ),
+            {
+                "WILDCARD_1": {
+                    "id": "*",
+                    "module": "test.module.module1",
+                    "name": "*",
+                    "alias": None,
+                    "partial": False
+                },
+                "WILDCARD_2": {
+                    "id": "*",
+                    "module": "test.module.module2",
+                    "name": "*",
+                    "alias": None,
+                    "partial": False
+                }
+            }
+        ),
+        (
+            "import * as name from 'module'",
+            {
+                "name": {
+                    "id": "name",
+                    "module": "test.module.module",
+                    "name": "*",
+                    "alias": "name",
+                    "partial": False
+                }
+            }
+        )
+
+    ],
+    ids=[
+        "import default from global module",
+        "import default from relative module",
+        "import partial on several lines with aliases",
+        "import default and partial on several lines with aliases",
+        "import wildcard",
+        "import wildcard with alias",
+    ]
+)
+def test_get_import_environment(content, expected):
+    assert champollion.parser.helper.get_import_environment(
+        content, "test.module"
+    ) == expected
+
+
+@pytest.mark.parametrize(
+    ("expression", "environment", "wildcards_number", "expected"),
+    [
+        (
+            "name", None, 0,
+            (
+                {
+                    "name": {
+                        "id": "name",
+                        "module": "test.module",
+                        "name": "name",
+                        "alias": None,
+                        "partial": False
+                    }
+                },
+                0
+            )
+        ),
+        (
+            "{name}", None, 0,
+            (
+                {
+                    "name": {
+                        "id": "name",
+                        "module": "test.module",
+                        "name": "name",
+                        "alias": None,
+                        "partial": True
+                    }
+                },
+                0
+            )
+        ),
+        (
+            "{name1 as alias1, name2 as alias2}, name3", None, 1,
+            (
+                {
+                    "alias1": {
+                        "id": "alias1",
+                        "module": "test.module",
+                        "name": "name1",
+                        "alias": "alias1",
+                        "partial": True
+                    },
+                    "alias2": {
+                        "id": "alias2",
+                        "module": "test.module",
+                        "name": "name2",
+                        "alias": "alias2",
+                        "partial": True
+                    },
+                    "name3": {
+                        "id": "name3",
+                        "module": "test.module",
+                        "name": "name3",
+                        "alias": None,
+                        "partial": False
+                    }
+                },
+                1
+            )
+        ),
+        (
+            "*", None, 0,
+            (
+                {
+                    "WILDCARD_1": {
+                        "id": "*",
+                        "module": "test.module",
+                        "name": "*",
+                        "alias": None,
+                        "partial": False
+                    }
+                },
+                1
+            )
+        ),
+        (
+            "{* as alias}", None, 0,
+            (
+                {
+                    "alias": {
+                        "id": "alias",
+                        "module": "test.module",
+                        "name": "*",
+                        "alias": "alias",
+                        "partial": True
+                    }
+                },
+                0
+            )
+        )
+    ],
+    ids=[
+        "simple default expression",
+        "simple partial expression",
+        "mixed partial and default binding with aliases",
+        "wildcard",
+        "aliased wildcard"
+    ]
+)
+def test_get_expression_environment(
+    expression, environment, wildcards_number, expected
+):
+    assert champollion.parser.helper.get_expression_environment(
+        expression, "test.module", environment, wildcards_number
+    ) == expected
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            (
+                "/** a description */\n"
+                "export {name}"
+            ),
+            {
+                2: {
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
+                    "export": {
+                        "name": {
+                            "id": "name",
+                            "name": "name",
+                            "module": None,
+                            "alias": None,
+                            "partial": True
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "/** a description */\n"
+                "export default name"
+            ),
+            {
+                2: {
+                    "description": "a description",
+                    "default": True,
+                    "line_number": 2,
+                    "export": {
+                        "name": {
+                            "id": "name",
+                            "name": "name",
+                            "module": None,
+                            "alias": None,
+                            "partial": False
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "/** a description */\n"
+                "export {name as alias}"
+            ),
+            {
+                2: {
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
+                    "export": {
+                        "alias": {
+                            "id": "alias",
+                            "name": "name",
+                            "module": None,
+                            "alias": "alias",
+                            "partial": True
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "/** a description */\n"
+                "export {name1 as alias1, name2 as alias2, name3};"
+            ),
+            {
+                2: {
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
+                    "export": {
+                        "alias1": {
+                            "id": "alias1",
+                            "name": "name1",
+                            "module": None,
+                            "alias": "alias1",
+                            "partial": True
+                        },
+                        "alias2": {
+                            "id": "alias2",
+                            "name": "name2",
+                            "module": None,
+                            "alias": "alias2",
+                            "partial": True
+                        },
+                        "name3": {
+                            "id": "name3",
+                            "name": "name3",
+                            "module": None,
+                            "alias": None,
+                            "partial": True
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "/** a description */\n"
+                "export name from 'module-name'"
+            ),
+            {
+                2: {
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
+                    "export": {
+                        "name": {
+                            "id": "name",
+                            "name": "name",
+                            "module": "test.module.module-name",
+                            "alias": None,
+                            "partial": False
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "/** a description */\n"
+                "export name1 from \"./module-name1\"\n"
+                "\n"
+                "/** another description */\n"
+                "export {name2 as alias2} from '../module-name2'\n"
+            ),
+            {
+                2: {
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
+                    "export": {
+                        "name1": {
+                            "id": "name1",
+                            "name": "name1",
+                            "module": "test.module.module-name1",
+                            "alias": None,
+                            "partial": False
+                        }
+                    }
+                },
+                5: {
+                    "description": "another description",
+                    "default": False,
+                    "line_number": 5,
+                    "export": {
+                        "alias2": {
+                            "id": "alias2",
+                            "name": "name2",
+                            "module": "test.module-name2",
+                            "alias": "alias2",
+                            "partial": True
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "export {\n"
+                "    name_1 as alias_1,\n"
+                "    name_2,\n"
+                "    name_3,\n"
+                "} from 'module-name'"
+            ),
+            {
+                1: {
+                    "description": None,
+                    "default": False,
+                    "line_number": 1,
+                    "export": {
+                        "alias_1": {
+                            "id": "alias_1",
+                            "name": "name_1",
+                            "module": "test.module.module-name",
+                            "alias": "alias_1",
+                            "partial": True
+                        },
+                        "name_2": {
+                            "id": "name_2",
+                            "name": "name_2",
+                            "module": "test.module.module-name",
+                            "alias": None,
+                            "partial": True
+                        },
+                        "name_3": {
+                            "id": "name_3",
+                            "name": "name_3",
+                            "module": "test.module.module-name",
+                            "alias": None,
+                            "partial": True
+                        }
+                    }
+                }
+            }
+        )
+    ],
+    ids=[
+        "export simple",
+        "export default simple",
+        "export simple aliased",
+        "export several elements with aliased",
+        "export default from global module",
+        "export default from relative module",
+        "export partial on several lines with aliases",
+    ]
+)
+def test_get_export_environment(content, expected):
+    assert champollion.parser.helper.get_export_environment(
+        content, "test.module"
+    ) == expected
+
+
+@pytest.mark.parametrize(
+    ("expression", "expected"),
+    [
+        (
+            "name1, name2, name3",
+            [
+                {
+                    "id": "name1",
+                    "name": "name1",
+                    "alias": None,
+                },
+                {
+                    "id": "name2",
+                    "name": "name2",
+                    "alias": None,
+                },
+                {
+                    "id": "name3",
+                    "name": "name3",
+                    "alias": None,
+                },
+            ]
+        ),
+        (
+            "name as alias",
+            [
+                {
+                    "id": "alias",
+                    "name": "name",
+                    "alias": "alias",
+                }
+            ]
+        ),
+        (
+            "name1, * as name2",
+            [
+                {
+                    "id": "name1",
+                    "name": "name1",
+                    "alias": None,
+                },
+                {
+                    "id": "name2",
+                    "name": "*",
+                    "alias": "name2",
+                }
+            ]
+        ),
+        (
+            "name = 42",
+            []
+        )
+    ],
+    ids=[
+        "three elements",
+        "single element with alias",
+        "two elements with wildcard",
+        "invalid",
+    ]
+)
+def test_get_binding_environment(expression, expected):
+    assert champollion.parser.helper.get_binding_environment(
+        expression
+    ) == expected
