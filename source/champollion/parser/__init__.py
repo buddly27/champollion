@@ -50,7 +50,7 @@ def get_environment(path):
         ]
 
         for _file in files:
-            file_id = "/".join(root_folders + [_file])
+            file_id = os.sep.join(root_folders + [_file])
             file_path = os.path.join(root, _file)
 
             module_id, environment = get_module_environment(
