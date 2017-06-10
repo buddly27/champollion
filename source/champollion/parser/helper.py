@@ -30,7 +30,7 @@ EXPORTED_ELEMENT_PATTERN = re.compile(
 
 #: Regular Expression pattern for binding element
 BINDING_ELEMENT_PATTERN = re.compile(
-    r"^(?P<name>(\w+|\*))( +as +(?P<alias>\w+))?$"
+    r"^(?P<name>([\w();]+|\*))( +as +(?P<alias>\w+))?$"
 )
 
 
@@ -332,14 +332,24 @@ def get_binding_environment(expression):
         if match is None:
             continue
 
-        element_id = match.group("alias")
-        if element_id is None:
-            element_id = match.group("name")
+        name = match.group("name")
+        alias = match.group("alias")
+
+        # Remove trailing semi-colons if necessary
+        if name.endswith(";"):
+            name = name[:-1]
+
+        if alias is not None:
+            if alias.endswith(";"):
+                alias = alias[:-1]
+
+        # Determine element ID if an alias is set
+        element_id = alias if alias is not None else name
 
         _module = {
             "id": element_id,
-            "name": match.group("name"),
-            "alias": match.group("alias")
+            "name": name,
+            "alias": alias
         }
         environments.append(_module)
 
