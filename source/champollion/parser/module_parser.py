@@ -27,7 +27,9 @@ def get_module_environment(file_id, files, environment=None):
         module_name = guess_module_name(
             hierarchy[-1],
             hierarchy_folders=hierarchy[:-1],
-            module_names=environment["module"].keys()
+            module_names=[
+                _module["name"] for _module in environment["module"].values()
+            ]
         )
 
     elif "index.js" in files:
@@ -36,7 +38,9 @@ def get_module_environment(file_id, files, environment=None):
         module_name = guess_module_name(
             ".".join([hierarchy[-1], name]),
             hierarchy_folders=hierarchy[:-1],
-            module_names=environment["module"].keys()
+            module_names=[
+                _module["name"] for _module in environment["module"].values()
+            ]
         )
 
     else:
