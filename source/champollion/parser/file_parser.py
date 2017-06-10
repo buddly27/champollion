@@ -14,7 +14,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
 
     *module_id* represent the ID of the module.
 
-    Update the *environment* is available and return it as-is if the file
+    Update the *environment* if available and return it as-is if the file
     is not readable.
 
     Return dictionary in the form of::
