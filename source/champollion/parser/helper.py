@@ -30,7 +30,8 @@ EXPORTED_ELEMENT_PATTERN = re.compile(
 
 #: Regular Expression pattern for binding element
 BINDING_ELEMENT_PATTERN = re.compile(
-    r"^(?P<name>([\w();]+|\*))( +as +(?P<alias>\w+))?$"
+    r"^((?P<name>([\w;]+|\*))|\w+\(.*\)\((?P<wrapped_name>\w+)\);?)"
+    r"( +as +(?P<alias>\w+))?$"
 )
 
 
@@ -171,10 +172,12 @@ def get_docstring(line_number, lines):
             return
 
 
-def get_import_environment(content, file_id):
+def get_import_environment(content, file_id, module_id):
     """Return import environment from *content*.
 
     *file_id* represent the ID of the file.
+
+    *module_id* represent the ID of the module.
 
     """
     environment = {}
@@ -190,7 +193,7 @@ def get_import_environment(content, file_id):
         element_raw = match.group("expression").replace("\n", "")
 
         _env, wildcards_number = get_expression_environment(
-            element_raw, from_module_id,
+            element_raw, module_id, from_module_id,
             wildcards_number=wildcards_number,
             environment=environment
         )
@@ -199,10 +202,12 @@ def get_import_environment(content, file_id):
     return environment
 
 
-def get_export_environment(content, file_id):
+def get_export_environment(content, file_id, module_id):
     """Return export environment from *content*.
 
     *file_id* represent the ID of the file.
+
+    *module_id* represent the ID of the module.
 
     """
     environment = {}
@@ -232,7 +237,7 @@ def get_export_environment(content, file_id):
         element_raw = expression.replace("\n", "")
 
         _env, wildcards_number = get_expression_environment(
-            element_raw, from_module_id,
+            element_raw, module_id, from_module_id,
             wildcards_number=wildcards_number,
         )
 
@@ -248,11 +253,14 @@ def get_export_environment(content, file_id):
 
 
 def get_expression_environment(
-    expression, module_id=None, environment=None, wildcards_number=0
+    expression, module_id, from_module_id=None, environment=None,
+    wildcards_number=0
 ):
     """Return tuple of *expression* environment and updated *wildcards_number*.
 
-    *module_id* is the optional module id from which the expression can
+    *module_id* represent the ID of the module.
+
+    *from_module_id* is the optional module id from which the expression can
     be resolved.
 
     Update the *environment* if available and return it as-is if the file
@@ -272,7 +280,7 @@ def get_expression_environment(
             element_id = _env["id"]
             environment[element_id] = _env
             environment[element_id].update(
-                {"partial": True, "module": module_id}
+                {"partial": True, "module": from_module_id}
             )
 
         # remove partial imports from expression
@@ -289,9 +297,13 @@ def get_expression_environment(
             wildcards_number += 1
             element_id = "WILDCARD_{0}".format(wildcards_number)
 
+        element_id = "{module}.{id}".format(
+            module=module_id, id=element_id
+        )
+
         environment[element_id] = _env
         environment[element_id].update(
-            {"partial": False, "module": module_id}
+            {"partial": False, "module": from_module_id}
         )
 
     return environment, wildcards_number
@@ -332,6 +344,12 @@ def get_binding_environment(expression):
 
         name = match.group("name")
         alias = match.group("alias")
+
+        # If the expression is a wrapper function, we try to guess which element
+        # is wrapped with the regular expression
+        # (e.g. 'wrapper()(WrappedElement)')
+        if name is None:
+            name = match.group("wrapped_name")
 
         # Remove trailing semi-colons if necessary
         if name.endswith(";"):

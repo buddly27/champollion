@@ -59,7 +59,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     except (IOError, OSError):
         return environment
 
-    export_environment = get_export_environment(content, file_id)
+    export_environment = get_export_environment(content, file_id, module_id)
 
     for _env_id, _env in get_class_environment(content, module_id).items():
         _update_environment_from_exported_elements(_env, export_environment)
@@ -73,7 +73,10 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
         _update_environment_from_exported_elements(_env, export_environment)
         file_environment["data"][_env_id] = _env
 
-    file_environment["import"] = get_import_environment(content, file_id)
+    file_environment["import"] = get_import_environment(
+        content, file_id, module_id
+    )
+
     file_environment["export"] = export_environment
     file_environment["content"] = content
 
@@ -139,11 +142,11 @@ def _update_environment_from_exported_elements(environment, export_environment):
         Both input environments are mutated.
 
     """
-    name = environment["name"]
+    env_id = environment["id"]
 
     # Update the environment from exported environment if necessary
-    if name in export_environment.keys() and not environment["exported"]:
-        expression_environment = export_environment[name]
+    if env_id in export_environment.keys() and not environment["exported"]:
+        expression_environment = export_environment[env_id]
 
         environment["exported"] = True
         environment["default"] = expression_environment["default"]
@@ -155,5 +158,4 @@ def _update_environment_from_exported_elements(environment, export_environment):
 
         # Once the environment is updated, we can remove the key from the
         # exported environment to prevent displaying it twice.
-        del export_environment[name]
-
+        del export_environment[env_id]
