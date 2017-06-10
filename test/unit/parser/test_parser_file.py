@@ -23,7 +23,9 @@ def test_get_file_environment_empty(request):
                 "content": "",
                 "class": {},
                 "function": {},
-                "data": {}
+                "data": {},
+                "export": {},
+                "import": {}
             }
         },
         "class": {},
@@ -86,7 +88,9 @@ def test_get_file_environment_empty_with_initial_environment(request):
                 "content": "",
                 "class": {},
                 "function": {},
-                "data": {}
+                "data": {},
+                "export": {},
+                "import": {}
             }
         },
         "module": {
