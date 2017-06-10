@@ -541,19 +541,15 @@ def test_get_expression_environment(
                 "export {name}"
             ),
             {
-                2: {
+                "name": {
+                    "id": "name",
+                    "name": "name",
+                    "module": None,
+                    "alias": None,
+                    "partial": True,
                     "description": "a description",
                     "default": False,
                     "line_number": 2,
-                    "export": {
-                        "name": {
-                            "id": "name",
-                            "name": "name",
-                            "module": None,
-                            "alias": None,
-                            "partial": True
-                        }
-                    }
                 }
             }
         ),
@@ -563,19 +559,15 @@ def test_get_expression_environment(
                 "export default name"
             ),
             {
-                2: {
+                "name": {
+                    "id": "name",
+                    "name": "name",
+                    "module": None,
+                    "alias": None,
+                    "partial": False,
                     "description": "a description",
                     "default": True,
                     "line_number": 2,
-                    "export": {
-                        "name": {
-                            "id": "name",
-                            "name": "name",
-                            "module": None,
-                            "alias": None,
-                            "partial": False
-                        }
-                    }
                 }
             }
         ),
@@ -585,19 +577,15 @@ def test_get_expression_environment(
                 "export {name as alias}"
             ),
             {
-                2: {
+                "alias": {
+                    "id": "alias",
+                    "name": "name",
+                    "module": None,
+                    "alias": "alias",
+                    "partial": True,
                     "description": "a description",
                     "default": False,
                     "line_number": 2,
-                    "export": {
-                        "alias": {
-                            "id": "alias",
-                            "name": "name",
-                            "module": None,
-                            "alias": "alias",
-                            "partial": True
-                        }
-                    }
                 }
             }
         ),
@@ -607,33 +595,35 @@ def test_get_expression_environment(
                 "export {name1 as alias1, name2 as alias2, name3};"
             ),
             {
-                2: {
+                "alias1": {
+                    "id": "alias1",
+                    "name": "name1",
+                    "module": None,
+                    "alias": "alias1",
+                    "partial": True,
                     "description": "a description",
                     "default": False,
                     "line_number": 2,
-                    "export": {
-                        "alias1": {
-                            "id": "alias1",
-                            "name": "name1",
-                            "module": None,
-                            "alias": "alias1",
-                            "partial": True
-                        },
-                        "alias2": {
-                            "id": "alias2",
-                            "name": "name2",
-                            "module": None,
-                            "alias": "alias2",
-                            "partial": True
-                        },
-                        "name3": {
-                            "id": "name3",
-                            "name": "name3",
-                            "module": None,
-                            "alias": None,
-                            "partial": True
-                        }
-                    }
+                },
+                "alias2": {
+                    "id": "alias2",
+                    "name": "name2",
+                    "module": None,
+                    "alias": "alias2",
+                    "partial": True,
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
+                },
+                "name3": {
+                    "id": "name3",
+                    "name": "name3",
+                    "module": None,
+                    "alias": None,
+                    "partial": True,
+                    "description": "a description",
+                    "default": False,
+                    "line_number": 2,
                 }
             }
         ),
@@ -643,19 +633,15 @@ def test_get_expression_environment(
                 "export name from 'module-name'"
             ),
             {
-                2: {
+                "name": {
+                    "id": "name",
+                    "name": "name",
+                    "module": "test.module.module-name",
+                    "alias": None,
+                    "partial": False,
                     "description": "a description",
                     "default": False,
                     "line_number": 2,
-                    "export": {
-                        "name": {
-                            "id": "name",
-                            "name": "name",
-                            "module": "test.module.module-name",
-                            "alias": None,
-                            "partial": False
-                        }
-                    }
                 }
             }
         ),
@@ -668,33 +654,25 @@ def test_get_expression_environment(
                 "export {name2 as alias2} from '../module-name2'\n"
             ),
             {
-                2: {
+                "name1": {
+                    "id": "name1",
+                    "name": "name1",
+                    "module": "test.module.module-name1",
+                    "alias": None,
+                    "partial": False,
                     "description": "a description",
                     "default": False,
                     "line_number": 2,
-                    "export": {
-                        "name1": {
-                            "id": "name1",
-                            "name": "name1",
-                            "module": "test.module.module-name1",
-                            "alias": None,
-                            "partial": False
-                        }
-                    }
                 },
-                5: {
+                "alias2": {
+                    "id": "alias2",
+                    "name": "name2",
+                    "module": "test.module-name2",
+                    "alias": "alias2",
+                    "partial": True,
                     "description": "another description",
                     "default": False,
                     "line_number": 5,
-                    "export": {
-                        "alias2": {
-                            "id": "alias2",
-                            "name": "name2",
-                            "module": "test.module-name2",
-                            "alias": "alias2",
-                            "partial": True
-                        }
-                    }
                 }
             }
         ),
@@ -707,33 +685,35 @@ def test_get_expression_environment(
                 "} from 'module-name'"
             ),
             {
-                1: {
+                "alias_1": {
+                    "id": "alias_1",
+                    "name": "name_1",
+                    "module": "test.module.module-name",
+                    "alias": "alias_1",
+                    "partial": True,
                     "description": None,
                     "default": False,
                     "line_number": 1,
-                    "export": {
-                        "alias_1": {
-                            "id": "alias_1",
-                            "name": "name_1",
-                            "module": "test.module.module-name",
-                            "alias": "alias_1",
-                            "partial": True
-                        },
-                        "name_2": {
-                            "id": "name_2",
-                            "name": "name_2",
-                            "module": "test.module.module-name",
-                            "alias": None,
-                            "partial": True
-                        },
-                        "name_3": {
-                            "id": "name_3",
-                            "name": "name_3",
-                            "module": "test.module.module-name",
-                            "alias": None,
-                            "partial": True
-                        }
-                    }
+                },
+                "name_2": {
+                    "id": "name_2",
+                    "name": "name_2",
+                    "module": "test.module.module-name",
+                    "alias": None,
+                    "partial": True,
+                    "description": None,
+                    "default": False,
+                    "line_number": 1,
+                },
+                "name_3": {
+                    "id": "name_3",
+                    "name": "name_3",
+                    "module": "test.module.module-name",
+                    "alias": None,
+                    "partial": True,
+                    "description": None,
+                    "default": False,
+                    "line_number": 1,
                 }
             }
         )

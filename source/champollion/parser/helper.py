@@ -238,12 +238,13 @@ def get_export_environment(content, module_id):
             wildcards_number=wildcards_number,
         )
 
-        environment[line_number] = {
-            "description": get_docstring(line_number, lines),
-            "line_number": line_number,
-            "default": match.group("default") is not None,
-            "export": _env
-        }
+        for _env_id, _sub_env in _env.items():
+            environment[_env_id] = {
+                "description": get_docstring(line_number, lines),
+                "line_number": line_number,
+                "default": match.group("default") is not None,
+            }
+            environment[_env_id].update(_sub_env)
 
     return environment
 
