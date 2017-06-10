@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 import pytest
+import os
 
 import champollion.parser.helper
 
@@ -419,7 +420,7 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
 )
 def test_get_import_environment(content, expected):
     assert champollion.parser.helper.get_import_environment(
-        content, "test.module"
+        content, os.sep.join(["test", "module"])
     ) == expected
 
 
@@ -730,7 +731,7 @@ def test_get_expression_environment(
 )
 def test_get_export_environment(content, expected):
     assert champollion.parser.helper.get_export_environment(
-        content, "test.module"
+        content, os.sep.join(["test", "module"])
     ) == expected
 
 

@@ -171,20 +171,19 @@ def get_docstring(line_number, lines):
             return
 
 
-def get_import_environment(content, module_id):
+def get_import_environment(content, file_id):
     """Return import environment from *content*.
 
-    *module_id* represent the ID of the module.
+    *file_id* represent the ID of the file.
 
     """
     environment = {}
 
-    module_path = module_id.replace(".", os.sep)
     wildcards_number = 0
 
     for match in IMPORTED_ELEMENT_PATTERN.finditer(content):
         from_module_path = os.path.normpath(
-            os.path.join(module_path, match.group("module"))
+            os.path.join(file_id, match.group("module"))
         )
         from_module_id = from_module_path.replace(os.sep, ".")
 
@@ -200,15 +199,14 @@ def get_import_environment(content, module_id):
     return environment
 
 
-def get_export_environment(content, module_id):
+def get_export_environment(content, file_id):
     """Return export environment from *content*.
 
-    *module_id* represent the ID of the module.
+    *file_id* represent the ID of the file.
 
     """
     environment = {}
 
-    module_path = module_id.replace(".", os.sep)
     wildcards_number = 0
 
     lines = content.split("\n")
@@ -223,7 +221,7 @@ def get_export_environment(content, module_id):
 
         if match.group("module") is not None:
             from_module_path = os.path.normpath(
-                os.path.join(module_path, match.group("module"))
+                os.path.join(file_id, match.group("module"))
             )
             from_module_id = from_module_path.replace(os.sep, ".")
 
