@@ -2,7 +2,7 @@
 
 from sphinx.domains.javascript import JSObject
 
-from champollion.renderer import RSTRenderer
+import rst_generator
 
 
 class BaseDirective(JSObject):
@@ -70,28 +70,28 @@ class BaseDirective(JSObject):
         is_default = environment["default"]
 
         if exported and is_default and not force_partial_import:
-            return RSTRenderer.rst_string(
+            return rst_generator.rst_string(
                 "``import {name} from \"{module}\"``\n".format(
                     name=name, module=module_name
                 )
             )
 
         if exported and (not is_default or force_partial_import):
-            return RSTRenderer.rst_string(
+            return rst_generator.rst_string(
                 "``import {{{name}}} from \"{module}\"``\n".format(
                     name=name, module=module_name
                 )
             )
 
-        return RSTRenderer.rst_string()
+        return rst_generator.rst_string()
 
     def _generate_description(self, environment):
         """Return the `StringList` description.
         """
         description = environment["description"]
 
-        content = RSTRenderer.rst_string()
+        content = rst_generator.rst_string()
         if description:
-            content += RSTRenderer.rst_string(description)
+            content += rst_generator.rst_string(description)
 
         return content
