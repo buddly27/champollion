@@ -12,14 +12,14 @@ FUNCTION_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
     r"function *(?P<generator>\* *)?(?P<function_name>[\w_-]+)? "
-    r"*\([\n ]*(?P<arguments>.*)[\n ]*\) *{",
+    r"*\([\n ]*(?P<arguments>.*?)[\n ]*\) *{",
 )
 
 #: Regular Expression pattern for arrow functions
 FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(const|let|var) (?P<function_name>\w+) *= *"
-    r"(\([\n ]*(?P<arguments>.*)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
+    r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
     r"=> *{"
 )
 

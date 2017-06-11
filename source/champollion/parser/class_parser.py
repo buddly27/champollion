@@ -18,13 +18,13 @@ CLASS_PATTERN = re.compile(
 #: Regular Expression pattern for class methods
 CLASS_METHOD_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|get|set) +)?"
-    r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*)[\n ]*\) *{"
+    r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*?)[\n ]*\) *{"
 )
 
 #: Regular Expression pattern for class arrow methods
 CLASS_METHOD_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
-    r"(\([\n ]*(?P<arguments>.*)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
+    r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
     r"=> *{"
 )
 
@@ -32,7 +32,8 @@ CLASS_METHOD_ARROW_PATTERN = re.compile(
 CLASS_ATTRIBUTE_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?"
     r"(?P<name>[\w._-]+) *= *"
-    r"(?P<value>(\((\n|.)+\) *=> *{.*}|\[(\n|.)+\]|{(\n|.)*}|\((\n|.)+\)|.+))"
+    r"(?P<value>(\((\n|.)*?\) *=> *{.*?}|\[(\n|.)*?\]|{(\n|.)*?}|"
+    r"\((\n|.)*?\)|.+))"
 )
 
 
@@ -193,6 +194,8 @@ def get_class_attribute_environment(content, class_id, line_number=0):
             content[:match.start()].count("\n") +
             match.group("start_regex").count("\n") + 1
         )
+
+        print (value)
 
         if "{}" in value and _line_number in collapsed_content.keys():
             value = value.replace("{}", collapsed_content[_line_number])
