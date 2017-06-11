@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 from sphinx import addnodes
+import docutils.parsers.rst.directives
 
 from .base_directive import BaseDirective
 
@@ -19,15 +20,24 @@ class AutoFunctionDirective(BaseDirective):
     #: Define the Object type
     objtype = "function"
 
+    #: function options
+    option_spec = {
+        "alias": docutils.parsers.rst.directives.unchanged_required,
+        "module-alias": docutils.parsers.rst.directives.unchanged_required,
+        "force-partial-import": lambda x: True,
+    }
+
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        name = env["name"]
+        name = self.options.get("alias", env["name"])
         module_id = env["module_id"]
-        module_name = module_env[module_id]["name"]
+        module_name = self.options.get(
+            "module-alias", module_env[module_id]["name"]
+        )
 
         node["type"] = "function"
         node["id"] = env["id"]
@@ -57,6 +67,8 @@ class AutoFunctionDirective(BaseDirective):
         module_env = self.state.document.settings.env.module_environment
 
         if not env["anonymous"]:
-            self.content = self._generate_import_statement(env, module_env)
+            self.content = self._generate_import_statement(
+                env, module_env, self.options.get("force-partial-import")
+            )
 
         self.content += self._generate_description(env)

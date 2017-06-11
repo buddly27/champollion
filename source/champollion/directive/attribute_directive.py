@@ -42,5 +42,4 @@ class AutoAttributeDirective(BaseDirective):
         """Compute the description.
         """
         env = self.state.document.settings.env.element_environment
-
         self.content = self._generate_description(env)

@@ -12,7 +12,8 @@ class RSTRenderer(object):
     @staticmethod
     def get_rst_class_elements(
         environment, module_name, whitelist_names=None,
-        undoc_members=False, private_members=False, rst_elements=None
+        undoc_members=False, private_members=False,
+        force_partial_import=False, rst_elements=None
     ):
         """Return :term:`reStructuredText` from class elements within
         *environment*.
@@ -28,6 +29,9 @@ class RSTRenderer(object):
 
         *private_members* indicate whether elements starting with an underscore
         should be displayed.
+
+        *force_partial_import* indicate whether the import statement should
+        force the partial import display if necessary.
 
         *rst_elements* can be an initial dictionary that will be updated and
         returned.
@@ -47,12 +51,17 @@ class RSTRenderer(object):
 
             if whitelist_names is None or name in whitelist_names:
                 line_number = class_environment["line_number"]
+
+                extra_options = []
+                if force_partial_import:
+                    extra_options = [":force-partial-import:"]
+
                 rst_element = RSTRenderer.rst_generate(
                     directive="autoclass",
                     element_id=class_environment["id"],
                     alias=class_environment["name"],
-                    module_alias=module_name
-
+                    module_alias=module_name,
+                    extra_options=extra_options
                 )
                 rst_elements[line_number] = [rst_element]
 
@@ -107,7 +116,6 @@ class RSTRenderer(object):
                 rst_element = RSTRenderer.rst_generate(
                     directive="autoattribute",
                     element_id=attr_environment["id"],
-
                 )
                 rst_elements[line_number] = [rst_element]
 
@@ -157,7 +165,6 @@ class RSTRenderer(object):
                 rst_element = RSTRenderer.rst_generate(
                     directive="automethod",
                     element_id=method_environment["id"],
-
                 )
                 rst_elements[line_number] = [rst_element]
 
@@ -166,7 +173,8 @@ class RSTRenderer(object):
     @staticmethod
     def get_rst_function_elements(
         environment, module_name, whitelist_names=None,
-        undoc_members=False, private_members=False, rst_elements=None
+        undoc_members=False, private_members=False,
+        force_partial_import=False, rst_elements=None
     ):
         """Return :term:`reStructuredText` from function elements within
         *environment*.
@@ -182,6 +190,9 @@ class RSTRenderer(object):
 
         *private_members* indicate whether elements starting with an underscore
         should be displayed.
+
+        *force_partial_import* indicate whether the import statement should
+        force the partial import display if necessary.
 
         *rst_elements* can be an initial dictionary that will be updated and
         returned.
@@ -201,12 +212,17 @@ class RSTRenderer(object):
 
             if whitelist_names is None or name in whitelist_names:
                 line_number = function_environment["line_number"]
+
+                extra_options = []
+                if force_partial_import:
+                    extra_options = [":force-partial-import:"]
+
                 rst_element = RSTRenderer.rst_generate(
                     directive="autofunction",
                     element_id=function_environment["id"],
                     alias=function_environment["name"],
-                    module_alias=module_name
-
+                    module_alias=module_name,
+                    extra_options=extra_options
                 )
                 rst_elements[line_number] = [rst_element]
 
@@ -215,7 +231,8 @@ class RSTRenderer(object):
     @staticmethod
     def get_rst_data_elements(
         environment, module_name, whitelist_names=None, blacklist_ids=None,
-        undoc_members=False, private_members=False, rst_elements=None,
+        undoc_members=False, private_members=False,
+        force_partial_import=False, rst_elements=None,
     ):
         """Return :term:`reStructuredText` from data elements within
         *environment*.
@@ -234,6 +251,9 @@ class RSTRenderer(object):
 
         *private_members* indicate whether elements starting with an underscore
         should be displayed.
+
+        *force_partial_import* indicate whether the import statement should
+        force the partial import display if necessary.
 
         *rst_elements* can be an initial dictionary that will be updated and
         returned.
@@ -261,12 +281,17 @@ class RSTRenderer(object):
 
             if whitelist_names is None or name in whitelist_names:
                 line_number = data_environment["line_number"]
+
+                extra_options = []
+                if force_partial_import:
+                    extra_options = [":force-partial-import:"]
+
                 rst_element = RSTRenderer.rst_generate(
                     directive="autodata",
                     element_id=data_environment["id"],
                     alias=data_environment["name"],
-                    module_alias=module_name
-
+                    module_alias=module_name,
+                    extra_options=extra_options
                 )
                 rst_elements[line_number] = [rst_element]
 
@@ -373,7 +398,8 @@ class RSTRenderer(object):
                     directive="autoclass",
                     element_id=class_env["id"],
                     alias=alias,
-                    module_alias=module_name
+                    module_alias=module_name,
+                    extra_options=[":force-partial-import:"]
                 )
 
         for function_env in file_environment["function"].values():
@@ -382,7 +408,8 @@ class RSTRenderer(object):
                     directive="autofunction",
                     element_id=function_env["id"],
                     alias=alias,
-                    module_alias=module_name
+                    module_alias=module_name,
+                    extra_options=[":force-partial-import:"]
                 )
 
         for data_env in file_environment["data"].values():
@@ -391,12 +418,13 @@ class RSTRenderer(object):
                     directive="autodata",
                     element_id=data_env["id"],
                     alias=alias,
-                    module_alias=module_name
+                    module_alias=module_name,
+                    extra_options=[":force-partial-import:"]
                 )
 
     @staticmethod
     def get_rst_name_from_file_environment(
-        name, file_environment, alias, module_name
+        name, file_environment, alias, module_name,
     ):
         """Return :term:`reStructuredText` element in *file_environment* from
         *name*.
@@ -417,7 +445,8 @@ class RSTRenderer(object):
                     directive="autoclass",
                     element_id=class_env["id"],
                     alias=alias,
-                    module_alias=module_name
+                    module_alias=module_name,
+                    extra_options=[":force-partial-import:"]
                 )
 
         for function_env in file_environment["function"].values():
@@ -426,7 +455,8 @@ class RSTRenderer(object):
                     directive="autofunction",
                     element_id=function_env["id"],
                     alias=alias,
-                    module_alias=module_name
+                    module_alias=module_name,
+                    extra_options=[":force-partial-import:"]
                 )
 
         for data_env in file_environment["data"].values():
@@ -435,7 +465,8 @@ class RSTRenderer(object):
                     directive="autodata",
                     element_id=data_env["id"],
                     alias=alias,
-                    module_alias=module_name
+                    module_alias=module_name,
+                    extra_options=[":force-partial-import:"]
                 )
 
     @staticmethod
@@ -443,7 +474,7 @@ class RSTRenderer(object):
         directive, element_id, alias=None, module_alias=None,
         extra_options=None
     ):
-        """Generate :term:`reStructuredText` for *directive* and *element_id*.
+        """Generate `StringList` from *directive* and *element_id*.
 
         *directive* is one of the directive added to the :term:`Javascript`
         domain by this sphinx extension.
@@ -482,7 +513,7 @@ class RSTRenderer(object):
             )
 
         element_rst += "\n"
-        return element_rst
+        return StringList(element_rst.split("\n"))
 
     @staticmethod
     def rst_string(expression=""):

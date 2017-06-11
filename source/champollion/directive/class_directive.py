@@ -1,7 +1,11 @@
 # :coding: utf-8
 
+import collections
+
 from sphinx import addnodes
-from docutils.statemachine import StringList
+import docutils.parsers.rst.directives
+
+from champollion.renderer import RSTRenderer
 
 from .base_directive import BaseDirective
 
@@ -33,6 +37,9 @@ class AutoClassDirective(BaseDirective):
         "skip-constructor": lambda x: True,
         "undoc-members": lambda x: True,
         "private-members": lambda x: True,
+        "alias": docutils.parsers.rst.directives.unchanged_required,
+        "module-alias": docutils.parsers.rst.directives.unchanged_required,
+        "force-partial-import": lambda x: True,
     }
 
     def handle_signature(self, signature, node):
@@ -41,9 +48,11 @@ class AutoClassDirective(BaseDirective):
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        name = env["name"]
+        name = self.options.get("alias", env["name"])
         module_id = env["module_id"]
-        module_name = module_env[module_id]["name"]
+        module_name = self.options.get(
+            "module-alias", module_env[module_id]["name"]
+        )
 
         node["type"] = "class"
         node["id"] = env["id"]
@@ -69,7 +78,9 @@ class AutoClassDirective(BaseDirective):
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        self.content = self._generate_import_statement(env, module_env)
+        self.content = self._generate_import_statement(
+            env, module_env, self.options.get("force-partial-import")
+        )
         self.content += self._generate_description(env)
 
         # Automatic boolean options
@@ -87,57 +98,34 @@ class AutoClassDirective(BaseDirective):
         )
 
         members = self.options.get("members", "members" in options)
-        if not members:
-            return
+        if members:
+            rst_elements = {}
 
-        nested_elements = {}
-
-        # Gather class attributes
-        for attribute_environment in env["attribute"].values():
-            # As a method can also be a variable, use the method directive
-            # by default when available
-            if attribute_environment["id"] in env["method"].keys():
-                continue
-
-            name = attribute_environment["name"]
-            description = attribute_environment["description"]
-            if description is None and not undoc_members:
-                continue
-
-            if name.startswith("_") and not private_members:
-                continue
-
-            if members is True or name in members:
-                line_number = attribute_environment["line_number"]
-                nested_elements[line_number] = (
-                    "autoattribute", attribute_environment["id"]
-                )
-
-        # Gather class methods
-        for method_environment in env["method"].values():
-            name = method_environment["name"]
-            if name == "constructor" and skip_constructor:
-                continue
-
-            description = method_environment["description"]
-            if description is None and not undoc_members:
-                continue
-
-            if name.startswith("_") and not private_members:
-                continue
-
-            if members is True or name in members:
-                line_number = method_environment["line_number"]
-                nested_elements[line_number] = (
-                    "automethod", method_environment["id"]
-                )
-
-        # Add attributes and methods to content while respecting the line order
-        for line_number in sorted(nested_elements.keys()):
-            directive, element_id = nested_elements[line_number]
-            element_rst = (
-                "\n.. js:{directive}:: {id}\n\n".format(
-                    directive=directive, id=element_id
-                )
+            whitelist = (
+                members if isinstance(members, collections.Iterable) else None
             )
-            self.content += StringList(element_rst.split("\n"))
+
+            # Gather class attributes
+            rst_elements = RSTRenderer.get_rst_attribute_elements(
+                env,
+                whitelist_names=whitelist,
+                blacklist_ids=env["method"].keys(),
+                undoc_members=undoc_members,
+                private_members=private_members,
+                rst_elements=rst_elements
+            )
+
+            # Gather class methods
+            rst_elements = RSTRenderer.get_rst_method_elements(
+                env,
+                whitelist_names=whitelist,
+                skip_constructor=skip_constructor,
+                undoc_members=undoc_members,
+                private_members=private_members,
+                rst_elements=rst_elements,
+            )
+
+            # Add content while respecting the line order
+            for line_number in sorted(rst_elements.keys()):
+                for rst_element in rst_elements[line_number]:
+                    self.content += rst_element

@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 from sphinx import addnodes
+import docutils.parsers.rst.directives
 
 from .base_directive import BaseDirective
 
@@ -19,17 +20,26 @@ class AutoDataDirective(BaseDirective):
     #: Define the Object type
     objtype = "data"
 
+    #: data options
+    option_spec = {
+        "alias": docutils.parsers.rst.directives.unchanged_required,
+        "module-alias": docutils.parsers.rst.directives.unchanged_required,
+        "force-partial-import": lambda x: True,
+    }
+
     def handle_signature(self, signature, node):
         """Update the signature node.
         """
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        name = env["name"]
-        value = env["value"]
+        name = self.options.get("alias", env["name"])
         module_id = env["module_id"]
+        module_name = self.options.get(
+            "module-alias", module_env[module_id]["name"]
+        )
+        value = env["value"]
         variable_type = env["type"]
-        module_name = module_env[module_id]["name"]
 
         node["type"] = "data"
         node["id"] = env["id"]
@@ -53,5 +63,7 @@ class AutoDataDirective(BaseDirective):
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        self.content = self._generate_import_statement(env, module_env)
+        self.content = self._generate_import_statement(
+            env, module_env, self.options.get("force-partial-import")
+        )
         self.content += self._generate_description(env)

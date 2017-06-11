@@ -1,7 +1,8 @@
 # :coding: utf-8
 
 from sphinx.domains.javascript import JSObject
-from docutils.statemachine import StringList
+
+from champollion.renderer import RSTRenderer
 
 
 class BaseDirective(JSObject):
@@ -24,9 +25,7 @@ class BaseDirective(JSObject):
 
     def run(self):
         """Run the directive."""
-        if not hasattr(
-            self.state.document.settings.env, "js_environment"
-        ):
+        if not hasattr(self.state.document.settings.env, "js_environment"):
             raise self.error(
                 "The javascript environment has not been parsed properly"
             )
@@ -57,40 +56,42 @@ class BaseDirective(JSObject):
         """
         pass
 
-    def _generate_import_statement(self, environment, module_environment):
+    def _generate_import_statement(
+        self, environment, module_environment, force_partial_import=False
+    ):
         """Return the `StringList` import statement.
         """
-        name = environment["name"]
+        name = self.options.get("alias", environment["name"])
         module_id = environment["module_id"]
-        module_name = module_environment[module_id]["name"]
+        module_name = self.options.get(
+            "module-alias", module_environment[module_id]["name"]
+        )
         exported = environment["exported"]
         is_default = environment["default"]
 
-        if exported and is_default:
-            return StringList([
-                "``import {name} from \"{module}\"``".format(
+        if exported and is_default and not force_partial_import:
+            return RSTRenderer.rst_string(
+                "``import {name} from \"{module}\"``\n".format(
                     name=name, module=module_name
-                ),
-                ""
-            ])
+                )
+            )
 
-        if exported and not is_default:
-            return StringList([
-                "``import {{{name}}} from \"{module}\"``".format(
+        if exported and (not is_default or force_partial_import):
+            return RSTRenderer.rst_string(
+                "``import {{{name}}} from \"{module}\"``\n".format(
                     name=name, module=module_name
-                ),
-                ""
-            ])
+                )
+            )
 
-        return StringList()
+        return RSTRenderer.rst_string()
 
     def _generate_description(self, environment):
         """Return the `StringList` description.
         """
         description = environment["description"]
 
-        content = StringList()
+        content = RSTRenderer.rst_string()
         if description:
-            content += StringList(description.split("\n"))
+            content += RSTRenderer.rst_string(description)
 
         return content
