@@ -16,7 +16,7 @@ from .viewcode import (
     create_code_pages,
     create_missing_code_link
 )
-from .parser import get_environment
+from .parser import fetch_environment
 
 
 def parse_js_source(app):
@@ -27,7 +27,7 @@ def parse_js_source(app):
 
     """
     path = os.path.abspath(app.config.js_source)
-    app.env.js_environment = get_environment(path)
+    app.env.js_environment = fetch_environment(path)
 
 
 def setup(app):
