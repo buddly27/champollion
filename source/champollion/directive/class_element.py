@@ -54,6 +54,10 @@ class AutoClassDirective(BaseDirective):
         Indicate whether the class import statement display should be indicated
         with partial import if the class element is exported.
 
+    .. seealso::
+
+        :ref:`directive/autoclass`
+
     """
     #: Javascript class is callable
     has_arguments = True
@@ -173,6 +177,10 @@ class AutoMethodDirective(BaseDirective):
 
         .. js:automethod:: module.AwesomeClass.awesomeMethod
 
+    .. seealso::
+
+        :ref:`directive/automethod`
+
     """
     #: Javascript method is callable
     has_arguments = True
@@ -221,6 +229,10 @@ class AutoAttributeDirective(BaseDirective):
     .. sourcecode:: rest
 
         .. js:autoattribute:: module.AwesomeClass.DATA
+
+    .. seealso::
+
+        :ref:`directive/autoattribute`
 
     """
     #: Javascript data are not callable

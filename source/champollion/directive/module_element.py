@@ -29,8 +29,12 @@ class AutoModuleDirective(Directive):
         String element to replace the module name.
 
     * force-partial-import:
-        Indicate whether all import statement display within the module
+        Indicate whether each import statement display within the module
         should be indicated with partial import.
+
+    .. seealso::
+
+        :ref:`directive/automodule`
 
     """
     #: Only the object id argument is required

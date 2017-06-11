@@ -27,6 +27,10 @@ class AutoDataDirective(BaseDirective):
         Indicate whether the data import statement display should be indicated
         with partial import if the data element is exported.
 
+    .. seealso::
+
+        :ref:`directive/autodata`
+
     """
     #: Javascript data are not callable
     has_arguments = False

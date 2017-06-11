@@ -72,22 +72,9 @@ autodoc_default_flags = ["members", "undoc-members"]
 autodoc_member_order = "bysource"
 
 
-def autodoc_skip(app, what, name, obj, skip, options):
-    """Don"t skip __init__ method for autodoc."""
-    if name == "__init__":
-        return False
-
-    return skip
-
-
 # -- Intersphinx --------------------------------------------------------------
 
 intersphinx_mapping = {
     "python": ("http://docs.python.org/", None)
 }
 
-
-# -- Setup --------------------------------------------------------------------
-
-def setup(app):
-    app.connect("autodoc-skip-member", autodoc_skip)

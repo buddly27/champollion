@@ -27,6 +27,10 @@ class AutoFunctionDirective(BaseDirective):
         Indicate whether the function import statement display should be
         indicated with partial import if the function element is exported.
 
+    .. seealso::
+
+        :ref:`directive/autofunction`
+
     """
     #: Javascript function is callable
     has_arguments = True

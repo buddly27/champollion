@@ -16,8 +16,8 @@ Glossary
         .. seealso:: http://www.w3schools.com/js/
 
     reStructuredText
-        reStructuredText is a file format for textual data that uses simple and
-        intuitive constructs to indicate the structure of a document.
+        reStructuredText is a markup language for textual data that uses
+        simple and intuitive constructs to indicate the structure of a document.
 
         .. seealso:: http://www.sphinx-doc.org/en/stable/rest.html
 
