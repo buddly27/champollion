@@ -6,7 +6,7 @@ from sphinx.directives import Directive
 import docutils.parsers.rst.directives
 import docutils.nodes
 
-from champollion.renderer import RSTRenderer
+import rst_generator
 
 
 def _parse_members(argument):
@@ -85,10 +85,10 @@ class AutoModuleDirective(Directive):
             )
 
             # Gather classes
-            rst_elements = RSTRenderer.get_rst_class_elements(
+            rst_elements = rst_generator.get_rst_class_elements(
                 env, module_name,
                 whitelist_names=whitelist,
-                undoc_members=undoc_members,
+                undocumented_members=undoc_members,
                 private_members=private_members,
                 force_partial_import=self.options.get(
                     "force-partial-import", False
@@ -97,10 +97,10 @@ class AutoModuleDirective(Directive):
             )
 
             # Gather functions
-            rst_elements = RSTRenderer.get_rst_function_elements(
+            rst_elements = rst_generator.get_rst_function_elements(
                 env, module_name,
                 whitelist_names=whitelist,
-                undoc_members=undoc_members,
+                undocumented_members=undoc_members,
                 private_members=private_members,
                 force_partial_import=self.options.get(
                     "force-partial-import", False
@@ -109,11 +109,11 @@ class AutoModuleDirective(Directive):
             )
 
             # Gather variables
-            rst_elements = RSTRenderer.get_rst_data_elements(
+            rst_elements = rst_generator.get_rst_data_elements(
                 env, module_name,
                 whitelist_names=whitelist,
                 blacklist_ids=env["function"].keys(),
-                undoc_members=undoc_members,
+                undocumented_members=undoc_members,
                 private_members=private_members,
                 force_partial_import=self.options.get(
                     "force-partial-import", False
@@ -122,7 +122,7 @@ class AutoModuleDirective(Directive):
             )
 
             # Gather exported elements
-            rst_elements = RSTRenderer.get_rst_export_elements(
+            rst_elements = rst_generator.get_rst_export_elements(
                 env, js_env, module_name,
                 rst_elements=rst_elements
             )

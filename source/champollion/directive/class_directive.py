@@ -5,9 +5,9 @@ import collections
 from sphinx import addnodes
 import docutils.parsers.rst.directives
 
-from champollion.renderer import RSTRenderer
-
 from .base_directive import BaseDirective
+
+import rst_generator
 
 
 def _parse_members(argument):
@@ -106,21 +106,21 @@ class AutoClassDirective(BaseDirective):
             )
 
             # Gather class attributes
-            rst_elements = RSTRenderer.get_rst_attribute_elements(
+            rst_elements = rst_generator.get_rst_attribute_elements(
                 env,
                 whitelist_names=whitelist,
                 blacklist_ids=env["method"].keys(),
-                undoc_members=undoc_members,
+                undocumented_members=undoc_members,
                 private_members=private_members,
                 rst_elements=rst_elements
             )
 
             # Gather class methods
-            rst_elements = RSTRenderer.get_rst_method_elements(
+            rst_elements = rst_generator.get_rst_method_elements(
                 env,
                 whitelist_names=whitelist,
                 skip_constructor=skip_constructor,
-                undoc_members=undoc_members,
+                undocumented_members=undoc_members,
                 private_members=private_members,
                 rst_elements=rst_elements,
             )
