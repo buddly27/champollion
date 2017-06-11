@@ -117,27 +117,21 @@ def fetch_environment(file_path, file_id, module_id):
     }
 
     for _env_id, _env in fetch_class_environment(content, module_id).items():
-        _update_environment_from_exported_elements(
-            _env, environment["export"]
-        )
+        update_from_exported_elements(_env, environment["export"])
         environment["class"][_env_id] = _env
 
     for _env_id, _env in fetch_function_environment(content, module_id).items():
-        _update_environment_from_exported_elements(
-            _env, environment["export"]
-        )
+        update_from_exported_elements(_env, environment["export"])
         environment["function"][_env_id] = _env
 
     for _env_id, _env in fetch_data_environment(content, module_id).items():
-        _update_environment_from_exported_elements(
-            _env, environment["export"]
-        )
+        update_from_exported_elements(_env, environment["export"])
         environment["data"][_env_id] = _env
 
     return environment
 
 
-def _update_environment_from_exported_elements(environment, export_environment):
+def update_from_exported_elements(environment, export_environment):
     """Update *environment* with exported elements from *export_environment*.
 
     For instance, the element environment might not be exported, but an
@@ -145,12 +139,12 @@ def _update_environment_from_exported_elements(environment, export_environment):
 
     .. code-block:: js
 
-        # Element is the environment
+        // Element in the environment
         function doSomething(arg1, arg2) {
             console.log("Hello World")
         }
 
-        # Element in the export environment
+        // Element in the export environment
         export {doSomething};
 
     In the example above, the function `doSomething` is previously fetched
@@ -161,6 +155,23 @@ def _update_environment_from_exported_elements(environment, export_environment):
     .. warning::
 
         Both input environments are mutated.
+
+    .. warning::
+
+        If a wrapper function is applied to an element in the file, we attempt
+        to see if the wrapped element is part of the file and update it
+        directly:
+
+        .. code-block:: js
+
+            // Element in the environment
+            class AwesomeClass {}
+
+            // Wrapped element in the export environment
+            export wrapped()(AwesomeClass);
+
+        This is likely to change in the future in order to make this
+        combination optional and more explicit.
 
     """
     env_id = environment["id"]
