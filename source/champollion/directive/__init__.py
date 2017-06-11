@@ -1,4 +1,4 @@
 # :coding: utf-8
 
-"""All Champollion Directives to document a :term:`Javascript` API.
+"""Directives to generate a :term:`Javascript` API documentation.
 """
