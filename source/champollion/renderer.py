@@ -2,12 +2,35 @@
 
 
 class RSTRenderer(object):
+    """Helper class regrouping static method which render
+    :term:`reStructuredText` elements.
+
+    """
 
     @staticmethod
     def get_rst_class_elements(
-        environment, module_name, members=True, undoc_members=False,
-        private_members=False, rst_elements=None
+        environment, module_name, whitelist_names=None,
+        undoc_members=False, private_members=False, rst_elements=None
     ):
+        """Return :term:`reStructuredText` from class elements within
+        *environment*.
+
+        *module_name* is the module alias that should be added to each
+        directive.
+
+        *whitelist_names* is an optional list of element names that
+        should be displayed exclusively.
+
+        *undoc_members* indicate whether undocumented element should be
+        displayed.
+
+        *private_members* indicate whether elements starting with an underscore
+        should be displayed.
+
+        *rst_elements* can be an initial dictionary that will be updated and
+        returned.
+
+        """
         if rst_elements is None:
             rst_elements = {}
 
@@ -20,7 +43,7 @@ class RSTRenderer(object):
             if name.startswith("_") and not private_members:
                 continue
 
-            if members is True or name in members:
+            if whitelist_names is None or name in whitelist_names:
                 line_number = class_environment["line_number"]
                 rst_element = RSTRenderer.rst_generate(
                     directive="autoclass",
@@ -35,19 +58,38 @@ class RSTRenderer(object):
 
     @staticmethod
     def get_rst_attribute_elements(
-        class_environment, members=True, undoc_members=False,
-        private_members=False, blacklist=None, rst_elements=None,
+        class_environment, whitelist_names=None, blacklist_ids=None,
+        undoc_members=False, private_members=False, rst_elements=None,
     ):
+        """Return :term:`reStructuredText` from class attribute elements within
+        *class_environment*.
+
+        *whitelist_names* is an optional list of element names that
+        should be displayed exclusively.
+
+        *blacklist_ids* is an optional list of element identifiers that
+        should not be displayed.
+
+        *undoc_members* indicate whether undocumented element should be
+        displayed.
+
+        *private_members* indicate whether elements starting with an underscore
+        should be displayed.
+
+        *rst_elements* can be an initial dictionary that will be updated and
+        returned.
+
+        """
         if rst_elements is None:
             rst_elements = {}
 
         # As a method can also be a variable, use the method directive
         # by default when available
-        if blacklist is None:
+        if blacklist_ids is None:
             blacklist = []
 
         for attr_environment in class_environment["attribute"].values():
-            if attr_environment["id"] in blacklist:
+            if attr_environment["id"] in blacklist_ids:
                 continue
 
             name = attr_environment["name"]
@@ -58,7 +100,7 @@ class RSTRenderer(object):
             if name.startswith("_") and not private_members:
                 continue
 
-            if members is True or name in members:
+            if whitelist_names is None or name in whitelist_names:
                 line_number = attr_environment["line_number"]
                 rst_element = RSTRenderer.rst_generate(
                     directive="autoattribute",
@@ -71,9 +113,28 @@ class RSTRenderer(object):
 
     @staticmethod
     def get_rst_method_elements(
-        class_environment, members=True, skip_constructor=False,
+        class_environment, whitelist_names=None, skip_constructor=False,
         undoc_members=False, private_members=False, rst_elements=None
     ):
+        """Return :term:`reStructuredText` from class method elements within
+        *class_environment*.
+
+        *whitelist_names* is an optional list of element names that
+        should be displayed exclusively.
+
+        *skip_constructor* indicate whether the class constructor should be
+        displayed.
+
+        *undoc_members* indicate whether undocumented element should be
+        displayed.
+
+        *private_members* indicate whether elements starting with an underscore
+        should be displayed.
+
+        *rst_elements* can be an initial dictionary that will be updated and
+        returned.
+
+        """
         if rst_elements is None:
             rst_elements = {}
 
@@ -89,7 +150,7 @@ class RSTRenderer(object):
             if name.startswith("_") and not private_members:
                 continue
 
-            if members is True or name in members:
+            if whitelist_names is None or name in whitelist_names:
                 line_number = method_environment["line_number"]
                 rst_element = RSTRenderer.rst_generate(
                     directive="automethod",
@@ -102,9 +163,28 @@ class RSTRenderer(object):
 
     @staticmethod
     def get_rst_function_elements(
-        environment, module_name, members=True, undoc_members=False,
-        private_members=False, rst_elements=None
+        environment, module_name, whitelist_names=None,
+        undoc_members=False, private_members=False, rst_elements=None
     ):
+        """Return :term:`reStructuredText` from function elements within
+        *environment*.
+
+        *module_name* is the module alias that should be added to each
+        directive.
+
+        *whitelist_names* is an optional list of element names that
+        should be displayed exclusively.
+
+        *undoc_members* indicate whether undocumented element should be
+        displayed.
+
+        *private_members* indicate whether elements starting with an underscore
+        should be displayed.
+
+        *rst_elements* can be an initial dictionary that will be updated and
+        returned.
+
+        """
         if rst_elements is None:
             rst_elements = {}
 
@@ -117,7 +197,7 @@ class RSTRenderer(object):
             if name.startswith("_") and not private_members:
                 continue
 
-            if members is True or name in members:
+            if whitelist_names is None or name in whitelist_names:
                 line_number = function_environment["line_number"]
                 rst_element = RSTRenderer.rst_generate(
                     directive="autofunction",
@@ -132,19 +212,41 @@ class RSTRenderer(object):
 
     @staticmethod
     def get_rst_data_elements(
-        environment, module_name, members=True, undoc_members=False,
-        private_members=False, rst_elements=None, blacklist=None
+        environment, module_name, whitelist_names=None, blacklist_ids=None,
+        undoc_members=False, private_members=False, rst_elements=None,
     ):
+        """Return :term:`reStructuredText` from data elements within
+        *environment*.
+
+        *module_name* is the module alias that should be added to each
+        directive.
+
+        *whitelist_names* is an optional list of element names that
+        should be displayed exclusively.
+
+        *blacklist_ids* is an optional list of element identifiers that
+        should not be displayed.
+
+        *undoc_members* indicate whether undocumented element should be
+        displayed.
+
+        *private_members* indicate whether elements starting with an underscore
+        should be displayed.
+
+        *rst_elements* can be an initial dictionary that will be updated and
+        returned.
+
+        """
         if rst_elements is None:
             rst_elements = {}
 
         # As a function can also be a variable, use the function directive
         # by default when available
-        if blacklist is None:
-            blacklist = []
+        if blacklist_ids is None:
+            blacklist_ids = []
 
         for data_environment in environment["data"].values():
-            if data_environment["id"] in blacklist:
+            if data_environment["id"] in blacklist_ids:
                 continue
 
             name = data_environment["name"]
@@ -155,7 +257,7 @@ class RSTRenderer(object):
             if name.startswith("_") and not private_members:
                 continue
 
-            if members is True or name in members:
+            if whitelist_names is None or name in whitelist_names:
                 line_number = data_environment["line_number"]
                 rst_element = RSTRenderer.rst_generate(
                     directive="autodata",
@@ -172,6 +274,19 @@ class RSTRenderer(object):
     def get_rst_export_elements(
         file_environment, environment, module_name, rst_elements=None
     ):
+        """Return :term:`reStructuredText` from exported elements within
+        *file_environment*.
+
+        *environment* is the full :term:`Javascript` environment processed
+        in :mod:`~champollion.parser`.
+
+        *module_name* is the module alias that should be added to each
+        directive.
+
+        *rst_elements* can be an initial dictionary that will be updated and
+        returned.
+
+        """
         export_environment = file_environment["export"]
         import_environment = file_environment["import"]
 
@@ -237,6 +352,19 @@ class RSTRenderer(object):
     def get_rst_default_from_file_environment(
         file_environment, alias, module_name
     ):
+        """Return :term:`reStructuredText` from default element in
+        *file_environment*.
+
+        *alias* is the name that should replace the element name.
+
+        *module_name* is the module alias that should replace the element
+        module name.
+
+        .. warning::
+
+            Return None if no default is found in the file.
+
+        """
         for class_env in file_environment["class"].values():
             if class_env["default"]:
                 return RSTRenderer.rst_generate(
@@ -268,6 +396,19 @@ class RSTRenderer(object):
     def get_rst_name_from_file_environment(
         name, file_environment, alias, module_name
     ):
+        """Return :term:`reStructuredText` element in *file_environment* from
+        *name*.
+
+        *alias* is the name that should replace the element name.
+
+        *module_name* is the module name that should replace the element
+        module name.
+
+        .. warning::
+
+            Return None if the element is not found in the file.
+
+        """
         for class_env in file_environment["class"].values():
             if class_env["name"] == name and class_env["exported"]:
                 return RSTRenderer.rst_generate(
@@ -300,6 +441,22 @@ class RSTRenderer(object):
         directive, element_id, alias=None, module_alias=None,
         extra_options=None
     ):
+        """Generate :term:`reStructuredText` for *directive* and *element_id*.
+
+        *directive* is one of the directive added to the :term:`Javascript`
+        domain by this sphinx extension.
+
+        *element_id* is an element ID returned by the
+        :mod:`~champollion.parser`.
+
+        *alias* is the name that should replace the element name.
+
+        *module_alias* is the module name that should replace the element
+        module name.
+
+        *extra_options* can be a list of extra options to add to the directive.
+
+        """
         if extra_options is None:
             extra_options = []
 
