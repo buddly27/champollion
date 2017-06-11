@@ -59,7 +59,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
     except (IOError, OSError):
         return environment
 
-    export_environment = get_export_environment(content, file_id, module_id)
+    export_environment = get_export_environment(content, module_id)
 
     for _env_id, _env in get_class_environment(content, module_id).items():
         _update_environment_from_exported_elements(_env, export_environment)
@@ -73,9 +73,7 @@ def get_file_environment(file_path, file_id, module_id, environment=None):
         _update_environment_from_exported_elements(_env, export_environment)
         file_environment["data"][_env_id] = _env
 
-    file_environment["import"] = get_import_environment(
-        content, file_id, module_id
-    )
+    file_environment["import"] = get_import_environment(content, module_id)
 
     file_environment["export"] = export_environment
     file_environment["content"] = content

@@ -172,10 +172,8 @@ def get_docstring(line_number, lines):
             return
 
 
-def get_import_environment(content, file_id, module_id):
+def get_import_environment(content, module_id):
     """Return import environment from *content*.
-
-    *file_id* represent the ID of the file.
 
     *module_id* represent the ID of the module.
 
@@ -184,9 +182,11 @@ def get_import_environment(content, file_id, module_id):
 
     wildcards_number = 0
 
+    module_path = module_id.replace(".", os.sep)
+
     for match in IMPORTED_ELEMENT_PATTERN.finditer(content):
         from_module_path = os.path.normpath(
-            os.path.join(file_id, match.group("module"))
+            os.path.join(module_path, match.group("module"))
         )
         from_module_id = from_module_path.replace(os.sep, ".")
 
@@ -202,10 +202,8 @@ def get_import_environment(content, file_id, module_id):
     return environment
 
 
-def get_export_environment(content, file_id, module_id):
+def get_export_environment(content, module_id):
     """Return export environment from *content*.
-
-    *file_id* represent the ID of the file.
 
     *module_id* represent the ID of the module.
 
@@ -215,6 +213,8 @@ def get_export_environment(content, file_id, module_id):
     wildcards_number = 0
 
     lines = content.split("\n")
+
+    module_path = module_id.replace(".", os.sep)
 
     for match in EXPORTED_ELEMENT_PATTERN.finditer(content):
         line_number = (
@@ -226,7 +226,7 @@ def get_export_environment(content, file_id, module_id):
 
         if match.group("module") is not None:
             from_module_path = os.path.normpath(
-                os.path.join(file_id, match.group("module"))
+                os.path.join(module_path, match.group("module"))
             )
             from_module_id = from_module_path.replace(os.sep, ".")
 
