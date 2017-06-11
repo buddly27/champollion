@@ -195,8 +195,6 @@ def get_class_attribute_environment(content, class_id, line_number=0):
             match.group("start_regex").count("\n") + 1
         )
 
-        print (value)
-
         if "{}" in value and _line_number in collapsed_content.keys():
             value = value.replace("{}", collapsed_content[_line_number])
 
