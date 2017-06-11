@@ -6,8 +6,9 @@ import rst_generator
 
 
 class BaseDirective(JSObject):
-    """Directive mixin to regroup common helper methods
+    """Base class for :term:`Javascript` object directive.
     """
+
     #: Only the object id argument is required
     required_arguments = 1
 
@@ -51,15 +52,33 @@ class BaseDirective(JSObject):
 
         return super(BaseDirective, self).run()
 
-    def before_content(self):
-        """Compute the description and nested element.
-        """
-        pass
-
-    def _generate_import_statement(
+    def generate_import_statement(
         self, environment, module_environment, force_partial_import=False
     ):
-        """Return the `StringList` import statement.
+        """Return import statement generated from *environment* and
+        *module_environment*.
+
+        The import statement will be generated only if the element is exported
+        and the usage of partial import will depend whether the element is
+        exported as default.
+
+        *force_partial_import* indicate whether the usage of partial import
+        should be used even if the element is exported as default.
+
+        .. warning::
+
+            The statement is using :term:`Javascript` ES6
+            `import
+            <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import>`_
+            keyword
+
+        Example:
+
+        .. code-block:: js
+
+            import element from "module"
+            import {partialElement} from "module"
+
         """
         name = self.options.get("alias", environment["name"])
         module_id = environment["module_id"]
@@ -85,8 +104,8 @@ class BaseDirective(JSObject):
 
         return rst_generator.rst_string()
 
-    def _generate_description(self, environment):
-        """Return the `StringList` description.
+    def generate_description(self, environment):
+        """Return description generated from *environment*.
         """
         description = environment["description"]
 

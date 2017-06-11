@@ -4,12 +4,12 @@ import os
 
 from ._version import __version__
 
-from .directive.data_directive import AutoDataDirective
-from .directive.function_directive import AutoFunctionDirective
-from .directive.class_directive import AutoClassDirective
-from .directive.method_directive import AutoMethodDirective
-from .directive.attribute_directive import AutoAttributeDirective
-from .directive.module_directive import AutoModuleDirective
+from .directive.data_element import AutoDataDirective
+from .directive.function_element import AutoFunctionDirective
+from .directive.class_element import (
+    AutoClassDirective, AutoMethodDirective, AutoAttributeDirective
+)
+from .directive.module_element import AutoModuleDirective
 
 from .viewcode import (
     add_source_code_links,

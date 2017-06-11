@@ -3,15 +3,29 @@
 from sphinx import addnodes
 import docutils.parsers.rst.directives
 
-from .base_directive import BaseDirective
+from .base import BaseDirective
 
 
 class AutoFunctionDirective(BaseDirective):
-    """Generate reStructuredText from JavaScript function.
+    """Directive to render :term:`Javascript` function documentation.
+
+    The unique argument should be the identifier of the function element.
 
     .. sourcecode:: rest
 
-        .. js:autofunction:: my-function-id
+        .. js:autofunction:: module.doSomething
+
+    The available options are:
+
+    * alias:
+        String element to replace the function name.
+
+    * module-alias:
+        String element to replace the module name.
+
+    * force-partial-import:
+        Indicate whether the function import statement display should be
+        indicated with partial import if the function element is exported.
 
     """
     #: Javascript function is callable
@@ -28,8 +42,7 @@ class AutoFunctionDirective(BaseDirective):
     }
 
     def handle_signature(self, signature, node):
-        """Update the signature node.
-        """
+        """Update the signature *node*."""
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
@@ -61,14 +74,17 @@ class AutoFunctionDirective(BaseDirective):
         return name, module_name
 
     def before_content(self):
-        """Compute the description.
+        """Update the content.
+
+        Compute the description and import statement if available.
+
         """
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
         if not env["anonymous"]:
-            self.content = self._generate_import_statement(
+            self.content = self.generate_import_statement(
                 env, module_env, self.options.get("force-partial-import")
             )
 
-        self.content += self._generate_description(env)
+        self.content += self.generate_description(env)

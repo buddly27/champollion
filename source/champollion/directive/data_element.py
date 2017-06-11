@@ -3,15 +3,29 @@
 from sphinx import addnodes
 import docutils.parsers.rst.directives
 
-from .base_directive import BaseDirective
+from .base import BaseDirective
 
 
 class AutoDataDirective(BaseDirective):
-    """Generate reStructuredText from JavaScript data.
+    """Directive to render :term:`Javascript` data documentation.
+
+    The unique argument should be the identifier of the data element.
 
     .. sourcecode:: rest
 
-        .. js:autodata:: my-data-id
+        .. js:autodata:: module.DATA
+
+    The available options are:
+
+    * alias:
+        String element to replace the data name.
+
+    * module-alias:
+        String element to replace the module name.
+
+    * force-partial-import:
+        Indicate whether the data import statement display should be indicated
+        with partial import if the data element is exported.
 
     """
     #: Javascript data are not callable
@@ -28,8 +42,7 @@ class AutoDataDirective(BaseDirective):
     }
 
     def handle_signature(self, signature, node):
-        """Update the signature node.
-        """
+        """Update the signature *node*."""
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
@@ -52,18 +65,16 @@ class AutoDataDirective(BaseDirective):
         node += addnodes.desc_annotation(" = " + value, " = " + value)
         return name, module_name
 
-    def get_index_text(self, objectname, name_obj):
-        """Return relevant index text.
-        """
-        return " (global variable or constant)"
-
     def before_content(self):
-        """Compute the description.
+        """Update the content.
+
+        Compute the description and import statement if available.
+
         """
         env = self.state.document.settings.env.element_environment
         module_env = self.state.document.settings.env.module_environment
 
-        self.content = self._generate_import_statement(
+        self.content = self.generate_import_statement(
             env, module_env, self.options.get("force-partial-import")
         )
-        self.content += self._generate_description(env)
+        self.content += self.generate_description(env)
