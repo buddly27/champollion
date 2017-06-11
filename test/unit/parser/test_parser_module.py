@@ -64,7 +64,9 @@ def test_get_module_environment_from_file_with_initial_environment():
     """Return module_id and updated environment from file id and module id."""
     environment = {
         "module": {
-            "test": {}
+            "test": {
+                "name": "test"
+            }
         },
         "class": {
             "test.AwesomeClass": {}
@@ -86,7 +88,9 @@ def test_get_module_environment_from_file_with_initial_environment():
         "test.module",
         {
             "module": {
-                "test": {},
+                "test": {
+                    "name": "test"
+                },
                 "test.module": {
                     "id": "test.module",
                     "name": "test.module",

@@ -282,8 +282,8 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
         (
             "import defaultMember from \"module-name\"",
             {
-                "defaultMember": {
-                    "id": "defaultMember",
+                "test.module.defaultMember": {
+                    "id": "test.module.defaultMember",
                     "module": "test.module.module-name",
                     "name": "defaultMember",
                     "alias": None,
@@ -297,15 +297,15 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
                 "import name2 from '../module-name2'\n"
             ),
             {
-                "name1": {
-                    "id": "name1",
+                "test.module.name1": {
+                    "id": "test.module.name1",
                     "module": "test.module.module-name1",
                     "name": "name1",
                     "alias": None,
                     "partial": False
                 },
-                "name2": {
-                    "id": "name2",
+                "test.module.name2": {
+                    "id": "test.module.name2",
                     "module": "test.module-name2",
                     "name": "name2",
                     "alias": None,
@@ -322,22 +322,22 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
                 "} from 'module-name'"
             ),
             {
-                "alias_1": {
-                    "id": "alias_1",
+                "test.module.alias_1": {
+                    "id": "test.module.alias_1",
                     "module": "test.module.module-name",
                     "name": "name_1",
                     "alias": "alias_1",
                     "partial": True
                 },
-                "name_2": {
-                    "id": "name_2",
+                "test.module.name_2": {
+                    "id": "test.module.name_2",
                     "module": "test.module.module-name",
                     "name": "name_2",
                     "alias": None,
                     "partial": True
                 },
-                "name_3": {
-                    "id": "name_3",
+                "test.module.name_3": {
+                    "id": "test.module.name_3",
                     "module": "test.module.module-name",
                     "name": "name_3",
                     "alias": None,
@@ -350,22 +350,22 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
                 "import {name1 as alias1}, name2, {name3} from \"./module\"\n"
             ),
             {
-                "alias1": {
-                    "id": "alias1",
+                "test.module.alias1": {
+                    "id": "test.module.alias1",
                     "module": "test.module.module",
                     "name": "name1",
                     "alias": "alias1",
                     "partial": True
                 },
-                "name2": {
-                    "id": "name2",
+                "test.module.name2": {
+                    "id": "test.module.name2",
                     "module": "test.module.module",
                     "name": "name2",
                     "alias": None,
                     "partial": False
                 },
-                "name3": {
-                    "id": "name3",
+                "test.module.name3": {
+                    "id": "test.module.name3",
                     "module": "test.module.module",
                     "name": "name3",
                     "alias": None,
@@ -379,15 +379,15 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
                 "import * from 'module2'"
             ),
             {
-                "WILDCARD_1": {
-                    "id": "*",
+                "test.module.WILDCARD_1": {
+                    "id": "test.module.WILDCARD_1",
                     "module": "test.module.module1",
                     "name": "*",
                     "alias": None,
                     "partial": False
                 },
-                "WILDCARD_2": {
-                    "id": "*",
+                "test.module.WILDCARD_2": {
+                    "id": "test.module.WILDCARD_2",
                     "module": "test.module.module2",
                     "name": "*",
                     "alias": None,
@@ -398,8 +398,8 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
         (
             "import * as name from 'module'",
             {
-                "name": {
-                    "id": "name",
+                "test.module.name": {
+                    "id": "test.module.name",
                     "module": "test.module.module",
                     "name": "*",
                     "alias": "name",
@@ -420,7 +420,7 @@ def test_collapse_all(content, expected_content, expected_collapsed_content):
 )
 def test_get_import_environment(content, expected):
     assert champollion.parser.helper.get_import_environment(
-        content, os.sep.join(["test", "module"])
+        content, os.sep.join(["test", "module"]), "test.module"
     ) == expected
 
 
@@ -431,8 +431,8 @@ def test_get_import_environment(content, expected):
             "name", None, 0,
             (
                 {
-                    "name": {
-                        "id": "name",
+                    "module.name": {
+                        "id": "module.name",
                         "module": "test.module",
                         "name": "name",
                         "alias": None,
@@ -446,8 +446,8 @@ def test_get_import_environment(content, expected):
             "{name}", None, 0,
             (
                 {
-                    "name": {
-                        "id": "name",
+                    "module.name": {
+                        "id": "module.name",
                         "module": "test.module",
                         "name": "name",
                         "alias": None,
@@ -461,22 +461,22 @@ def test_get_import_environment(content, expected):
             "{name1 as alias1, name2 as alias2}, name3", None, 1,
             (
                 {
-                    "alias1": {
-                        "id": "alias1",
+                    "module.alias1": {
+                        "id": "module.alias1",
                         "module": "test.module",
                         "name": "name1",
                         "alias": "alias1",
                         "partial": True
                     },
-                    "alias2": {
-                        "id": "alias2",
+                    "module.alias2": {
+                        "id": "module.alias2",
                         "module": "test.module",
                         "name": "name2",
                         "alias": "alias2",
                         "partial": True
                     },
-                    "name3": {
-                        "id": "name3",
+                    "module.name3": {
+                        "id": "module.name3",
                         "module": "test.module",
                         "name": "name3",
                         "alias": None,
@@ -490,8 +490,8 @@ def test_get_import_environment(content, expected):
             "*", None, 0,
             (
                 {
-                    "WILDCARD_1": {
-                        "id": "*",
+                    "module.WILDCARD_1": {
+                        "id": "module.WILDCARD_1",
                         "module": "test.module",
                         "name": "*",
                         "alias": None,
@@ -505,8 +505,8 @@ def test_get_import_environment(content, expected):
             "{* as alias}", None, 0,
             (
                 {
-                    "alias": {
-                        "id": "alias",
+                    "module.alias": {
+                        "id": "module.alias",
                         "module": "test.module",
                         "name": "*",
                         "alias": "alias",
@@ -529,7 +529,7 @@ def test_get_expression_environment(
     expression, environment, wildcards_number, expected
 ):
     assert champollion.parser.helper.get_expression_environment(
-        expression, "test.module", environment, wildcards_number
+        expression, "module", "test.module", environment, wildcards_number
     ) == expected
 
 
@@ -542,8 +542,8 @@ def test_get_expression_environment(
                 "export {name}"
             ),
             {
-                "name": {
-                    "id": "name",
+                "test.module.name": {
+                    "id": "test.module.name",
                     "name": "name",
                     "module": None,
                     "alias": None,
@@ -560,8 +560,8 @@ def test_get_expression_environment(
                 "export default name"
             ),
             {
-                "name": {
-                    "id": "name",
+                "test.module.name": {
+                    "id": "test.module.name",
                     "name": "name",
                     "module": None,
                     "alias": None,
@@ -578,8 +578,8 @@ def test_get_expression_environment(
                 "export {name as alias}"
             ),
             {
-                "alias": {
-                    "id": "alias",
+                "test.module.alias": {
+                    "id": "test.module.alias",
                     "name": "name",
                     "module": None,
                     "alias": "alias",
@@ -596,8 +596,8 @@ def test_get_expression_environment(
                 "export {name1 as alias1, name2 as alias2, name3};"
             ),
             {
-                "alias1": {
-                    "id": "alias1",
+                "test.module.alias1": {
+                    "id": "test.module.alias1",
                     "name": "name1",
                     "module": None,
                     "alias": "alias1",
@@ -606,8 +606,8 @@ def test_get_expression_environment(
                     "default": False,
                     "line_number": 2,
                 },
-                "alias2": {
-                    "id": "alias2",
+                "test.module.alias2": {
+                    "id": "test.module.alias2",
                     "name": "name2",
                     "module": None,
                     "alias": "alias2",
@@ -616,8 +616,8 @@ def test_get_expression_environment(
                     "default": False,
                     "line_number": 2,
                 },
-                "name3": {
-                    "id": "name3",
+                "test.module.name3": {
+                    "id": "test.module.name3",
                     "name": "name3",
                     "module": None,
                     "alias": None,
@@ -634,8 +634,8 @@ def test_get_expression_environment(
                 "export name from 'module-name'"
             ),
             {
-                "name": {
-                    "id": "name",
+                "test.module.name": {
+                    "id": "test.module.name",
                     "name": "name",
                     "module": "test.module.module-name",
                     "alias": None,
@@ -655,8 +655,8 @@ def test_get_expression_environment(
                 "export {name2 as alias2} from '../module-name2'\n"
             ),
             {
-                "name1": {
-                    "id": "name1",
+                "test.module.name1": {
+                    "id": "test.module.name1",
                     "name": "name1",
                     "module": "test.module.module-name1",
                     "alias": None,
@@ -665,8 +665,8 @@ def test_get_expression_environment(
                     "default": False,
                     "line_number": 2,
                 },
-                "alias2": {
-                    "id": "alias2",
+                "test.module.alias2": {
+                    "id": "test.module.alias2",
                     "name": "name2",
                     "module": "test.module-name2",
                     "alias": "alias2",
@@ -686,8 +686,8 @@ def test_get_expression_environment(
                 "} from 'module-name'"
             ),
             {
-                "alias_1": {
-                    "id": "alias_1",
+                "test.module.alias_1": {
+                    "id": "test.module.alias_1",
                     "name": "name_1",
                     "module": "test.module.module-name",
                     "alias": "alias_1",
@@ -696,8 +696,8 @@ def test_get_expression_environment(
                     "default": False,
                     "line_number": 1,
                 },
-                "name_2": {
-                    "id": "name_2",
+                "test.module.name_2": {
+                    "id": "test.module.name_2",
                     "name": "name_2",
                     "module": "test.module.module-name",
                     "alias": None,
@@ -706,8 +706,8 @@ def test_get_expression_environment(
                     "default": False,
                     "line_number": 1,
                 },
-                "name_3": {
-                    "id": "name_3",
+                "test.module.name_3": {
+                    "id": "test.module.name_3",
                     "name": "name_3",
                     "module": "test.module.module-name",
                     "alias": None,
@@ -731,7 +731,7 @@ def test_get_expression_environment(
 )
 def test_get_export_environment(content, expected):
     assert champollion.parser.helper.get_export_environment(
-        content, os.sep.join(["test", "module"])
+        content, os.sep.join(["test", "module"]), "test.module"
     ) == expected
 
 
@@ -740,52 +740,62 @@ def test_get_export_environment(content, expected):
     [
         (
             "name1, name2, name3",
-            [
-                {
-                    "id": "name1",
-                    "name": "name1",
-                    "alias": None,
-                },
-                {
-                    "id": "name2",
-                    "name": "name2",
-                    "alias": None,
-                },
-                {
-                    "id": "name3",
-                    "name": "name3",
-                    "alias": None,
-                },
-            ]
+            (
+                [
+                    {
+                        "id": "test.module.name1",
+                        "name": "name1",
+                        "alias": None,
+                    },
+                    {
+                        "id": "test.module.name2",
+                        "name": "name2",
+                        "alias": None,
+                    },
+                    {
+                        "id": "test.module.name3",
+                        "name": "name3",
+                        "alias": None,
+                    },
+                ],
+                0
+            )
         ),
         (
             "name as alias",
-            [
-                {
-                    "id": "alias",
-                    "name": "name",
-                    "alias": "alias",
-                }
-            ]
+            (
+                [
+                    {
+                        "id": "test.module.alias",
+                        "name": "name",
+                        "alias": "alias",
+                    }
+                ],
+                0
+            )
+
         ),
         (
             "name1, * as name2",
-            [
-                {
-                    "id": "name1",
-                    "name": "name1",
-                    "alias": None,
-                },
-                {
-                    "id": "name2",
-                    "name": "*",
-                    "alias": "name2",
-                }
-            ]
+            (
+                [
+                    {
+                        "id": "test.module.name1",
+                        "name": "name1",
+                        "alias": None,
+                    },
+                    {
+                        "id": "test.module.name2",
+                        "name": "*",
+                        "alias": "name2",
+                    }
+                ],
+                0
+            )
         ),
         (
             "name = 42",
-            []
+            ([], 0)
         )
     ],
     ids=[
@@ -797,5 +807,5 @@ def test_get_export_environment(content, expected):
 )
 def test_get_binding_environment(expression, expected):
     assert champollion.parser.helper.get_binding_environment(
-        expression
+        expression, "test.module"
     ) == expected
