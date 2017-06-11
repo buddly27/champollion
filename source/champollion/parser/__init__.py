@@ -1,13 +1,13 @@
 # :coding: utf-8
 
-"""Parser to fetch all information from a :term:`Javascript` API in order
+"""Parser to fetch_environment all information from a :term:`Javascript` API in order
 to document each element from a simple identifier.
 """
 
 import os
 
-import module_environment
-import file_environment
+import module_element
+import file_element
 
 
 def fetch_environment(path):
@@ -127,7 +127,7 @@ def fetch_environment(path):
             file_path = os.path.join(root, _file)
 
             # Fetch module environment
-            _module_environment = module_environment.fetch(
+            _module_environment = module_element.fetch_environment(
                 file_id, files, module_names=[
                     _module["name"] for _module in
                     environment["module"].values()
@@ -137,7 +137,7 @@ def fetch_environment(path):
             environment["module"][module_id] = _module_environment
 
             # Fetch file environment
-            _file_environment = file_environment.fetch(
+            _file_environment = file_element.fetch_environment(
                 file_path, file_id, _module_environment["id"]
             )
             file_id = _file_environment["id"]

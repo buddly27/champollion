@@ -1,7 +1,7 @@
 # :coding: utf-8
 
 
-def fetch(file_id, files=None, module_names=None):
+def fetch_environment(file_id, files=None, module_names=None):
     """Return module environment dictionary from *file_id*.
 
     *file_id* represent the identifier of the file.

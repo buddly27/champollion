@@ -24,7 +24,7 @@ _FUNCTION_ARROW_PATTERN = re.compile(
 )
 
 
-def fetch(content, module_id):
+def fetch_environment(content, module_id):
     """Return function environment dictionary from *content*.
 
     *module_id* represent the identifier of the module.

@@ -16,7 +16,7 @@ _DATA_PATTERN = re.compile(
 )
 
 
-def fetch(content, module_id):
+def fetch_environment(content, module_id):
     """Return data environment dictionary from *content*.
 
     *module_id* represent the identifier of the module.

@@ -17,7 +17,7 @@ _CLASS_PATTERN = re.compile(
 
 #: Regular Expression pattern for class methods
 _CLASS_METHOD_PATTERN = re.compile(
-    r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|fetch|set) +)?"
+    r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|get|set) +)?"
     r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*?)[\n ]*\) *{"
 )
 
@@ -37,7 +37,7 @@ _CLASS_ATTRIBUTE_PATTERN = re.compile(
 )
 
 
-def fetch(content, module_id):
+def fetch_environment(content, module_id):
     """Return class environment dictionary from *content*.
 
     *module_id* represent the identifier of the module.
@@ -140,7 +140,7 @@ def fetch_methods_environment(content, class_id, line_number=0):
                 "class_id": "moduleName.AwesomeClass",
                 "module_id": "moduleName",
                 "name": "awesomeMethod",
-                "prefix": "fetch",
+                "prefix": "get",
                 "arguments": ["argument1", "argument2"],
                 "line_number": 5,
                 "description": "Method doc.\\n\\nDetailed description."
@@ -166,7 +166,7 @@ def fetch_methods_environment(content, class_id, line_number=0):
 
                 # Add the prefix to the method ID if the method if a getter or
                 # a setter as several method could have the same name.
-                if prefix in ["fetch", "set"]:
+                if prefix in ["get", "set"]:
                     method_id += "." + prefix
 
             _line_number = (

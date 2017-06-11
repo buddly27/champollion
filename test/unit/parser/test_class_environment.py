@@ -2,7 +2,7 @@
 
 import pytest
 
-import champollion.parser.class_environment
+import champollion.parser.class_element
 
 
 @pytest.fixture()
@@ -40,7 +40,7 @@ def content():
         "     *\n"
         "     *     The name is awesome\n"
         "     */\n"
-        "    fetch name() {\n"
+        "    get name() {\n"
         "        return this.name;\n"
         "    }\n"
         "\n"
@@ -110,7 +110,7 @@ def content():
 
 def test_get_class_environment(content):
     """Return class environment from content."""
-    assert champollion.parser.class_environment.fetch(
+    assert champollion.parser.class_element.fetch_environment(
         content, "test.module"
     ) == {
         "test.module.MotherClass": {
@@ -179,12 +179,12 @@ def test_get_class_environment(content):
                     "line_number": 21,
                     "description": "AwesomeClass constructor"
                 },
-                "test.module.AwesomeClass.name.fetch": {
-                    "id": "test.module.AwesomeClass.name.fetch",
+                "test.module.AwesomeClass.name.get": {
+                    "id": "test.module.AwesomeClass.name.get",
                     "class_id": "test.module.AwesomeClass",
                     "module_id": "test.module",
                     "name": "name",
-                    "prefix": "fetch",
+                    "prefix": "get",
                     "arguments": [],
                     "line_number": 33,
                     "description": (
@@ -405,7 +405,7 @@ def test_get_class_environment(content):
 )
 def test_class_pattern(content, expected):
     """Match a class."""
-    match = champollion.parser.class_environment._CLASS_PATTERN.search(content)
+    match = champollion.parser.class_element._CLASS_PATTERN.search(content)
     if expected is None:
         assert match is None
     else:
@@ -446,11 +446,11 @@ def test_class_pattern(content, expected):
             }
         ),
         (
-            "fetch valid_method2(){}",
+            "get valid_method2(){}",
             {
                 "arguments": "",
                 "method_name": "valid_method2",
-                "prefix": "fetch ",
+                "prefix": "get ",
                 "start_regex": ""
             }
         ),
@@ -482,7 +482,9 @@ def test_class_pattern(content, expected):
 )
 def test_class_method_pattern(content, expected):
     """Match a class method."""
-    match = champollion.parser.class_environment._CLASS_METHOD_PATTERN.search(content)
+    match = champollion.parser.class_element._CLASS_METHOD_PATTERN.search(
+        content
+    )
     if expected is None:
         assert match is None
     else:
@@ -579,7 +581,7 @@ def test_class_method_pattern(content, expected):
 )
 def test_class_method_arrow_pattern(content, expected):
     """Match a class arrow-type method."""
-    match = champollion.parser.class_environment._CLASS_METHOD_ARROW_PATTERN.search(
+    match = champollion.parser.class_element._CLASS_METHOD_ARROW_PATTERN.search(
         content
     )
     if expected is None:
@@ -649,7 +651,7 @@ def test_class_method_arrow_pattern(content, expected):
 )
 def test_class_attribute_pattern(content, expected):
     """Match a class attribute."""
-    match = champollion.parser.class_environment._CLASS_ATTRIBUTE_PATTERN.search(
+    match = champollion.parser.class_element._CLASS_ATTRIBUTE_PATTERN.search(
         content
     )
     if expected is None:

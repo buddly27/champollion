@@ -3,9 +3,9 @@
 import os
 import re
 
-import class_environment
-import function_environment
-import data_environment
+from .class_element import fetch_environment as fetch_class_environment
+from .function_element import fetch_environment as fetch_function_environment
+from .data_element import fetch_environment as fetch_data_environment
 
 from .helper import get_docstring
 
@@ -32,7 +32,7 @@ _BINDING_ELEMENT_PATTERN = re.compile(
 )
 
 
-def fetch(file_path, file_id, module_id):
+def fetch_environment(file_path, file_id, module_id):
     """Return file environment dictionary from *file_path*.
 
     *file_id* represent the identifier of the file.
@@ -116,19 +116,19 @@ def fetch(file_path, file_id, module_id):
         "function": {}
     }
 
-    for _env_id, _env in class_environment.fetch(content, module_id).items():
+    for _env_id, _env in fetch_class_environment(content, module_id).items():
         _update_environment_from_exported_elements(
             _env, environment["export"]
         )
         environment["class"][_env_id] = _env
 
-    for _env_id, _env in function_environment.fetch(content, module_id).items():
+    for _env_id, _env in fetch_function_environment(content, module_id).items():
         _update_environment_from_exported_elements(
             _env, environment["export"]
         )
         environment["function"][_env_id] = _env
 
-    for _env_id, _env in data_environment.fetch(content, module_id).items():
+    for _env_id, _env in fetch_data_environment(content, module_id).items():
         _update_environment_from_exported_elements(
             _env, environment["export"]
         )
