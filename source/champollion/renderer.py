@@ -1,5 +1,7 @@
 # :coding: utf-8
 
+from docutils.statemachine import StringList
+
 
 class RSTRenderer(object):
     """Helper class regrouping static method which render
@@ -86,7 +88,7 @@ class RSTRenderer(object):
         # As a method can also be a variable, use the method directive
         # by default when available
         if blacklist_ids is None:
-            blacklist = []
+            blacklist_ids = []
 
         for attr_environment in class_environment["attribute"].values():
             if attr_environment["id"] in blacklist_ids:
@@ -481,3 +483,9 @@ class RSTRenderer(object):
 
         element_rst += "\n"
         return element_rst
+
+    @staticmethod
+    def rst_string(expression=""):
+        """Return `StringList` from *expression*.
+        """
+        return StringList(expression.split("\n"))
