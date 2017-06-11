@@ -8,7 +8,7 @@ import champollion.parser
 def test_get_environment_error():
     """Raise an error if the path is incorrect."""
     with pytest.raises(OSError):
-        champollion.parser.get_environment("")
+        champollion.parser.fetch_environment("")
 
 
 def test_get_environment_empty(temporary_directory):
@@ -22,6 +22,6 @@ def test_get_environment_empty(temporary_directory):
         "data": {},
         "file": {}
     }
-    assert champollion.parser.get_environment(
+    assert champollion.parser.fetch_environment(
         temporary_directory
     ) == environment

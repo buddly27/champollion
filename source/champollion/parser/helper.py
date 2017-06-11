@@ -1,38 +1,16 @@
 # :coding: utf-8
 
 import re
-import os
 
 
 #: Regular Expression pattern for single line comments
-ONE_LINE_COMMENT_PATTERN = re.compile(r"//.*?\n")
+_ONE_LINE_COMMENT_PATTERN = re.compile(r"//.*?\n")
 
 #: Regular Expression pattern for multi-line comments
-MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
+_MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
 
 #: Regular Expression pattern for nested element symbols
-NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]*}")
-
-#: Regular Expression pattern for imported element
-IMPORTED_ELEMENT_PATTERN = re.compile(
-    r"(?P<start_regex>(\n|^)) *import +"
-    r"(?P<expression>({([^{}]|\n)+}|.+))"
-    r" +from +['\"](?P<module>[\w/.\\_-]+)['\"];?"
-)
-
-#: Regular Expression pattern for exported element
-EXPORTED_ELEMENT_PATTERN = re.compile(
-    r"(?P<start_regex>(\n|^)) *export +(?P<default>default +)?"
-    r"((?P<expression_from_module>({([^{}]|\n)+}|.+))"
-    r" +from +['\"](?P<module>[\w/.\\_-]+)['\"]|"
-    r"(?P<expression_from_variable>({([^{}]|\n)+}|.+)));?"
-)
-
-#: Regular Expression pattern for binding element
-BINDING_ELEMENT_PATTERN = re.compile(
-    r"^((?P<name>([\w;]+|\*))|\w+\(.*\)\((?P<wrapped_name>\w+)\);?)"
-    r"( +as +(?P<alias>\w+))?$"
-)
+_NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]*}")
 
 
 def filter_comments(content, keep_content_size=False):
@@ -42,7 +20,8 @@ def filter_comments(content, keep_content_size=False):
 
     .. note::
 
-        The line numbers are preserved.
+        The filtered content keep the same number of lines as the
+        original content.
 
     """
     def _replace_comment(element):
@@ -52,15 +31,15 @@ def filter_comments(content, keep_content_size=False):
             return " " * _buffer + "\n" * count
         return "\n" * count
 
-    content = ONE_LINE_COMMENT_PATTERN.sub(_replace_comment, content)
-    content = MULTI_LINES_COMMENT_PATTERN.sub(_replace_comment, content)
+    content = _ONE_LINE_COMMENT_PATTERN.sub(_replace_comment, content)
+    content = _MULTI_LINES_COMMENT_PATTERN.sub(_replace_comment, content)
 
     return content
 
 
 def collapse_all(content, filter_comment=False):
     """Return tuple of *content* with the top level elements only and dictionary
-    containing the collapsed content associated with the line number**.
+    containing the collapsed content associated with the *line number*.
 
     If *filter_comment* is set to True, all comment are removed from the content
     before collapsing the elements. The collapsed content dictionary preserve
@@ -68,7 +47,8 @@ def collapse_all(content, filter_comment=False):
 
     .. note::
 
-        The line numbers are preserved of the content.
+        The content with collapsed elements keep the same number of
+        lines as the original content.
 
     """
     _initial_content = content
@@ -101,7 +81,7 @@ def collapse_all(content, filter_comment=False):
 
     while _content != content:
         _content = content
-        content = NESTED_ELEMENT_PATTERN.sub(_replace_element, content)
+        content = _NESTED_ELEMENT_PATTERN.sub(_replace_element, content)
 
     # Remove the space buffer before returning the content
     content = re.sub(r"<> *", lambda x: "{}", content)
@@ -170,213 +150,3 @@ def get_docstring(line_number, lines):
         # Error in the docstring
         else:
             return
-
-
-def get_import_environment(content, module_id):
-    """Return import environment from *content*.
-
-    *module_id* represent the ID of the module.
-
-    """
-    environment = {}
-
-    wildcards_number = 0
-
-    module_path = module_id.replace(".", os.sep)
-
-    for match in IMPORTED_ELEMENT_PATTERN.finditer(content):
-        from_module_path = os.path.normpath(
-            os.path.join(module_path, match.group("module"))
-        )
-        from_module_id = from_module_path.replace(os.sep, ".")
-
-        element_raw = match.group("expression").replace("\n", "")
-
-        _env, wildcards_number = get_expression_environment(
-            element_raw, module_id, from_module_id,
-            wildcards_number=wildcards_number,
-            environment=environment
-        )
-        environment.update(_env)
-
-    return environment
-
-
-def get_export_environment(content, module_id):
-    """Return export environment from *content*.
-
-    *module_id* represent the ID of the module.
-
-    """
-    environment = {}
-
-    wildcards_number = 0
-
-    lines = content.split("\n")
-
-    module_path = module_id.replace(".", os.sep)
-
-    for match in EXPORTED_ELEMENT_PATTERN.finditer(content):
-        line_number = (
-            content[:match.start()].count("\n") +
-            match.group("start_regex").count("\n") + 1
-        )
-
-        from_module_id = None
-
-        if match.group("module") is not None:
-            from_module_path = os.path.normpath(
-                os.path.join(module_path, match.group("module"))
-            )
-            from_module_id = from_module_path.replace(os.sep, ".")
-
-        expression = match.group("expression_from_variable")
-        if expression is None:
-            expression = match.group("expression_from_module")
-
-        element_raw = expression.replace("\n", "")
-
-        _env, wildcards_number = get_expression_environment(
-            element_raw, module_id, from_module_id,
-            wildcards_number=wildcards_number,
-        )
-
-        for _env_id, _sub_env in _env.items():
-            environment[_env_id] = {
-                "description": get_docstring(line_number, lines),
-                "line_number": line_number,
-                "default": match.group("default") is not None,
-            }
-            environment[_env_id].update(_sub_env)
-
-    return environment
-
-
-def get_expression_environment(
-    expression, module_id, from_module_id=None, environment=None,
-    wildcards_number=0
-):
-    """Return tuple with *expression* environment and updated *wildcards_number*.
-
-    *module_id* represent the ID of the module.
-
-    *from_module_id* is the optional module id from which the expression can
-    be resolved.
-
-    Update the *environment* if available and return it as-is if the file
-    is not readable.
-
-    *wildcards_number* represent the number of `*` found as un-aliased binding.
-
-    """
-    if environment is None:
-        environment = {}
-
-    # Parse partial expressions first
-    for partial_match in re.finditer("{[^{}]+}", expression):
-        binding_environments, wildcards_number = get_binding_environment(
-            partial_match.group()[1:-1], module_id, wildcards_number
-        )
-        for _env in binding_environments:
-            element_id = _env["id"]
-            environment[element_id] = _env
-            environment[element_id].update(
-                {"partial": True, "module": from_module_id}
-            )
-
-        # remove partial imports from expression
-        expression = (
-            expression[:partial_match.start()] +
-            " " * len(partial_match.group()) +
-            expression[partial_match.end():]
-        )
-
-    # Then parse the default expressions
-    binding_environments, wildcards_number = get_binding_environment(
-        expression, module_id, wildcards_number
-    )
-    for _env in binding_environments:
-        element_id = _env["id"]
-        environment[element_id] = _env
-        environment[element_id].update(
-            {"partial": False, "module": from_module_id}
-        )
-
-    return environment, wildcards_number
-
-
-def get_binding_environment(expression, module_id, wildcards_number=0):
-    """Return tuple with list of binding environments from *expression* and
-    updated *wildcards_number*.
-
-    *module_id* represent the ID of the module.
-
-    *wildcards_number* represent the number of `*` found as un-aliased binding.
-
-    Example::
-
-        expression = "Module1 as ModuleAlias, Module2"
-        env = get_import_module_environment(expression, "test.module")
-
-    The result would be::
-
-        {
-            "test.module.ModuleAlias": {
-                "id": "test.module.ModuleAlias",
-                "name": "Module1",
-                "alias": "ModuleAlias"
-            },
-            "test.module.Module2": {
-                "id": "test.module.ModuleAlias",
-                "name": "Module2",
-                "alias": None
-            }
-        }
-
-    """
-    environments = []
-
-    for element in expression.split(","):
-        _element = element.strip()
-        if len(_element) == 0:
-            continue
-
-        match = BINDING_ELEMENT_PATTERN.match(_element)
-        if match is None:
-            continue
-
-        name = match.group("name")
-        alias = match.group("alias")
-
-        # If the expression is a wrapper function, we try to guess which element
-        # is wrapped with the regular expression
-        # (e.g. 'wrapper()(WrappedElement)')
-        if name is None:
-            name = match.group("wrapped_name")
-
-        # Remove trailing semi-colons if necessary
-        if name.endswith(";"):
-            name = name[:-1]
-
-        if alias is not None:
-            if alias.endswith(";"):
-                alias = alias[:-1]
-
-        # Determine element ID if an alias is set
-        element_id = alias if alias is not None else name
-        if element_id == "*":
-            wildcards_number += 1
-            element_id = "WILDCARD_{0}".format(wildcards_number)
-
-        element_id = "{module}.{id}".format(
-            module=module_id, id=element_id
-        )
-
-        _module = {
-            "id": element_id,
-            "name": name,
-            "alias": alias
-        }
-        environments.append(_module)
-
-    return environments, wildcards_number

@@ -8,7 +8,7 @@ from .helper import get_docstring
 
 
 #: Regular Expression pattern for classes
-CLASS_PATTERN = re.compile(
+_CLASS_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(class +(?P<class_name>\w+)|(const|let|var) +(?P<data_name>\w+) "
     r"*= *class +\w+)"
@@ -16,20 +16,20 @@ CLASS_PATTERN = re.compile(
 )
 
 #: Regular Expression pattern for class methods
-CLASS_METHOD_PATTERN = re.compile(
-    r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|get|set) +)?"
+_CLASS_METHOD_PATTERN = re.compile(
+    r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|fetch|set) +)?"
     r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*?)[\n ]*\) *{"
 )
 
 #: Regular Expression pattern for class arrow methods
-CLASS_METHOD_ARROW_PATTERN = re.compile(
+_CLASS_METHOD_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
     r"=> *{"
 )
 
 #: Regular Expression pattern for class attribute
-CLASS_ATTRIBUTE_PATTERN = re.compile(
+_CLASS_ATTRIBUTE_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?"
     r"(?P<name>[\w._-]+) *= *"
     r"(?P<value>(\((\n|.)*?\) *=> *{.*?}|\[(\n|.)*?\]|{(\n|.)*?}|"
@@ -37,23 +37,39 @@ CLASS_ATTRIBUTE_PATTERN = re.compile(
 )
 
 
-def get_class_environment(content, module_id):
-    """Return class environment from *content*.
+def fetch(content, module_id):
+    """Return class environment dictionary from *content*.
 
-    *module_id* represent the ID of the module.
+    *module_id* represent the identifier of the module.
 
-    Return dictionary in the form of::
+    The environment is in the form of::
 
         {
-            "module.AwesomeClass": {
+            "moduleName.AwesomeClass": {
                 "id": "module.AwesomeClass",
                 "name": "AwesomeClass",
                 "parent": "MotherClass",
                 "line": 42,
                 "description": "Class doc.\\n\\nDetailed description."
-            },
-            "module.another.SuperClass": {
-                ...
+
+                "id": "moduleName.AwesomeClass",
+                "module_id": "moduleName",
+                "exported": False,
+                "default": False,
+                "name": "AwesomeClass",
+                "parent": None,
+                "line_number": 2,
+                "description": "Class doc.\\n\\nDetailed description."
+                "method": {
+                    "moduleName.AwesomeClass.awesomeMethod": {
+                        ....
+                    }
+                },
+                "attribute": {
+                    "moduleName.AwesomeClass.DATA": {
+                        ....
+                    }
+                }
             },
             ...
         }
@@ -67,7 +83,7 @@ def get_class_environment(content, module_id):
     # preserve the class content with all comments (and docstrings!)
     content, collapsed_content = collapse_all(content, filter_comment=True)
 
-    for match in CLASS_PATTERN.finditer(content):
+    for match in _CLASS_PATTERN.finditer(content):
         class_name = match.group("class_name")
         if class_name is None:
             class_name = match.group("data_name")
@@ -85,10 +101,10 @@ def get_class_environment(content, module_id):
         if line_number in collapsed_content.keys():
             class_content = collapsed_content[line_number][1:-1]
 
-            method_environment = get_class_methods_environment(
+            method_environment = fetch_methods_environment(
                 class_content, class_id, line_number=line_number-1
             )
-            attribute_environment = get_class_attribute_environment(
+            attribute_environment = fetch_attribute_environment(
                 class_content, class_id, line_number=line_number-1
             )
 
@@ -109,12 +125,27 @@ def get_class_environment(content, module_id):
     return environment
 
 
-def get_class_methods_environment(content, class_id, line_number=0):
-    """Return function environment from *content*.
+def fetch_methods_environment(content, class_id, line_number=0):
+    """Return function environment dictionary from *content*.
 
-    *class_id* represent the ID of the class.
+    *class_id* represent the identifier of the method class.
 
-    *line_number* is the first line number of content
+    *line_number* is the first line number of content.
+
+    The environment is in the form of::
+
+        {
+            "moduleName.AwesomeClass.awesomeMethod": {
+                "id": "moduleName.AwesomeClass.awesomeMethod",
+                "class_id": "moduleName.AwesomeClass",
+                "module_id": "moduleName",
+                "name": "awesomeMethod",
+                "prefix": "fetch",
+                "arguments": ["argument1", "argument2"],
+                "line_number": 5,
+                "description": "Method doc.\\n\\nDetailed description."
+            }
+        }
 
     """
     environment = {}
@@ -124,8 +155,8 @@ def get_class_methods_environment(content, class_id, line_number=0):
     content = collapse_all(content)[0]
 
     for match_iter in (
-        CLASS_METHOD_ARROW_PATTERN.finditer(content),
-        CLASS_METHOD_PATTERN.finditer(content)
+        _CLASS_METHOD_ARROW_PATTERN.finditer(content),
+        _CLASS_METHOD_PATTERN.finditer(content)
     ):
         for match in match_iter:
             method_id = ".".join([class_id, match.group("method_name")])
@@ -135,7 +166,7 @@ def get_class_methods_environment(content, class_id, line_number=0):
 
                 # Add the prefix to the method ID if the method if a getter or
                 # a setter as several method could have the same name.
-                if prefix in ["get", "set"]:
+                if prefix in ["fetch", "set"]:
                     method_id += "." + prefix
 
             _line_number = (
@@ -166,12 +197,27 @@ def get_class_methods_environment(content, class_id, line_number=0):
     return environment
 
 
-def get_class_attribute_environment(content, class_id, line_number=0):
-    """Return function environment from *content*.
+def fetch_attribute_environment(content, class_id, line_number=0):
+    """Return attribute environment dictionary from *content*.
 
-    *class_id* represent the ID of the class.
+    *class_id* represent the identifier of the attribute class.
 
-    *line_number* is the first line number of content
+    *line_number* is the first line number of content.
+
+    The environment is in the form of::
+
+        {
+            "moduleName.AwesomeClass.DATA": {
+                "id": "moduleName.AwesomeClass.DATA",
+                "class_id": "moduleName.AwesomeClass",
+                "module_id": "moduleName",
+                "name": "DATA",
+                "prefix": "static",
+                "value": "42",
+                "line_number": 8,
+                "description": "Attribute doc.\\n\\nDetailed description."
+            }
+        }
 
     """
     environment = {}
@@ -182,7 +228,7 @@ def get_class_attribute_environment(content, class_id, line_number=0):
     # preserve the entire value (with semi-colons and docstrings!)
     content, collapsed_content = collapse_all(content, filter_comment=True)
 
-    for match in CLASS_ATTRIBUTE_PATTERN.finditer(content):
+    for match in _CLASS_ATTRIBUTE_PATTERN.finditer(content):
         attribute_id = ".".join([class_id, match.group("name")])
         prefix = match.group("prefix")
         if prefix is not None:

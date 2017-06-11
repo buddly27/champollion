@@ -8,7 +8,7 @@ from .helper import get_docstring
 
 
 #: Regular Expression pattern for function expressions
-FUNCTION_PATTERN = re.compile(
+_FUNCTION_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
     r"function *(?P<generator>\* *)?(?P<function_name>[\w_-]+)? "
@@ -16,7 +16,7 @@ FUNCTION_PATTERN = re.compile(
 )
 
 #: Regular Expression pattern for arrow functions
-FUNCTION_ARROW_PATTERN = re.compile(
+_FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(const|let|var) (?P<function_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
@@ -24,10 +24,27 @@ FUNCTION_ARROW_PATTERN = re.compile(
 )
 
 
-def get_function_environment(content, module_id):
-    """Return function environment from *content*.
+def fetch(content, module_id):
+    """Return function environment dictionary from *content*.
 
-    *module_id* represent the ID of the module.
+    *module_id* represent the identifier of the module.
+
+    The environment is in the form of::
+
+        {
+            "moduleName.doSomething": {
+                "id": "moduleName.doSomething",
+                "module_id": "moduleName",
+                "exported": False,
+                "default": False,
+                "name": "doSomething",
+                "anonymous": False,
+                "generator": False,
+                "arguments": ["argument1", "argument2"],
+                "line_number": 2,
+                "description": "Function doc.\\n\\nDetailed description."
+            }
+        }
 
     """
     environment = {}
@@ -37,8 +54,8 @@ def get_function_environment(content, module_id):
     content = collapse_all(content)[0]
 
     for match_iter in (
-        FUNCTION_ARROW_PATTERN.finditer(content),
-        FUNCTION_PATTERN.finditer(content)
+        _FUNCTION_ARROW_PATTERN.finditer(content),
+        _FUNCTION_PATTERN.finditer(content)
     ):
         for match in match_iter:
             name = match.group("function_name")

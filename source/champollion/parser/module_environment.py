@@ -1,46 +1,48 @@
 # :coding: utf-8
 
 
-def get_module_environment(file_id, files, environment=None):
-    """Return module ID and updated environment from *file_id*.
+def fetch(file_id, files=None, module_names=None):
+    """Return module environment dictionary from *file_id*.
 
-    *file_id* is in the form of::
+    *file_id* represent the identifier of the file.
 
-        relative/path/to/file.js
+    *files* is an optional list of the other file names stored in the same
+    directory as the one analyzed.
 
-    *files* is the list of files at the same level of the *file_id* analysed.
+    *module_names* is an optional list of all the other module name
+    previously fetched to help determine the module name of the current
+    file.
 
-    Update the *environment* is available and return it as-is if the file
-    is not readable.
+    The environment is in the form of::
+
+        {
+            "id": "module.test",
+            "name": test,
+            "file_id": "module/test/index.js"
+        }
 
     """
-    if environment is None:
-        environment = {
-            "module": {}
-        }
+    if module_names is None:
+        module_names = []
 
     hierarchy = file_id.split("/")
     file_name = hierarchy.pop()
 
     if file_name == "index.js":
         module_id = ".".join(hierarchy)
-        module_name = guess_module_name(
+        module_name = _guess_module_name(
             hierarchy[-1],
             hierarchy_folders=hierarchy[:-1],
-            module_names=[
-                _module["name"] for _module in environment["module"].values()
-            ]
+            module_names=module_names
         )
 
     elif "index.js" in files:
         name = file_name.split(".js")[0]
         module_id = ".".join(hierarchy + [name])
-        module_name = guess_module_name(
+        module_name = _guess_module_name(
             ".".join([hierarchy[-1], name]),
             hierarchy_folders=hierarchy[:-1],
-            module_names=[
-                _module["name"] for _module in environment["module"].values()
-            ]
+            module_names=module_names
         )
 
     else:
@@ -48,19 +50,17 @@ def get_module_environment(file_id, files, environment=None):
         module_id = ".".join(hierarchy + [name])
         module_name = name
 
-    environment["module"][module_id] = {
+    return {
         "id": module_id,
         "name": module_name,
         "file_id": file_id
     }
 
-    return module_id, environment
 
-
-def guess_module_name(name, hierarchy_folders, module_names):
+def _guess_module_name(name, hierarchy_folders, module_names):
     """Return the full module *name* from *hierarchy_folders*.
 
-    *module_names* is the list of modules already recorded.
+    *module_names* is the list of modules already fetched.
 
     """
     for i in range(len(hierarchy_folders)):

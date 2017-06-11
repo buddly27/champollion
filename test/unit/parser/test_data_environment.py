@@ -2,7 +2,7 @@
 
 import pytest
 
-import champollion.parser.data_parser
+import champollion.parser.data_environment
 
 
 @pytest.fixture()
@@ -31,7 +31,7 @@ def content():
 
 def test_get_data_environment(content):
     """Return data environment from content."""
-    assert champollion.parser.data_parser.get_data_environment(
+    assert champollion.parser.data_environment.fetch(
         content, "test.module"
     ) == {
         "test.module.test_list": {
@@ -148,7 +148,7 @@ def test_get_data_environment(content):
 )
 def test_data_pattern(content, expected):
     """Match an variable."""
-    match = champollion.parser.data_parser.DATA_PATTERN.search(
+    match = champollion.parser.data_environment._DATA_PATTERN.search(
         content
     )
     if expected is None:

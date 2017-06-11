@@ -8,7 +8,7 @@ from .helper import get_docstring
 
 
 #: Regular Expression pattern for data
-DATA_PATTERN = re.compile(
+_DATA_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(?P<type>(const|let|var)) (?P<name>[\w_-]+) *= *"
     r"(?P<value>(\((\n|.)*?\) *=> *{.*?}|\[(\n|.)*?\]|{(\n|.)*?}|"
@@ -16,10 +16,26 @@ DATA_PATTERN = re.compile(
 )
 
 
-def get_data_environment(content, module_id):
-    """Return data environment from *content*.
+def fetch(content, module_id):
+    """Return data environment dictionary from *content*.
 
-    *module_id* represent the ID of the module.
+    *module_id* represent the identifier of the module.
+
+    The environment is in the form of::
+
+        {
+            "moduleName.DATA": {
+                "id": "moduleName.DATA",
+                "module_id": "moduleName",
+                "exported": False,
+                "default": False,
+                "name": "DATA",
+                "value": "42",
+                "type": "const",
+                "line_number": 2,
+                "description": "Variable doc.\\n\\nDetailed description."
+            }
+        }
 
     """
     environment = {}
@@ -30,7 +46,7 @@ def get_data_environment(content, module_id):
     # preserve the entire value (with semi-colons and docstrings!)
     content, collapsed_content = collapse_all(content, filter_comment=True)
 
-    for match in DATA_PATTERN.finditer(content):
+    for match in _DATA_PATTERN.finditer(content):
         data_id = ".".join([module_id, match.group("name")])
 
         line_number = (
