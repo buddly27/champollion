@@ -2,7 +2,7 @@
 
 from sphinx.domains.javascript import JSObject
 
-import rst_generator
+from .rst_generator import rst_string
 
 
 class BaseDirective(JSObject):
@@ -89,28 +89,28 @@ class BaseDirective(JSObject):
         is_default = environment["default"]
 
         if exported and is_default and not force_partial_import:
-            return rst_generator.rst_string(
+            return rst_string(
                 "``import {name} from \"{module}\"``\n".format(
                     name=name, module=module_name
                 )
             )
 
         if exported and (not is_default or force_partial_import):
-            return rst_generator.rst_string(
+            return rst_string(
                 "``import {{{name}}} from \"{module}\"``\n".format(
                     name=name, module=module_name
                 )
             )
 
-        return rst_generator.rst_string()
+        return rst_string()
 
     def generate_description(self, environment):
         """Return description generated from *environment*.
         """
         description = environment["description"]
 
-        content = rst_generator.rst_string()
+        content = rst_string()
         if description:
-            content += rst_generator.rst_string(description)
+            content += rst_string(description)
 
         return content

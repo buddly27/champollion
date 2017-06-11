@@ -4,7 +4,13 @@ from sphinx.directives import Directive
 import docutils.parsers.rst.directives
 import docutils.nodes
 
-import rst_generator
+# import rst_generator
+from .rst_generator import (
+    get_rst_class_elements,
+    get_rst_function_elements,
+    get_rst_data_elements,
+    get_rst_export_elements
+)
 
 
 class AutoModuleDirective(Directive):
@@ -91,7 +97,7 @@ class AutoModuleDirective(Directive):
         rst_elements = {}
 
         # Gather classes
-        rst_elements = rst_generator.get_rst_class_elements(
+        rst_elements = get_rst_class_elements(
             env, module_name,
             undocumented_members=undoc_members,
             private_members=private_members,
@@ -102,7 +108,7 @@ class AutoModuleDirective(Directive):
         )
 
         # Gather functions
-        rst_elements = rst_generator.get_rst_function_elements(
+        rst_elements = get_rst_function_elements(
             env, module_name,
             undocumented_members=undoc_members,
             private_members=private_members,
@@ -113,7 +119,7 @@ class AutoModuleDirective(Directive):
         )
 
         # Gather variables
-        rst_elements = rst_generator.get_rst_data_elements(
+        rst_elements = get_rst_data_elements(
             env, module_name,
             blacklist_ids=env["function"].keys(),
             undocumented_members=undoc_members,
@@ -125,7 +131,7 @@ class AutoModuleDirective(Directive):
         )
 
         # Gather exported elements
-        rst_elements = rst_generator.get_rst_export_elements(
+        rst_elements = get_rst_export_elements(
             env, js_env, module_name,
             rst_elements=rst_elements
         )

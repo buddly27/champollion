@@ -6,8 +6,8 @@ to document each element from a simple identifier.
 
 import os
 
-import module_element
-import file_element
+from .module_element import fetch_environment as fetch_module_environment
+from .file_element import fetch_environment as fetch_file_environment
 
 
 def fetch_environment(path):
@@ -127,7 +127,7 @@ def fetch_environment(path):
             file_path = os.path.join(root, _file)
 
             # Fetch module environment
-            _module_environment = module_element.fetch_environment(
+            _module_environment = fetch_module_environment(
                 file_id, files, module_names=[
                     _module["name"] for _module in
                     environment["module"].values()
@@ -137,7 +137,7 @@ def fetch_environment(path):
             environment["module"][module_id] = _module_environment
 
             # Fetch file environment
-            _file_environment = file_element.fetch_environment(
+            _file_environment = fetch_file_environment(
                 file_path, file_id, _module_environment["id"]
             )
             file_id = _file_environment["id"]

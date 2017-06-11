@@ -7,7 +7,10 @@ import docutils.parsers.rst.directives
 
 from .base import BaseDirective
 
-import rst_generator
+from .rst_generator import (
+    get_rst_attribute_elements,
+    get_rst_method_elements
+)
 
 
 def _parse_members(argument):
@@ -143,7 +146,7 @@ class AutoClassDirective(BaseDirective):
             )
 
             # Gather class attributes
-            rst_elements = rst_generator.get_rst_attribute_elements(
+            rst_elements = get_rst_attribute_elements(
                 env,
                 whitelist_names=whitelist,
                 blacklist_ids=env["method"].keys(),
@@ -153,7 +156,7 @@ class AutoClassDirective(BaseDirective):
             )
 
             # Gather class methods
-            rst_elements = rst_generator.get_rst_method_elements(
+            rst_elements = get_rst_method_elements(
                 env,
                 whitelist_names=whitelist,
                 skip_constructor=skip_constructor,

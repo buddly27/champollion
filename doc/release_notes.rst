@@ -4,6 +4,14 @@
 Release Notes
 *************
 
+.. release:: 0.4.1
+    :date: 2017-06-11
+
+    .. change:: fixed
+
+        Remove implicit relative imports within packages for compatibility
+        with Python 3.
+
 .. release:: 0.4.0
     :date: 2017-06-11
 
