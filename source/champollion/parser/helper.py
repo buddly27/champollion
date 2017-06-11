@@ -11,7 +11,7 @@ ONE_LINE_COMMENT_PATTERN = re.compile(r"//.*?\n")
 MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
 
 #: Regular Expression pattern for nested element symbols
-NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]+}")
+NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]*}")
 
 #: Regular Expression pattern for imported element
 IMPORTED_ELEMENT_PATTERN = re.compile(
