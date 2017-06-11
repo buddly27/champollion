@@ -256,7 +256,7 @@ def get_expression_environment(
     expression, module_id, from_module_id=None, environment=None,
     wildcards_number=0
 ):
-    """Return tuple of *expression* environment and updated *wildcards_number*.
+    """Return tuple with *expression* environment and updated *wildcards_number*.
 
     *module_id* represent the ID of the module.
 
@@ -274,9 +274,10 @@ def get_expression_environment(
 
     # Parse partial expressions first
     for partial_match in re.finditer("{[^{}]+}", expression):
-        for _env in get_binding_environment(
-            partial_match.group()[1:-1]
-        ):
+        binding_environments, wildcards_number = get_binding_environment(
+            partial_match.group()[1:-1], module_id, wildcards_number
+        )
+        for _env in binding_environments:
             element_id = _env["id"]
             environment[element_id] = _env
             environment[element_id].update(
@@ -291,16 +292,11 @@ def get_expression_environment(
         )
 
     # Then parse the default expressions
-    for _env in get_binding_environment(expression):
+    binding_environments, wildcards_number = get_binding_environment(
+        expression, module_id, wildcards_number
+    )
+    for _env in binding_environments:
         element_id = _env["id"]
-        if element_id == "*":
-            wildcards_number += 1
-            element_id = "WILDCARD_{0}".format(wildcards_number)
-
-        element_id = "{module}.{id}".format(
-            module=module_id, id=element_id
-        )
-
         environment[element_id] = _env
         environment[element_id].update(
             {"partial": False, "module": from_module_id}
@@ -309,22 +305,29 @@ def get_expression_environment(
     return environment, wildcards_number
 
 
-def get_binding_environment(expression):
-    """Return list of binding environments from *expression*.
+def get_binding_environment(expression, module_id, wildcards_number=0):
+    """Return tuple with list of binding environments from *expression* and
+    updated *wildcards_number*.
+
+    *module_id* represent the ID of the module.
+
+    *wildcards_number* represent the number of `*` found as un-aliased binding.
 
     Example::
 
         expression = "Module1 as ModuleAlias, Module2"
-        env = get_import_module_environment(expression)
+        env = get_import_module_environment(expression, "test.module")
 
     The result would be::
 
         {
-            "ModuleAlias": {
+            "test.module.ModuleAlias": {
+                "id": "test.module.ModuleAlias",
                 "name": "Module1",
                 "alias": "ModuleAlias"
             },
-            "Module2": {
+            "test.module.Module2": {
+                "id": "test.module.ModuleAlias",
                 "name": "Module2",
                 "alias": None
             }
@@ -361,6 +364,13 @@ def get_binding_environment(expression):
 
         # Determine element ID if an alias is set
         element_id = alias if alias is not None else name
+        if element_id == "*":
+            wildcards_number += 1
+            element_id = "WILDCARD_{0}".format(wildcards_number)
+
+        element_id = "{module}.{id}".format(
+            module=module_id, id=element_id
+        )
 
         _module = {
             "id": element_id,
@@ -369,4 +379,4 @@ def get_binding_environment(expression):
         }
         environments.append(_module)
 
-    return environments
+    return environments, wildcards_number
