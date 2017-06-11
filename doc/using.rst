@@ -17,7 +17,7 @@ indicate the path to the :term:`Javascript` source code::
 
 
 All :term:`Javascript` files within the ``js_source`` structure path is parsed
-when the sphinx builder is initiated, and all relevant information is fetch
+when the sphinx builder is initiated, and all relevant information is fetched
 within a configuration environment which includes the description for each
 element.
 

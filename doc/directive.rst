@@ -153,11 +153,11 @@ Example:
         }
 
         /**
-         * Compute and fetch the area from the square.
+         * Compute and get the area from the square.
          *
          * :return: double
          */
-        fetch area() {
+        get area() {
             return this.height * this.width;
         }
 
@@ -226,7 +226,7 @@ Using automethod
 
 Document a method using one of the following way:
 
-* `getter <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/fetch>`_
+* `getter <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get>`_
 * `setter <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set>`_
 * `arrow-type method <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>`_
 * `static <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/static>`_
