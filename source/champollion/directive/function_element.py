@@ -59,7 +59,7 @@ class AutoFunctionDirective(BaseDirective):
         node["type"] = "function"
         node["id"] = env["id"]
         node["module"] = module_name
-        node['fullname'] = name
+        node["fullname"] = name
 
         if env["generator"]:
             node += addnodes.desc_type("function* ", "function* ")

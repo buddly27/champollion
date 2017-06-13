@@ -93,7 +93,7 @@ class AutoClassDirective(BaseDirective):
         node["type"] = "class"
         node["id"] = env["id"]
         node["module"] = module_name
-        node['fullname'] = name
+        node["fullname"] = name
 
         node += addnodes.desc_type("class ", "class ")
         node += addnodes.desc_addname(module_name + ".", module_name + ".")

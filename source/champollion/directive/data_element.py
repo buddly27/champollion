@@ -61,7 +61,7 @@ class AutoDataDirective(BaseDirective):
         node["type"] = "data"
         node["id"] = env["id"]
         node["module"] = module_name
-        node['fullname'] = name
+        node["fullname"] = name
 
         node += addnodes.desc_type(variable_type + " ", variable_type + " ")
         node += addnodes.desc_addname(module_name + ".", module_name + ".")
