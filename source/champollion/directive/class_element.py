@@ -200,7 +200,7 @@ class AutoMethodDirective(BaseDirective):
 
         node["type"] = "method"
         node["id"] = env["id"]
-        node['fullname'] = name
+        node["fullname"] = name
 
         if prefix is not None:
             node += addnodes.desc_type(prefix + " ", prefix + " ")
@@ -211,7 +211,8 @@ class AutoMethodDirective(BaseDirective):
             param_list += addnodes.desc_parameter(argument, argument)
         node += param_list
 
-        return name, None
+        class_name = env["class_id"].rsplit(".", 1)[-1]
+        return class_name + "." + name, None
 
     def before_content(self):
         """Update the content.
@@ -254,13 +255,15 @@ class AutoAttributeDirective(BaseDirective):
 
         node["type"] = "attribute"
         node["id"] = env["id"]
-        node['fullname'] = name
+        node["fullname"] = name
 
         if prefix is not None:
             node += addnodes.desc_type(prefix + " ", prefix + " ")
         node += addnodes.desc_name(name, name)
         node += addnodes.desc_annotation(" = " + value, " = " + value)
-        return name, None
+
+        class_name = env["class_id"].rsplit(".", 1)[-1]
+        return class_name + "." + name, None
 
     def before_content(self):
         """Update the content.

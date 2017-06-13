@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 from sphinx.directives import Directive
+from sphinx import addnodes
 import docutils.parsers.rst.directives
 import docutils.nodes
 
@@ -81,14 +82,37 @@ class AutoModuleDirective(Directive):
                 )
             )
 
+        env = self.state.document.settings.env
+        module_environment = js_env["module"][signature]
+
+        # Update references
+        ref_context = self.state.document.settings.env.ref_context
+        ref_context["js:module"] = module_environment["id"]
+        ref_context["js:object"] = "module"
+
         nodes = []
 
-        module_environment = js_env["module"][signature]
+        # Add target to reference this module
+        module_id = module_environment["id"]
+        env.domaindata["js"]["modules"][module_id] = env.docname
+        env.domaindata['js']["objects"][module_id] = (env.docname, "module")
+        target_node = docutils.nodes.target(
+            "", "", ids=["module-" + module_id], ismod=True
+        )
+
+        self.state.document.note_explicit_target(target_node)
+        nodes.append(target_node)
+        index_text = "{0} (module)".format(module_id)
+        index_node = addnodes.index(
+            entries=[("single", index_text, "module-" + module_id, "", None)]
+        )
+        nodes.append(index_node)
+
         file_id = module_environment["file_id"]
         module_name = self.options.get(
             "module-alias", module_environment["name"]
         )
-        env = js_env["file"][file_id]
+        file_environment = js_env["file"][file_id]
 
         # Options manually set
         undoc_members = self.options.get("undoc-members", False)
@@ -98,7 +122,7 @@ class AutoModuleDirective(Directive):
 
         # Gather classes
         rst_elements = get_rst_class_elements(
-            env, module_name,
+            file_environment, module_name,
             undocumented_members=undoc_members,
             private_members=private_members,
             force_partial_import=self.options.get(
@@ -109,7 +133,7 @@ class AutoModuleDirective(Directive):
 
         # Gather functions
         rst_elements = get_rst_function_elements(
-            env, module_name,
+            file_environment, module_name,
             undocumented_members=undoc_members,
             private_members=private_members,
             force_partial_import=self.options.get(
@@ -120,8 +144,8 @@ class AutoModuleDirective(Directive):
 
         # Gather variables
         rst_elements = get_rst_data_elements(
-            env, module_name,
-            blacklist_ids=env["function"].keys(),
+            file_environment, module_name,
+            blacklist_ids=file_environment["function"].keys(),
             undocumented_members=undoc_members,
             private_members=private_members,
             force_partial_import=self.options.get(
@@ -132,7 +156,7 @@ class AutoModuleDirective(Directive):
 
         # Gather exported elements
         rst_elements = get_rst_export_elements(
-            env, js_env, module_name,
+            file_environment, js_env, module_name,
             rst_elements=rst_elements
         )
 

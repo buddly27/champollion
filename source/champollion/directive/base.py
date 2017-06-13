@@ -43,12 +43,16 @@ class BaseDirective(JSObject):
                 )
             )
 
-        self.state.document.settings.env.element_environment = (
-            js_env[self.objtype][signature]
-        )
-        self.state.document.settings.env.module_environment = (
-            js_env["module"]
-        )
+        env = js_env[self.objtype][signature]
+        module_env = js_env["module"]
+
+        # Update references
+        ref_context = self.state.document.settings.env.ref_context
+        ref_context["js:module"] = env["module_id"]
+
+        # Update settings environment
+        self.state.document.settings.env.element_environment = env
+        self.state.document.settings.env.module_environment = module_env
 
         return super(BaseDirective, self).run()
 
