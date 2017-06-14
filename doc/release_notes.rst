@@ -4,12 +4,30 @@
 Release Notes
 *************
 
+.. release:: 0.4.2
+    :date: 2017-06-14
+
+    .. change:: fixed
+        :tags: directive
+
+        Ensured that each element documented can be targeted by the standard
+        `Javascript roles <http://www.sphinx-doc.org/en/stable/domains.html#the-javascript-domain>`_
+
+    .. change:: changed
+
+        Added ``js_environment`` global configuration value which will be
+        filled automatically from the ``js_source`` global configuration via
+        the :mod:`champollion.parser` if not provided.
+
+        This ensure that the documentation is rebuilt when the source code is
+        modified.
+
 .. release:: 0.4.1
     :date: 2017-06-11
 
     .. change:: fixed
 
-        Remove implicit relative imports within packages for compatibility
+        Removed implicit relative imports within packages for compatibility
         with Python 3.
 
 .. release:: 0.4.0
