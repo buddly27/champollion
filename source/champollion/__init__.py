@@ -11,23 +11,20 @@ from .directive.class_element import (
 )
 from .directive.module_element import AutoModuleDirective
 
-from .viewcode import (
-    add_source_code_links,
-    create_code_pages,
-    create_missing_code_link
-)
+from .viewcode import ViewCode
 from .parser import fetch_environment
 
 
 def setup(app):
     """Register callbacks and directives."""
-    app.add_config_value("js_source", None, "env")
-    app.add_config_value("js_class_options", [], "env")
+    app.add_config_value("js_source", None, True)
+    app.add_config_value("js_environment", None, True)
+    app.add_config_value("js_class_options", [], True)
 
     app.connect("builder-inited", fetch_javascript_environment)
-    app.connect("doctree-read", add_source_code_links)
-    app.connect("html-collect-pages", create_code_pages)
-    app.connect("missing-reference", create_missing_code_link)
+    app.connect("doctree-read", ViewCode.add_source_code_links)
+    app.connect("html-collect-pages", ViewCode.create_code_pages)
+    app.connect("missing-reference", ViewCode.create_missing_code_link)
 
     app.add_directive_to_domain("js", "autodata", AutoDataDirective)
     app.add_directive_to_domain("js", "autofunction", AutoFunctionDirective)
@@ -42,13 +39,15 @@ def setup(app):
 
 
 def fetch_javascript_environment(app):
-    """Parse the :term:`Javascript` source path and store it in *app*
-    environment.
+    """Fetch the :term:`Javascript` environment from the *app* configuration.
+
+    If the **js_environment** configuration is not provided, attempt to parse
+    the path provided via the **js_source** configuration value.
 
     This function is called with the ``builder-inited`` Sphinx event, emitted
     when the builder object is created.
 
     """
-    path = os.path.abspath(app.config.js_source)
-    app.env.js_environment = fetch_environment(path)
-
+    if app.config.js_environment is None:
+        path = os.path.abspath(app.config.js_source)
+        app.config.js_environment = fetch_environment(path)

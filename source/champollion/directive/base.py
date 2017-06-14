@@ -26,15 +26,10 @@ class BaseDirective(JSObject):
 
     def run(self):
         """Run the directive."""
-        if not hasattr(self.state.document.settings.env, "js_environment"):
-            raise self.error(
-                "The javascript environment has not been parsed properly"
-            )
-
         # The signature is always the first argument.
         signature = self.arguments[0]
 
-        js_env = self.state.document.settings.env.js_environment
+        js_env = self.state.document.settings.env.app.config.js_environment
         if signature not in js_env[self.objtype].keys():
             raise self.error(
                 "The {objtype} id is unavailable: {signature}".format(
