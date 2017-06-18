@@ -17,7 +17,7 @@ def fetch_environment(path):
 
     The environment is in the form of::
 
-        environment = {
+        {
             "module": {
                 "module.id": {
                     "id": "module.id",
