@@ -36,7 +36,7 @@ def fetch_environment(path):
                     ...
                 },
                 ...
-            }
+            },
             "class": {
                 "class_id": {
                     "id": "class_id",
