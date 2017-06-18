@@ -46,9 +46,9 @@ Using autodata
 
 Document a variable declaration using one of the following way:
 
-* `const <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const>`_
-* `let <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let>`_
-* `var <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var>`_
+* :js:external:`const <Statements/const>`
+* :js:external:`let <Statements/let>`
+* :js:external:`var <Statements/var>`
 
 Example:
 
@@ -80,11 +80,11 @@ Using autofunction
 
 Document a function declaration using one of the following way:
 
-* `function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function>`_
-* `function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function>`_
-* `arrow-type function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>`_
-* `function* statement <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*>`_
-* `function* expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function*>`_
+* :js:external:`function <Statements/function>`
+* :js:external:`function expression <Operators/function>`
+* :js:external:`arrow-type function <Functions/Arrow_functions>`
+* :js:external:`function* statement <Statements/function*>`
+* :js:external:`function* expression <Operators/function*>`
 
 Example:
 
@@ -120,10 +120,10 @@ The available options are:
 
     These function declaration statements are not supported at the moment:
 
-    * `Function object <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function>`_
-    * `GeneratorFunction object <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction>`_
-    * `async function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function>`_
-    * `async function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/async_function>`_
+    * :js:external:`Function object <Global_Objects/Function>`
+    * :js:external:`GeneratorFunction object <Global_Objects/GeneratorFunction>`
+    * :js:external:`async function <Statements/async_function>`
+    * :js:external:`async function expression <Operators/async_function>`
 
 .. _directive/autoclass:
 
@@ -132,8 +132,8 @@ Using autoclass
 
 Document a class declaration using one of the following way:
 
-* `class <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/class>`_
-* `class expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/class>`_
+* :js:external:`class <Statements/class>`
+* :js:external:`class expression <Operators/class>`
 
 Example:
 
@@ -226,10 +226,10 @@ Using automethod
 
 Document a method using one of the following way:
 
-* `getter <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get>`_
-* `setter <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set>`_
-* `arrow-type method <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>`_
-* `static <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/static>`_
+* :js:external:`getter <Functions/get>`
+* :js:external:`setter <Functions/set>`
+* :js:external:`arrow-type method <Functions/Arrow_functions>`
+* :js:external:`static <Classes/static>`
 
 Example:
 
@@ -244,8 +244,8 @@ as follow:
 
     These method declaration statements are not supported at the moment:
 
-    * `method generator <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*>`_
-    * `async method <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function>`_
+    * :js:external:`method generator <Statements/function*>`
+    * :js:external:`async method <Statements/async_function>`
 
 
 .. _directive/autoattribute:
@@ -255,7 +255,7 @@ Using autoattribute
 
 Document a class attribute using one of the following way:
 
-* `static <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/static>`_
+* :js:external:`static <Classes/static>`
 
 Example:
 

@@ -67,9 +67,7 @@ class BaseDirective(JSObject):
         .. warning::
 
             The statement is using :term:`Javascript` ES6
-            `import
-            <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import>`_
-            keyword
+            :js:external:`import <Statements/import>` keyword
 
         Example:
 

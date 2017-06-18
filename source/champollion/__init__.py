@@ -20,6 +20,7 @@ def setup(app):
     app.add_config_value("js_source", None, True)
     app.add_config_value("js_environment", None, True)
     app.add_config_value("js_class_options", [], True)
+    app.add_config_value("js_module_options", [], True)
 
     app.connect("builder-inited", fetch_javascript_environment)
     app.connect("doctree-read", ViewCode.add_source_code_links)
@@ -46,6 +47,10 @@ def fetch_javascript_environment(app):
 
     This function is called with the ``builder-inited`` Sphinx event, emitted
     when the builder object is created.
+
+    .. seealso::
+
+        :ref:`configuration`
 
     """
     if app.config.js_environment is None:

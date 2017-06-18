@@ -13,7 +13,7 @@ indicate the path to the :term:`Javascript` source code::
         "champollion"
     ]
 
-    js_source="./relative/path/to/example"
+    js_source = "./relative/path/to/example"
 
 
 All :term:`Javascript` files within the ``js_source`` structure path is parsed
@@ -25,13 +25,18 @@ element.
 
     :ref:`documenting_javascript`
 
+.. seealso::
+
+    :ref:`configuration`
+
 For all :term:`directives <Directive>`, only **one argument** must be given
 which represents the identifier of the element to document. This identifier
 depends on the file structure hierarchy.
 
 Let's consider the following example::
 
-    js_source="./example"
+    # conf.py
+    js_source = "./example"
 
 The identifier of a class named **TestClass** included in
 ``./example/module/test.js`` will be ``example.module.test.TestClass``. This
