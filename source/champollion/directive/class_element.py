@@ -61,6 +61,10 @@ class AutoClassDirective(BaseDirective):
 
         :ref:`directive/autoclass`
 
+    .. seealso::
+
+        :ref:`configuration/js_class_options`
+
     """
     #: Javascript class is callable
     has_arguments = True

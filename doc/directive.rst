@@ -38,6 +38,9 @@ The available options are:
     Indicate whether each import statement display within the module
     should be indicated with partial import.
 
+.. seealso::
+
+    :ref:`configuration/js_module_options`
 
 .. _directive/autodata:
 
@@ -218,6 +221,10 @@ The available options are:
                 this.width = width;
             }
         };
+
+.. seealso::
+
+    :ref:`configuration/js_class_options`
 
 .. _directive/automethod:
 

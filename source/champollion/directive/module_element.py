@@ -43,6 +43,11 @@ class AutoModuleDirective(Directive):
 
         :ref:`directive/automodule`
 
+    .. seealso::
+
+        :ref:`configuration/js_module_options`
+
+
     """
     #: Only the object id argument is required
     required_arguments = 1

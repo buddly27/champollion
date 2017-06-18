@@ -47,8 +47,8 @@ the :func:`champollion.parser.fetch_environment` returned value::
 
 .. _configuration/js_class_options:
 
-Using class options
-===================
+Using autoclass options
+=======================
 
 Provide a list of options to apply automatically for all
 :ref:`autoclass directives <directive/autoclass>`::
@@ -59,8 +59,8 @@ Provide a list of options to apply automatically for all
 
 .. _configuration/js_module_options:
 
-Using module options
-====================
+Using automodule options
+========================
 
 Provide a list of options to apply automatically for all
 :ref:`automodule directives <directive/automodule>`::
