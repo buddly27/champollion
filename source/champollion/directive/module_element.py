@@ -80,6 +80,9 @@ class AutoModuleDirective(Directive):
         env = self.state.document.settings.env
         module_environment = js_env["module"][signature]
 
+        # Automatic boolean options
+        options = self.state.document.settings.env.config.js_module_options
+
         # Update references
         ref_context = self.state.document.settings.env.ref_context
         ref_context["js:module"] = module_environment["id"]
@@ -110,8 +113,12 @@ class AutoModuleDirective(Directive):
         file_environment = js_env["file"][file_id]
 
         # Options manually set
-        undoc_members = self.options.get("undoc-members", False)
-        private_members = self.options.get("private-members", False)
+        undoc_members = self.options.get(
+            "undoc-members", "undoc-members" in options
+        )
+        private_members = self.options.get(
+            "private-members", "private-members" in options
+        )
 
         rst_elements = {}
 
