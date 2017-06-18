@@ -24,6 +24,10 @@ extensions = [
 ]
 
 
+# Add local extension(s).
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "_extension"))
+extensions.append("js_reference")
+
 # The suffix of source filenames.
 source_suffix = ".rst"
 
@@ -77,4 +81,3 @@ autodoc_member_order = "bysource"
 intersphinx_mapping = {
     "python": ("http://docs.python.org/", None)
 }
-
