@@ -4,6 +4,24 @@
 Release Notes
 *************
 
+.. release:: 0.5.0
+    :date: 2017-06-18
+
+    .. change:: new
+        :tags: configuration
+
+        Added ``js_module_options`` global configuration value which contains a
+        list of class directive boolean option activated by default.
+
+        .. code-block:: python
+
+            js_module_options=['undoc-members', 'private-members']
+
+    .. change:: new
+        :tags: documentation
+
+        Add :ref:`configuration <configuration>` documentation.
+
 .. release:: 0.4.2
     :date: 2017-06-14
 
