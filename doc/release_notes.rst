@@ -20,7 +20,7 @@ Release Notes
     .. change:: new
         :tags: documentation
 
-        Add :ref:`configuration <configuration>` documentation.
+        Added :ref:`configuration <configuration>` documentation.
 
 .. release:: 0.4.2
     :date: 2017-06-14
