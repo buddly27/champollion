@@ -25,7 +25,7 @@ _CLASS_METHOD_PATTERN = re.compile(
 _CLASS_METHOD_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
-    r"=> *{"
+    r"=> *"
 )
 
 #: Regular Expression pattern for class attribute

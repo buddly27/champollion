@@ -20,7 +20,7 @@ _FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(const|let|var) (?P<function_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
-    r"=> *{"
+    r"=> *"
 )
 
 
