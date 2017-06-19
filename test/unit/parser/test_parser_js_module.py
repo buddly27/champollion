@@ -2,12 +2,12 @@
 
 import pytest
 
-import champollion.parser.module_element
+import champollion.parser.js_module
 
 
 def test_get_module_environment_from_file():
     """Return module_id and environment from file id."""
-    assert champollion.parser.module_element.fetch_environment(
+    assert champollion.parser.js_module.fetch_environment(
         "test/module/example.js", []
     ) == {
         "id": "test.module.example",
@@ -18,7 +18,7 @@ def test_get_module_environment_from_file():
 
 def test_get_module_environment_from_index_file():
     """Return module_id and environment from index file id."""
-    assert champollion.parser.module_element.fetch_environment(
+    assert champollion.parser.js_module.fetch_environment(
         "test/module/index.js", []
     ) == {
             "id": "test.module",
@@ -30,7 +30,7 @@ def test_get_module_environment_from_index_file():
 def test_get_module_environment_from_file_with_adjacent_index():
     """Return module_id and environment from file id with adjacent index file.
     """
-    assert champollion.parser.module_element.fetch_environment(
+    assert champollion.parser.js_module.fetch_environment(
         "test/module/example.js", ["index.js"]
     ) == {
         "id": "test.module.example",
@@ -83,6 +83,6 @@ def test_get_module_environment_from_file_with_adjacent_index():
 )
 def test_guess_module_name(name, hierarchy_folders, module_names, expected):
     """Return module name from initial name, hierarchy folders and modules."""
-    assert champollion.parser.module_element._guess_module_name(
+    assert champollion.parser.js_module._guess_module_name(
         name, hierarchy_folders, module_names
     ) == expected

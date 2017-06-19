@@ -6,8 +6,8 @@ to document each element from a simple identifier.
 
 import os
 
-from .module_element import fetch_environment as fetch_module_environment
-from .file_element import fetch_environment as fetch_file_environment
+from .js_module import fetch_environment as fetch_module_environment
+from .js_file import fetch_environment as fetch_file_environment
 
 
 def fetch_environment(path):

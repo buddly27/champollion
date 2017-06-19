@@ -2,7 +2,7 @@
 
 import pytest
 
-import champollion.parser.class_element
+import champollion.parser.js_class
 
 
 @pytest.fixture()
@@ -110,7 +110,7 @@ def content():
 
 def test_get_class_environment(content):
     """Return class environment from content."""
-    assert champollion.parser.class_element.fetch_environment(
+    assert champollion.parser.js_class.fetch_environment(
         content, "test.module"
     ) == {
         "test.module.MotherClass": {
@@ -405,7 +405,7 @@ def test_get_class_environment(content):
 )
 def test_class_pattern(content, expected):
     """Match a class."""
-    match = champollion.parser.class_element._CLASS_PATTERN.search(content)
+    match = champollion.parser.js_class._CLASS_PATTERN.search(content)
     if expected is None:
         assert match is None
     else:
@@ -482,7 +482,7 @@ def test_class_pattern(content, expected):
 )
 def test_class_method_pattern(content, expected):
     """Match a class method."""
-    match = champollion.parser.class_element._CLASS_METHOD_PATTERN.search(
+    match = champollion.parser.js_class._CLASS_METHOD_PATTERN.search(
         content
     )
     if expected is None:
@@ -581,7 +581,7 @@ def test_class_method_pattern(content, expected):
 )
 def test_class_method_arrow_pattern(content, expected):
     """Match a class arrow-type method."""
-    match = champollion.parser.class_element._CLASS_METHOD_ARROW_PATTERN.search(
+    match = champollion.parser.js_class._CLASS_METHOD_ARROW_PATTERN.search(
         content
     )
     if expected is None:
@@ -651,7 +651,7 @@ def test_class_method_arrow_pattern(content, expected):
 )
 def test_class_attribute_pattern(content, expected):
     """Match a class attribute."""
-    match = champollion.parser.class_element._CLASS_ATTRIBUTE_PATTERN.search(
+    match = champollion.parser.js_class._CLASS_ATTRIBUTE_PATTERN.search(
         content
     )
     if expected is None:

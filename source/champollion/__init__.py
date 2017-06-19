@@ -4,12 +4,12 @@ import os
 
 from ._version import __version__
 
-from .directive.data_element import AutoDataDirective
-from .directive.function_element import AutoFunctionDirective
-from .directive.class_element import (
+from .directive.js_data import AutoDataDirective
+from .directive.js_function import AutoFunctionDirective
+from .directive.js_class import (
     AutoClassDirective, AutoMethodDirective, AutoAttributeDirective
 )
-from .directive.module_element import AutoModuleDirective
+from .directive.js_module import AutoModuleDirective
 
 from .viewcode import ViewCode
 from .parser import fetch_environment

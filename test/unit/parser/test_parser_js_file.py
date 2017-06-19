@@ -5,7 +5,7 @@ import pytest
 import tempfile
 import os
 
-import champollion.parser.file_element
+import champollion.parser.js_file
 
 
 def test_get_file_environment_empty(request):
@@ -13,7 +13,7 @@ def test_get_file_environment_empty(request):
     file_handle, path = tempfile.mkstemp(suffix=".js")
     os.close(file_handle)
 
-    assert champollion.parser.file_element.fetch_environment(
+    assert champollion.parser.js_file.fetch_environment(
         path, "path/to/example.js", "test.module"
     ) == {
         "id": "path/to/example.js",
@@ -182,7 +182,7 @@ def test_get_file_environment_empty(request):
     ]
 )
 def test_fetch_import_environment(content, expected):
-    assert champollion.parser.file_element.fetch_import_environment(
+    assert champollion.parser.js_file.fetch_import_environment(
         content, "test.module"
     ) == expected
 
@@ -291,7 +291,7 @@ def test_fetch_import_environment(content, expected):
 def test_fetch_expression_environment(
     expression, environment, wildcards_number, expected
 ):
-    assert champollion.parser.file_element._fetch_expression_environment(
+    assert champollion.parser.js_file._fetch_expression_environment(
         expression, "module", "test.module", environment, wildcards_number
     ) == expected
 
@@ -493,7 +493,7 @@ def test_fetch_expression_environment(
     ]
 )
 def test_fetch_export_environment(content, expected):
-    assert champollion.parser.file_element.fetch_export_environment(
+    assert champollion.parser.js_file.fetch_export_environment(
         content, "test.module"
     ) == expected
 
@@ -569,6 +569,6 @@ def test_fetch_export_environment(content, expected):
     ]
 )
 def test_fetch_binding_environment(expression, expected):
-    assert champollion.parser.file_element._fetch_binding_environment(
+    assert champollion.parser.js_file._fetch_binding_environment(
         expression, "test.module"
     ) == expected

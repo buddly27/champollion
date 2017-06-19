@@ -36,7 +36,7 @@ Release Notes
     .. change:: new
         :tags: javascript-parser
 
-        Added :func:`champollion.parser.file_element.fetch_import_environment`
+        Added :func:`champollion.parser.js_file.fetch_import_environment`
         to fetch elements imported from different modules if possible::
 
             import {element as alias} from "./module"
@@ -45,7 +45,7 @@ Release Notes
     .. change:: new
         :tags: javascript-parser
 
-        Added :func:`champollion.parser.file_element.fetch_export_environment`
+        Added :func:`champollion.parser.js_file.fetch_export_environment`
         to fetch elements exported from different modules if possible::
 
             export {element as alias} from "./module"
@@ -54,14 +54,14 @@ Release Notes
     .. change:: new
         :tags: javascript-parser
 
-        Added :func:`champollion.parser.file_element.update_from_exported_elements`
+        Added :func:`champollion.parser.js_file.update_from_exported_elements`
         to regroup the exported element within a file environment if possible.
 
     .. change:: new
         :tags: directive
 
         Added ``:alias:`` options to all directives (except
-        :class:`js:automodule <champollion.directive.module_element.AutoModuleDirective>`
+        :class:`js:automodule <champollion.directive.js_module.AutoModuleDirective>`
         ) to modify the name of the element to display.
 
     .. change:: new
@@ -75,7 +75,7 @@ Release Notes
 
         Added ``:force-partial-import:`` options to all directives to force
         the display of partial import if the element is exported. On the
-        :class:`js:automodule <champollion.directive.module_element.AutoModuleDirective>`,
+        :class:`js:automodule <champollion.directive.js_module.AutoModuleDirective>`,
         this options is applied to all nested elements.
 
     .. change:: new
@@ -86,7 +86,7 @@ Release Notes
     .. change:: fixed
         :tags: javascript-parser
 
-        Fixed :func:`class parser <champollion.parser.class_element.fetch_environment>`
+        Fixed :func:`class parser <champollion.parser.js_class.fetch_environment>`
         to recognize class expression assigned to **let** and **var** variables.
 
 .. release:: 0.3.3
@@ -96,7 +96,7 @@ Release Notes
         :tags: javascript-parser
 
         Fixed unit tests for
-        :func:`function parser <champollion.parser.function_element.fetch_environment>`
+        :func:`function parser <champollion.parser.js_function.fetch_environment>`
 
 .. release:: 0.3.2
     :date: 2017-06-07
@@ -106,28 +106,28 @@ Release Notes
 
         Added support for
         `function expression <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/function>`_
-        in :func:`function parser <champollion.parser.function_element.fetch_environment>`.
+        in :func:`function parser <champollion.parser.js_function.fetch_environment>`.
 
     .. change:: changed
         :tags: javascript-parser, directive
 
         Added support for
         `function generator <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*>`_
-        in :func:`function parser <champollion.parser.function_element.fetch_environment>`
-        and :class:`~champollion.directive.function_element.AutoFunctionDirective`.
+        in :func:`function parser <champollion.parser.js_function.fetch_environment>`
+        and :class:`~champollion.directive.js_function.AutoFunctionDirective`.
 
     .. change:: fixed
         :tags: javascript-parser
 
-        Fixed :func:`function parser <champollion.parser.function_element.fetch_environment>`
+        Fixed :func:`function parser <champollion.parser.js_function.fetch_environment>`
         to recognize arrow-type function expression assigned to **let** and
         **var** variables.
 
     .. change:: fixed
         :tags: javascript-parser, directive
 
-        Fixed :func:`function parser <champollion.parser.function_element.fetch_environment>`
-        and :class:`~champollion.directive.function_element.AutoFunctionDirective`
+        Fixed :func:`function parser <champollion.parser.js_function.fetch_environment>`
+        and :class:`~champollion.directive.js_function.AutoFunctionDirective`
         to support anonymous function.
 
     .. change:: changed
@@ -141,7 +141,7 @@ Release Notes
     .. change:: fixed
         :tags: javascript-parser
 
-        Fix :func:`champollion.parser.data_element.fetch_environment` to
+        Fix :func:`champollion.parser.js_data.fetch_environment` to
         preserve the data value with all of its potential nested elements.
 
         Format the value on one line to ease the display.
@@ -151,10 +151,10 @@ Release Notes
 
         As an `arrow-type function <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>`_
         can be also be considered as a variable, ensure that the
-        :class:`js:automodule <champollion.directive.module_element.AutoModuleDirective>`
-        and :class:`js:autoclass <champollion.directive.class_element.AutoClassDirective>`
-        directives use the :class:`~champollion.directive.function_element.AutoFunctionDirective`
-        and :class:`~champollion.directive.class_element.AutoMethodDirective`
+        :class:`js:automodule <champollion.directive.js_module.AutoModuleDirective>`
+        and :class:`js:autoclass <champollion.directive.js_class.AutoClassDirective>`
+        directives use the :class:`~champollion.directive.js_function.AutoFunctionDirective`
+        and :class:`~champollion.directive.js_class.AutoMethodDirective`
         in priority when available.
 
 .. release:: 0.3.0
@@ -163,7 +163,7 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.module_element.AutoModuleDirective`
+        Added :class:`~champollion.directive.js_module.AutoModuleDirective`
         :term:`directive <Directive>` to generate the documentation from a module
         id representing a module (a file name without the '.js' extension or a
         directory with an 'index.js' file) parsed within the :term:`Javascript`
@@ -173,7 +173,7 @@ Release Notes
         :tags: directive
 
         Added ``:undoc-members:`` option to the
-        :class:`js:automodule <champollion.directive.module_element.AutoModuleDirective>`
+        :class:`js:automodule <champollion.directive.js_module.AutoModuleDirective>`
         directive to provide a way to document the module members without
         docstrings.
 
@@ -181,7 +181,7 @@ Release Notes
         :tags: directive
 
         Added ``:private-members:`` option to the
-        :class:`js:automodule <champollion.directive.module_element.AutoModuleDirective>`
+        :class:`js:automodule <champollion.directive.js_module.AutoModuleDirective>`
         directive to provide a way to document the private module members.
 
     .. change:: new
@@ -201,7 +201,7 @@ Release Notes
         :tags: directive
 
         Added ``:members:`` option to the
-        :class:`js:autoclass <champollion.directive.class_element.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.js_class.AutoClassDirective>`
         directive to provide a way to document all or part of the members
         contained within a class.
 
@@ -209,7 +209,7 @@ Release Notes
         :tags: directive
 
         Added ``:skip-constructor:`` option to the
-        :class:`js:autoclass <champollion.directive.class_element.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.js_class.AutoClassDirective>`
         directive to provide a way to filter a class constructor in the
         documentation generated.
 
@@ -217,7 +217,7 @@ Release Notes
         :tags: directive
 
         Added ``:undoc-members:`` option to the
-        :class:`js:autoclass <champollion.directive.class_element.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.js_class.AutoClassDirective>`
         directive to provide a way to document the class members without
         docstrings.
 
@@ -225,7 +225,7 @@ Release Notes
         :tags: directive
 
         Added ``:private-members:`` option to the
-        :class:`js:autoclass <champollion.directive.class_element.AutoClassDirective>`
+        :class:`js:autoclass <champollion.directive.js_class.AutoClassDirective>`
         directive to provide a way to document the private class members.
 
     .. change:: new
@@ -261,7 +261,7 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.data_element.AutoDataDirective`
+        Added :class:`~champollion.directive.js_data.AutoDataDirective`
         :term:`directive <Directive>` to generate the documentation from a data
         id representing a variable parsed within the :term:`Javascript` source
         code.
@@ -269,7 +269,7 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.function_element.AutoFunctionDirective`
+        Added :class:`~champollion.directive.js_function.AutoFunctionDirective`
         :term:`directive <Directive>` to generate the documentation from a
         function id representing a function parsed within the :term:`Javascript`
         source code.
@@ -277,7 +277,7 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.class_element.AutoClassDirective`
+        Added :class:`~champollion.directive.js_class.AutoClassDirective`
         :term:`directive <Directive>` to generate the documentation from a
         class id representing a class parsed within the :term:`Javascript`
         source code.
@@ -285,7 +285,7 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.class_element.AutoMethodDirective`
+        Added :class:`~champollion.directive.js_class.AutoMethodDirective`
         :term:`directive <Directive>` to generate the documentation from a
         method id representing a class method parsed within the
         :term:`Javascript` source code.
@@ -293,7 +293,7 @@ Release Notes
     .. change:: new
         :tags: directive
 
-        Added :class:`~champollion.directive.class_element.AutoAttributeDirective`
+        Added :class:`~champollion.directive.js_class.AutoAttributeDirective`
         :term:`directive <Directive>` to generate the documentation from an
         attribute id representing a class attribute parsed within the
         :term:`Javascript` source code.

@@ -3,9 +3,9 @@
 import os
 import re
 
-from .class_element import fetch_environment as fetch_class_environment
-from .function_element import fetch_environment as fetch_function_environment
-from .data_element import fetch_environment as fetch_data_environment
+from .js_class import fetch_environment as fetch_class_environment
+from .js_function import fetch_environment as fetch_function_environment
+from .js_data import fetch_environment as fetch_data_environment
 
 from .helper import get_docstring
 

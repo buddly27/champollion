@@ -1,7 +1,7 @@
 # :coding: utf-8
 
 import pytest
-import champollion.parser.function_element
+import champollion.parser.js_function
 
 
 @pytest.fixture()
@@ -41,7 +41,7 @@ def content():
 
 def test_get_function_environment(content):
     """Return function environment from content."""
-    assert champollion.parser.function_element.fetch_environment(
+    assert champollion.parser.js_function.fetch_environment(
         content, "test.module"
     ) == {
         "test.module.doSomething": {
@@ -221,7 +221,7 @@ def test_get_function_environment(content):
 )
 def test_function_pattern(content, expected):
     """Match a function."""
-    match = champollion.parser.function_element._FUNCTION_PATTERN.search(content)
+    match = champollion.parser.js_function._FUNCTION_PATTERN.search(content)
     if expected is None:
         assert match is None
     else:
@@ -323,7 +323,7 @@ def test_function_pattern(content, expected):
 )
 def test_function_arrow_pattern(content, expected):
     """Match an arrow-type function."""
-    match = champollion.parser.function_element._FUNCTION_ARROW_PATTERN.search(
+    match = champollion.parser.js_function._FUNCTION_ARROW_PATTERN.search(
         content
     )
     if expected is None:
