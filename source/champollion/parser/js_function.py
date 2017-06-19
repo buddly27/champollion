@@ -12,7 +12,7 @@ _FUNCTION_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
     r"function *(?P<generator>\* *)?(?P<function_name>[\w_-]+)? "
-    r"*\([\n ]*(?P<arguments>.*?)[\n ]*\) *{",
+    r"*\([\n ]*(?P<arguments>.*?)[\n ]*\) *{"
 )
 
 #: Regular Expression pattern for arrow functions
@@ -21,6 +21,12 @@ _FUNCTION_ARROW_PATTERN = re.compile(
     r"(const|let|var) (?P<function_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
     r"=> *"
+)
+
+#: Regular Expression pattern for imported functions
+_IMPORTED_FUNCTION_PATTERN = re.compile(
+    r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
+    r"(?P<function_name>[\w_-]+)? *\([\n ]*(?P<arguments>.*?)[\n ]*\);?"
 )
 
 
@@ -55,10 +61,18 @@ def fetch_environment(content, module_id):
 
     for match_iter in (
         _FUNCTION_ARROW_PATTERN.finditer(content),
-        _FUNCTION_PATTERN.finditer(content)
+        _FUNCTION_PATTERN.finditer(content),
+        _IMPORTED_FUNCTION_PATTERN.finditer(content),
     ):
         for match in match_iter:
             name = match.group("function_name")
+
+            # In case of anonymous functions, do not allow the imported
+            # function pattern to confuse the 'function' statement with
+            # the name.
+            if name == "function":
+                continue
+
             if "data_name" in match.groupdict().keys():
                 _name = match.group("data_name")
                 if _name is not None:
