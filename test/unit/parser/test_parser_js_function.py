@@ -430,3 +430,55 @@ def test_function_arrow_pattern(content, expected):
         assert match is None
     else:
         assert match.groupdict() == expected
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            "connect(arg1, arg2);",
+            {
+                "arguments": "arg1, arg2",
+                "default": None,
+                "export": None,
+                "function_name": "connect",
+                "start_regex": ""
+            }
+        ),
+        (
+            "export   connect(arg1, arg2);",
+            {
+                "arguments": "arg1, arg2",
+                "default": None,
+                "export": "export   ",
+                "function_name": "connect",
+                "start_regex": ""
+            }
+        ),
+        (
+            "\n"
+            "export default connect(arg)()",
+            {
+                "arguments": "arg",
+                "default": "default ",
+                "export": "export ",
+                "function_name": "connect",
+                "start_regex": "\n"
+            }
+        )
+    ],
+    ids=[
+        "valid function",
+        "valid exported function",
+        "valid exported default function",
+    ]
+)
+def test_imported_function_pattern(content, expected):
+    """Match an imported function."""
+    match = champollion.parser.js_function._IMPORTED_FUNCTION_PATTERN.search(
+        content
+    )
+    if expected is None:
+        assert match is None
+    else:
+        assert match.groupdict() == expected
