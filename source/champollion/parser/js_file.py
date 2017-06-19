@@ -27,8 +27,7 @@ _EXPORTED_ELEMENT_PATTERN = re.compile(
 
 #: Regular Expression pattern for binding element
 _BINDING_ELEMENT_PATTERN = re.compile(
-    r"^((?P<name>([\w;]+|\*))|\w+\(.*\)\((?P<wrapped_name>\w+)\);?)"
-    r"( +as +(?P<alias>\w+))?$"
+    r"^(?P<name>([\w;]+|\*))( +as +(?P<alias>\w+))?$"
 )
 
 
@@ -397,12 +396,6 @@ def _fetch_binding_environment(expression, module_id, wildcards_number=0):
 
         name = match.group("name")
         alias = match.group("alias")
-
-        # If the expression is a wrapper function, we try to guess which element
-        # is wrapped with the regular expression
-        # (e.g. 'wrapper()(WrappedElement)')
-        if name is None:
-            name = match.group("wrapped_name")
 
         # Remove trailing semi-colons if necessary
         if name.endswith(";"):

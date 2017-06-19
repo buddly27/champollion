@@ -557,6 +557,10 @@ def test_fetch_export_environment(content, expected):
             )
         ),
         (
+            "connect(mapStateToProps, mapDispatchToProps)(ReactComponent)",
+            ([], 0)
+        ),
+        (
             "name = 42",
             ([], 0)
         )
@@ -565,6 +569,7 @@ def test_fetch_export_environment(content, expected):
         "three elements",
         "single element with alias",
         "two elements with wildcard",
+        "wrapped element",
         "invalid",
     ]
 )
