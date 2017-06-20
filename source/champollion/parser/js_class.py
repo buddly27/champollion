@@ -1,6 +1,7 @@
 # :coding: utf-8
 
 import re
+import functools
 
 from .helper import filter_comments
 from .helper import collapse_all
@@ -32,7 +33,7 @@ _CLASS_METHOD_ARROW_PATTERN = re.compile(
 _CLASS_ATTRIBUTE_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?"
     r"(?P<name>[\w._-]+) *= *"
-    r"(?P<value>(\((\n|.)*?\) *=> *{.*?}|\[(\n|.)*?\]|{(\n|.)*?}|"
+    r"(?P<value>((\n|.)*? *=> *({.*?}|(\n|.)*?;)|\[(\n|.)*?\]|{(\n|.)*?}|"
     r"\((\n|.)*?\)|.+))"
 )
 
@@ -169,10 +170,12 @@ def fetch_methods_environment(content, class_id, line_number=0):
                 if prefix in ["get", "set"]:
                     method_id += "." + prefix
 
-            _line_number = (
+            _relative_line_number = (
                 content[:match.start()].count("\n") +
                 match.group("start_regex").count("\n") + 1
             )
+
+            _line_number = _relative_line_number + line_number
 
             arguments_matched = match.group("arguments")
             if arguments_matched is None:
@@ -189,8 +192,8 @@ def fetch_methods_environment(content, class_id, line_number=0):
                 "name": match.group("method_name"),
                 "prefix": prefix,
                 "arguments": arguments,
-                "line_number": _line_number+line_number,
-                "description": get_docstring(_line_number, lines)
+                "line_number": _line_number,
+                "description": get_docstring(_relative_line_number, lines)
             }
             environment[method_id] = method_environment
 
@@ -236,10 +239,12 @@ def fetch_attribute_environment(content, class_id, line_number=0):
 
         value = match.group("value")
 
-        _line_number = (
+        _relative_line_number = (
             content[:match.start()].count("\n") +
             match.group("start_regex").count("\n") + 1
         )
+
+        _line_number = _relative_line_number + line_number
 
         if "{}" in value and _line_number in collapsed_content.keys():
             value = value.replace("{}", collapsed_content[_line_number])
@@ -254,10 +259,22 @@ def fetch_attribute_environment(content, class_id, line_number=0):
             "module_id": class_id.rsplit(".", 1)[0],
             "name": match.group("name"),
             "prefix": prefix,
-            "value": value,
-            "line_number": _line_number+line_number,
-            "description": get_docstring(_line_number, lines)
+            "value": functools.reduce(_clean_value, value.split('\n')).strip(),
+            "line_number": _line_number,
+            "description": get_docstring(_relative_line_number, lines)
         }
         environment[attribute_id] = attribute_environment
 
     return environment
+
+
+def _clean_value(line1, line2):
+    """Clean up attribute value for display."""
+    _line1 = line1.strip()
+    _line2 = line2.strip()
+
+    # Let trailing space to make the code easier to read
+    if _line1[-1:] in ["{", "}", "(", ")", "[", "]", ";", ","]:
+        _line1 += " "
+
+    return _line1 + _line2
