@@ -5,325 +5,332 @@ import pytest
 import champollion.parser.js_class
 
 
-@pytest.fixture()
-def content():
-    return (
-        "/**\n"
-        " * Base Class\n"
-        " */\n"
-        "class MotherClass {\n"
-        "    constructor() {\n"
-        "        this.attribute = 42\n"
-        "    }\n"
-        "}\n"
-        "\n"
-        "const CustomWelcome = class Welcome {\n"
-        "    greeting() {\n"
-        "        return 'Hello World';\n"
-        "    }\n"
-        "};\n"
-        "\n"
-        "/**\n"
-        " * Inherited class\n"
-        " */\n"
-        "export default class AwesomeClass extends MotherClass {\n"
-        "    /** AwesomeClass constructor */\n"
-        "    constructor(name) {\n"
-        "        super();\n"
-        "        this.name = name;\n"
-        "    }\n"
-        "\n"
-        "    /**\n"
-        "     * Get the name.\n"
-        "     *\n"
-        "     * .. warning::\n"
-        "     *\n"
-        "     *     The name is awesome\n"
-        "     */\n"
-        "    get name() {\n"
-        "        return this.name;\n"
-        "    }\n"
-        "\n"
-        "    /**\n"
-        "     * Set the name.\n"
-        "     *\n"
-        "     * .. warning::\n"
-        "     *\n"
-        "     *     Keep the name awesome\n"
-        "     */\n"
-        "    set name(value) {\n"
-        "        this.name = value;\n"
-        "    }\n"
-        "\n"
-        "    /**\n"
-        "     * An awesome method.\n"
-        "     */\n"
-        "    awesomeMethod(arg1, arg2) {\n"
-        "        console.log('Method has been called');\n"
-        "    }\n"
-        "\n"
-        "    /**\n"
-        "     * A static method.\n"
-        "     */\n"
-        "    static staticMethod() {\n"
-        "        console.log('Static method has been called');\n"
-        "    }\n"
-        "\n"
-        "    /**\n"
-        "     * A first arrow-type method.\n"
-        "     */\n"
-        "    anArrowType_method1 = (arg1, arg2 = true) => {\n"
-        "        console.log('test1');\n"
-        "    };\n"
-        "\n"
-        "\n"
-        "    /**\n"
-        "     * A second arrow-type method.\n"
-        "     */\n"
-        "    anArrowType_method2 = arg => {\n"
-        "        console.log('test2');\n"
-        "    };\n"
-        "\n"
-        "    /**\n"
-        "     * A static attribute.\n"
-        "     */\n"
-        "    static attribute1 = 42;\n"
-        "\n"
-        "    /**\n"
-        "     * An object attribute.\n"
-        "     */\n"
-        "    attribute2 = {\n"
-        "        key1: 'value1',\n"
-        "        key2: 'value2',\n"
-        "    };\n"
-        "\n"
-        "    /**\n"
-        "     * A list attribute.\n"
-        "     */\n"
-        "    attribute3 = [\n"
-        "        'value1',\n"
-        "        'value2',\n"
-        "    ]\n"
-        "}\n"
-    )
-
-
-def test_get_class_environment(content):
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            (
+                "/**\n"
+                " * Simple class\n"
+                " */\n"
+                "class SimpleClass {}\n"
+            ),
+            {
+                "test.module.SimpleClass": {
+                    "id": "test.module.SimpleClass",
+                    "module_id": "test.module",
+                    "exported": False,
+                    "default": False,
+                    "name": "SimpleClass",
+                    "parent": None,
+                    "line_number": 4,
+                    "description": "Simple class",
+                    "method": {},
+                    "attribute": {}
+                }
+            }
+        ),
+        (
+            (
+                "/**\n"
+                " * Simple class with attributes\n"
+                " */\n"
+                "class SimpleClass {\n"
+                "    /**\n"
+                "     * A static attribute.\n"
+                "     */\n"
+                "    static attribute1 = 42;\n"
+                "\n"
+                "    /**\n"
+                "     * An object attribute.\n"
+                "     */\n"
+                "    attribute2 = {\n"
+                "        key1: 'value1',\n"
+                "        key2: 'value2',\n"
+                "    };\n"
+                "\n"
+                "    /**\n"
+                "     * A list attribute.\n"
+                "     */\n"
+                "    attribute3 = [\n"
+                "        'value1',\n"
+                "        'value2',\n"
+                "    ]\n"
+                "}\n"
+            ),
+            {
+                "test.module.SimpleClass": {
+                    "id": "test.module.SimpleClass",
+                    "module_id": "test.module",
+                    "exported": False,
+                    "default": False,
+                    "name": "SimpleClass",
+                    "parent": None,
+                    "line_number": 4,
+                    "description": "Simple class with attributes",
+                    "method": {},
+                    "attribute": {
+                        "test.module.SimpleClass.attribute1": {
+                            "id": "test.module.SimpleClass.attribute1",
+                            "class_id": "test.module.SimpleClass",
+                            "module_id": "test.module",
+                            "name": "attribute1",
+                            "prefix": "static",
+                            "value": "42",
+                            "line_number": 8,
+                            "description": "A static attribute."
+                        },
+                        "test.module.SimpleClass.attribute2": {
+                            "id": "test.module.SimpleClass.attribute2",
+                            "class_id": "test.module.SimpleClass",
+                            "module_id": "test.module",
+                            "name": "attribute2",
+                            "prefix": None,
+                            "value": "{ key1: 'value1', key2: 'value2', }",
+                            "line_number": 13,
+                            "description": "An object attribute."
+                        },
+                        "test.module.SimpleClass.attribute3": {
+                            "id": "test.module.SimpleClass.attribute3",
+                            "class_id": "test.module.SimpleClass",
+                            "module_id": "test.module",
+                            "name": "attribute3",
+                            "prefix": None,
+                            "value": "[ 'value1', 'value2', ]",
+                            "line_number": 21,
+                            "description": "A list attribute."
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                "/**\n"
+                " * Simple class with getter and setter\n"
+                " */\n"
+                "class SimpleClass {\n"
+                "    /**\n"
+                "     * Get the name.\n"
+                "     *\n"
+                "     * .. warning::\n"
+                "     *\n"
+                "     *     The name is awesome\n"
+                "     */\n"
+                "    get name() {\n"
+                "        return this.name;\n"
+                "    }\n"
+                "\n"
+                "    /**\n"
+                "     * Set the name.\n"
+                "     *\n"
+                "     * .. warning::\n"
+                "     *\n"
+                "     *     Keep the name awesome\n"
+                "     */\n"
+                "    set name(value) {\n"
+                "        this.name = value;\n"
+                "    }\n"
+                "}\n"
+            ),
+            {
+                "test.module.SimpleClass": {
+                    "id": "test.module.SimpleClass",
+                    "module_id": "test.module",
+                    "exported": False,
+                    "default": False,
+                    "name": "SimpleClass",
+                    "parent": None,
+                    "line_number": 4,
+                    "description": "Simple class with getter and setter",
+                    "method": {
+                        "test.module.SimpleClass.name.get": {
+                            "id": "test.module.SimpleClass.name.get",
+                            "class_id": "test.module.SimpleClass",
+                            "module_id": "test.module",
+                            "name": "name",
+                            "prefix": "get",
+                            "arguments": [],
+                            "line_number": 12,
+                            "description": (
+                                "Get the name.\n"
+                                "\n"
+                                ".. warning::\n"
+                                "\n"
+                                "    The name is awesome"
+                            )
+                        },
+                        "test.module.SimpleClass.name.set": {
+                            "id": "test.module.SimpleClass.name.set",
+                            "class_id": "test.module.SimpleClass",
+                            "module_id": "test.module",
+                            "name": "name",
+                            "prefix": "set",
+                            "arguments": ["value"],
+                            "line_number": 23,
+                            "description": (
+                                "Set the name.\n"
+                                "\n"
+                                ".. warning::\n"
+                                "\n"
+                                "    Keep the name awesome"
+                            )
+                        }
+                    },
+                    "attribute": {}
+                }
+            }
+        ),
+        (
+            (
+                "/**\n"
+                " * Simple class with constructor\n"
+                " */\n"
+                "class SimpleClass {\n"
+                "    constructor() {\n"
+                "    }\n"
+                "}\n"
+            ),
+            {
+                "test.module.SimpleClass": {
+                    "id": "test.module.SimpleClass",
+                    "module_id": "test.module",
+                    "exported": False,
+                    "default": False,
+                    "name": "SimpleClass",
+                    "parent": None,
+                    "line_number": 4,
+                    "description": "Simple class with constructor",
+                    "method": {
+                        "test.module.SimpleClass.constructor": {
+                            "id": "test.module.SimpleClass.constructor",
+                            "class_id": "test.module.SimpleClass",
+                            "module_id": "test.module",
+                            "name": "constructor",
+                            "prefix": None,
+                            "arguments": [],
+                            "line_number": 5,
+                            "description": None
+                        }
+                    },
+                    "attribute": {}
+                }
+            }
+        ),
+        (
+            (
+                "/** Simple class expression */\n"
+                "export const CustomWelcome = class Welcome extends Base{\n"
+                "    static expression= 'Hello World';\n"
+                "\n"
+                "    /** Say Hi to the world */\n"
+                "    greeting() {\n"
+                "        return this.expression;\n"
+                "    }\n"
+                "};\n"
+                "\n"
+            ),
+            {
+                "test.module.CustomWelcome": {
+                    "id": "test.module.CustomWelcome",
+                    "module_id": "test.module",
+                    "exported": True,
+                    "default": False,
+                    "name": "CustomWelcome",
+                    "parent": "Base",
+                    "line_number": 2,
+                    "description": "Simple class expression",
+                    "method": {
+                        "test.module.CustomWelcome.greeting": {
+                            "id": "test.module.CustomWelcome.greeting",
+                            "class_id": "test.module.CustomWelcome",
+                            "module_id": "test.module",
+                            "name": "greeting",
+                            "prefix": None,
+                            "arguments": [],
+                            "line_number": 6,
+                            "description": "Say Hi to the world"
+                        }
+                    },
+                    "attribute": {
+                        "test.module.CustomWelcome.expression": {
+                            "id": "test.module.CustomWelcome.expression",
+                            "class_id": "test.module.CustomWelcome",
+                            "module_id": "test.module",
+                            "name": "expression",
+                            "prefix": "static",
+                            "value": "'Hello World'",
+                            "line_number": 3,
+                            "description": None
+                        }
+                    }
+                }
+            }
+        ),
+        (
+            (
+                (
+                    "/** Simple class */\n"
+                    "class Welcome {\n"
+                    "    /** Say Hi to someone */\n"
+                    "    greeting = who =>\n"
+                    "        `Hello ${who}!`;\n"
+                    "};\n"
+                    "\n"
+                ),
+                {
+                    "test.module.Welcome": {
+                        "id": "test.module.Welcome",
+                        "module_id": "test.module",
+                        "exported": False,
+                        "default": False,
+                        "name": "Welcome",
+                        "parent": None,
+                        "line_number": 2,
+                        "description": "Simple class",
+                        "method": {
+                            "test.module.Welcome.greeting": {
+                                "id": "test.module.Welcome.greeting",
+                                "class_id": "test.module.Welcome",
+                                "module_id": "test.module",
+                                "name": "greeting",
+                                "prefix": None,
+                                "arguments": ["who"],
+                                "line_number": 4,
+                                "description": "Say Hi to someone"
+                            }
+                        },
+                        "attribute": {
+                            "test.module.Welcome.greeting": {
+                                "id": "test.module.Welcome.greeting",
+                                "class_id": "test.module.Welcome",
+                                "module_id": "test.module",
+                                "name": "greeting",
+                                "prefix": None,
+                                "value": "who =>`Hello ${who}!`",
+                                "line_number": 4,
+                                "description": "Say Hi to someone"
+                            }
+                        }
+                    },
+                }
+            )
+        )
+    ],
+    ids=[
+        "valid class",
+        "valid class with attributes",
+        "valid class with getter and setter methods",
+        "valid class with constructor",
+        "valid exported class expression with mother class",
+        "valid class with arrow-type method and a single argument",
+    ]
+)
+def test_get_class_environment(content, expected):
     """Return class environment from content."""
     assert champollion.parser.js_class.fetch_environment(
         content, "test.module"
-    ) == {
-        "test.module.MotherClass": {
-            "id": "test.module.MotherClass",
-            "module_id": "test.module",
-            "exported": False,
-            "default": False,
-            "name": "MotherClass",
-            "parent": None,
-            "line_number": 4,
-            "description": "Base Class",
-            "method": {
-                "test.module.MotherClass.constructor": {
-                    "id": "test.module.MotherClass.constructor",
-                    "class_id": "test.module.MotherClass",
-                    "module_id": "test.module",
-                    "name": "constructor",
-                    "prefix": None,
-                    "arguments": [],
-                    "line_number": 5,
-                    "description": None
-                }
-            },
-            "attribute": {}
-        },
-        "test.module.CustomWelcome": {
-            "id": "test.module.CustomWelcome",
-            "module_id": "test.module",
-            "exported": False,
-            "default": False,
-            "name": "CustomWelcome",
-            "parent": None,
-            "line_number": 10,
-            "description": None,
-            "method": {
-                "test.module.CustomWelcome.greeting": {
-                    "id": "test.module.CustomWelcome.greeting",
-                    "class_id": "test.module.CustomWelcome",
-                    "module_id": "test.module",
-                    "name": "greeting",
-                    "prefix": None,
-                    "arguments": [],
-                    "line_number": 11,
-                    "description": None
-                }
-            },
-            "attribute": {}
-        },
-        "test.module.AwesomeClass": {
-            "id": "test.module.AwesomeClass",
-            "module_id": "test.module",
-            "exported": True,
-            "default": True,
-            "name": "AwesomeClass",
-            "parent": "MotherClass",
-            "line_number": 19,
-            "description": "Inherited class",
-            "method": {
-                "test.module.AwesomeClass.constructor": {
-                    "id": "test.module.AwesomeClass.constructor",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "constructor",
-                    "prefix": None,
-                    "arguments": ["name"],
-                    "line_number": 21,
-                    "description": "AwesomeClass constructor"
-                },
-                "test.module.AwesomeClass.name.get": {
-                    "id": "test.module.AwesomeClass.name.get",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "name",
-                    "prefix": "get",
-                    "arguments": [],
-                    "line_number": 33,
-                    "description": (
-                        "Get the name.\n"
-                        "\n"
-                        ".. warning::\n"
-                        "\n"
-                        "    The name is awesome"
-                    )
-                },
-                "test.module.AwesomeClass.name.set": {
-                    "id": "test.module.AwesomeClass.name.set",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "name",
-                    "prefix": "set",
-                    "arguments": ["value"],
-                    "line_number": 44,
-                    "description": (
-                        "Set the name.\n"
-                        "\n"
-                        ".. warning::\n"
-                        "\n"
-                        "    Keep the name awesome"
-                    )
-                },
-                "test.module.AwesomeClass.awesomeMethod": {
-                    "id": "test.module.AwesomeClass.awesomeMethod",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "awesomeMethod",
-                    "prefix": None,
-                    "arguments": ["arg1", "arg2"],
-                    "line_number": 51,
-                    "description": "An awesome method."
-                },
-                "test.module.AwesomeClass.staticMethod": {
-                    "id": "test.module.AwesomeClass.staticMethod",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "staticMethod",
-                    "prefix": "static",
-                    "arguments": [],
-                    "line_number": 58,
-                    "description": "A static method."
-                },
-                "test.module.AwesomeClass.anArrowType_method1": {
-                    "id": "test.module.AwesomeClass.anArrowType_method1",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "anArrowType_method1",
-                    "prefix": None,
-                    "arguments": ["arg1", "arg2 = true"],
-                    "line_number": 65,
-                    "description": "A first arrow-type method."
-                },
-                "test.module.AwesomeClass.anArrowType_method2": {
-                    "id": "test.module.AwesomeClass.anArrowType_method2",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "anArrowType_method2",
-                    "prefix": None,
-                    "arguments": ["arg"],
-                    "line_number": 73,
-                    "description": "A second arrow-type method."
-                },
-            },
-            "attribute": {
-                "test.module.AwesomeClass.attribute1": {
-                    "id": "test.module.AwesomeClass.attribute1",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "attribute1",
-                    "prefix": "static",
-                    "value": "42",
-                    "line_number": 80,
-                    "description": "A static attribute."
-                },
-                "test.module.AwesomeClass.attribute2": {
-                    "id": "test.module.AwesomeClass.attribute2",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "attribute2",
-                    "prefix": None,
-                    "value": (
-                        "{\n"
-                        "        key1: 'value1',\n"
-                        "        key2: 'value2',\n"
-                        "    }"
-                    ),
-                    "line_number": 85,
-                    "description": "An object attribute."
-                },
-                "test.module.AwesomeClass.attribute3": {
-                    "id": "test.module.AwesomeClass.attribute3",
-                    "class_id": "test.module.AwesomeClass",
-                    "module_id": "test.module",
-                    "name": "attribute3",
-                    "prefix": None,
-                    "value": (
-                        "[\n"
-                        "        'value1',\n"
-                        "        'value2',\n"
-                        "    ]"
-                    ),
-                    "line_number": 93,
-                    "description": "A list attribute."
-                },
-                "test.module.AwesomeClass.anArrowType_method1": {
-                    "description": "A first arrow-type method.",
-                    "class_id": "test.module.AwesomeClass",
-                    "id": "test.module.AwesomeClass.anArrowType_method1",
-                    "line_number": 65,
-                    "module_id": "test.module",
-                    "name": "anArrowType_method1",
-                    "prefix": None,
-                    "value": (
-                        "(arg1, arg2 = true) => {\n"
-                        "        console.log('test1');\n"
-                        "    }"
-                    ),
-                },
-                "test.module.AwesomeClass.anArrowType_method2": {
-                    "description": "A second arrow-type method.",
-                    "class_id": "test.module.AwesomeClass",
-                    "id": "test.module.AwesomeClass.anArrowType_method2",
-                    "line_number": 73,
-                    "module_id": "test.module",
-                    "name": "anArrowType_method2",
-                    "prefix": None,
-                    "value": (
-                        "arg => {\n"
-                        "        console.log('test2');\n"
-                        "    }"
-                    ),
-                },
-            },
-        },
-    }
+    ) == expected
 
 
 @pytest.mark.parametrize(

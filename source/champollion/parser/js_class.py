@@ -170,12 +170,10 @@ def fetch_methods_environment(content, class_id, line_number=0):
                 if prefix in ["get", "set"]:
                     method_id += "." + prefix
 
-            _relative_line_number = (
+            _line_number = (
                 content[:match.start()].count("\n") +
                 match.group("start_regex").count("\n") + 1
             )
-
-            _line_number = _relative_line_number + line_number
 
             arguments_matched = match.group("arguments")
             if arguments_matched is None:
@@ -192,8 +190,8 @@ def fetch_methods_environment(content, class_id, line_number=0):
                 "name": match.group("method_name"),
                 "prefix": prefix,
                 "arguments": arguments,
-                "line_number": _line_number,
-                "description": get_docstring(_relative_line_number, lines)
+                "line_number": _line_number + line_number,
+                "description": get_docstring(_line_number, lines)
             }
             environment[method_id] = method_environment
 
@@ -239,15 +237,18 @@ def fetch_attribute_environment(content, class_id, line_number=0):
 
         value = match.group("value")
 
-        _relative_line_number = (
+        _line_number = (
             content[:match.start()].count("\n") +
             match.group("start_regex").count("\n") + 1
         )
 
-        _line_number = _relative_line_number + line_number
-
-        if "{}" in value and _line_number in collapsed_content.keys():
-            value = value.replace("{}", collapsed_content[_line_number])
+        for _value_line_number in range(
+            _line_number, _line_number + value.count("\n") + 1
+        ):
+            if "{}" in value and _value_line_number in collapsed_content.keys():
+                value = value.replace(
+                    "{}", collapsed_content[_value_line_number]
+                )
 
         # Do not keep semi-colon in value
         if value.endswith(";"):
@@ -260,8 +261,8 @@ def fetch_attribute_environment(content, class_id, line_number=0):
             "name": match.group("name"),
             "prefix": prefix,
             "value": functools.reduce(_clean_value, value.split('\n')).strip(),
-            "line_number": _line_number,
-            "description": get_docstring(_relative_line_number, lines)
+            "line_number": _line_number + line_number,
+            "description": get_docstring(_line_number, lines)
         }
         environment[attribute_id] = attribute_environment
 
