@@ -9,47 +9,48 @@ from sphinx.util.osutil import cd
 
 
 @pytest.fixture()
-def content():
-    return (
-        "/**\n"
-        " * A function\n"
-        " *\n"
-        " * .. note::\n"
-        " *\n"
-        " *     A note.\n"
-        " */\n"
-        "export default function doSomething1(arg1, arg2 = null) {\n"
-        "    console.log('test1')\n"
-        "}\n"
-        "\n"
-        "/**\n"
-        " * Another function\n"
-        " *\n"
-        " * A citation::\n"
-        " *\n"
-        " *     A citation\n"
-        " */\n"
-        "const doSomething2 = (arg) => {\n"
-        "    console.log('test2')\n"
-        "};\n"
-        "\n"
-        "export const doSomething3 = () => {};\n"
-        "\n"
-        "export default function() {}\n"
-        "\n"
-        "/** generator function */\n"
-        "const yieldSomethingAliased = function* yieldSomething(arg) {}\n"
-    )
+def doc_folder_with_code(doc_folder):
+    js_source = os.path.join(doc_folder, "example")
+
+    with open(os.path.join(js_source, "index.js"), "w") as f:
+        f.write(
+            "/**\n"
+            " * A function\n"
+            " *\n"
+            " * .. note::\n"
+            " *\n"
+            " *     A note.\n"
+            " */\n"
+            "export default function doSomething1(arg1, arg2 = null) {\n"
+            "    console.log('test1')\n"
+            "}\n"
+            "\n"
+            "/**\n"
+            " * Another function\n"
+            " *\n"
+            " * A citation::\n"
+            " *\n"
+            " *     A citation\n"
+            " */\n"
+            "const doSomething2 = (arg) => {\n"
+            "    console.log('test2')\n"
+            "};\n"
+            "\n"
+            "export const doSomething3 = () => {};\n"
+            "\n"
+            "export default function() {}\n"
+            "\n"
+            "/** generator function */\n"
+            "const yieldSomethingAliased = function* yieldSomething(arg) {}\n"
+        )
+
+    return doc_folder
 
 
-def test_directive_autofunction(doc_folder, content):
+def test_directive_autofunction(doc_folder_with_code):
     """Generate documentation from functions.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autofunction:: example.doSomething1\n"
@@ -63,10 +64,12 @@ def test_directive_autofunction(doc_folder, content):
             ".. js:autofunction:: example.yieldSomethingAliased\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
@@ -101,14 +104,10 @@ def test_directive_autofunction(doc_folder, content):
         )
 
 
-def test_directive_autofunction_with_alias(doc_folder, content):
+def test_directive_autofunction_with_alias(doc_folder_with_code):
     """Generate documentation from functions with alias.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autofunction:: example.doSomething1\n"
@@ -127,10 +126,12 @@ def test_directive_autofunction_with_alias(doc_folder, content):
             "    :alias: aliased_generate\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
@@ -165,14 +166,10 @@ def test_directive_autofunction_with_alias(doc_folder, content):
         )
 
 
-def test_directive_autofunction_with_module_alias(doc_folder, content):
+def test_directive_autofunction_with_module_alias(doc_folder_with_code):
     """Generate documentation from functions with module alias.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autofunction:: example.doSomething1\n"
@@ -191,10 +188,12 @@ def test_directive_autofunction_with_module_alias(doc_folder, content):
             "    :module-alias: alias_module\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
@@ -229,14 +228,12 @@ def test_directive_autofunction_with_module_alias(doc_folder, content):
         )
 
 
-def test_directive_autofunction_with_partial_import_forced(doc_folder, content):
+def test_directive_autofunction_with_partial_import_forced(
+    doc_folder_with_code
+):
     """Generate documentation from functions with partial import forced.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autofunction:: example.doSomething1\n"
@@ -255,10 +252,12 @@ def test_directive_autofunction_with_partial_import_forced(doc_folder, content):
             "    :force-partial-import:\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:

@@ -9,42 +9,43 @@ from sphinx.util.osutil import cd
 
 
 @pytest.fixture()
-def content():
-    return (
-        "/**\n"
-        " * A variable\n"
-        " *\n"
-        " * .. note::\n"
-        " *\n"
-        " *     A note.\n"
-        " */\n"
-        "export default const VARIABLE_INT = 42;\n"
-        "\n"
-        "/**\n"
-        " * Another variable\n"
-        " *\n"
-        " * A citation::\n"
-        " *\n"
-        " *     A citation\n"
-        " */\n"
-        "var VARIABLE_OBJECT = {\n"
-        "    key1: 'value1',\n"
-        "    key2: 'value2',\n"
-        "    key3: 'value3',\n"
-        "};\n"
-        "\n"
-        "export let VARIABLE_STRING = 'rosebud';\n"
-    )
+def doc_folder_with_code(doc_folder):
+    js_source = os.path.join(doc_folder, "example")
+
+    with open(os.path.join(js_source, "index.js"), "w") as f:
+        f.write(
+            "/**\n"
+            " * A variable\n"
+            " *\n"
+            " * .. note::\n"
+            " *\n"
+            " *     A note.\n"
+            " */\n"
+            "export default const VARIABLE_INT = 42;\n"
+            "\n"
+            "/**\n"
+            " * Another variable\n"
+            " *\n"
+            " * A citation::\n"
+            " *\n"
+            " *     A citation\n"
+            " */\n"
+            "var VARIABLE_OBJECT = {\n"
+            "    key1: 'value1',\n"
+            "    key2: 'value2',\n"
+            "    key3: 'value3',\n"
+            "};\n"
+            "\n"
+            "export let VARIABLE_STRING = 'rosebud';\n"
+        )
+
+    return doc_folder
 
 
-def test_directive_autodata(doc_folder, content):
+def test_directive_autodata(doc_folder_with_code):
     """Generate documentation from global data variables.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autodata:: example.VARIABLE_INT\n"
@@ -54,10 +55,12 @@ def test_directive_autodata(doc_folder, content):
             ".. js:autodata:: example.VARIABLE_STRING\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
@@ -87,14 +90,10 @@ def test_directive_autodata(doc_folder, content):
         )
 
 
-def test_directive_autodata_with_alias(doc_folder, content):
+def test_directive_autodata_with_alias(doc_folder_with_code):
     """Generate documentation from global data variables with alias.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autodata:: example.VARIABLE_INT\n"
@@ -107,10 +106,12 @@ def test_directive_autodata_with_alias(doc_folder, content):
             "    :alias: ALIASED_VARIABLE_STRING\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
@@ -140,14 +141,10 @@ def test_directive_autodata_with_alias(doc_folder, content):
         )
 
 
-def test_directive_autodata_with_module_alias(doc_folder, content):
+def test_directive_autodata_with_module_alias(doc_folder_with_code):
     """Generate documentation from global data variables with module alias.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autodata:: example.VARIABLE_INT\n"
@@ -160,10 +157,12 @@ def test_directive_autodata_with_module_alias(doc_folder, content):
             "    :module-alias: alias_module\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
@@ -193,15 +192,11 @@ def test_directive_autodata_with_module_alias(doc_folder, content):
         )
 
 
-def test_directive_autodata_with_partial_import_forced(doc_folder, content):
+def test_directive_autodata_with_partial_import_forced(doc_folder_with_code):
     """Generate documentation from global data variables with partial import
     forced.
     """
-    js_source = os.path.join(doc_folder, "example")
-    with open(os.path.join(js_source, "index.js"), "w") as f:
-        f.write(content)
-
-    index_file = os.path.join(doc_folder, "index.rst")
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
     with open(index_file, "w") as f:
         f.write(
             ".. js:autodata:: example.VARIABLE_INT\n"
@@ -214,10 +209,12 @@ def test_directive_autodata_with_partial_import_forced(doc_folder, content):
             "    :force-partial-import:\n"
         )
 
-    with cd(doc_folder):
+    with cd(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
-    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
         if sys.version_info < (3, 0):
             content = f.read().decode("ascii", "ignore")
         else:
