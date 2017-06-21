@@ -64,11 +64,8 @@ class AutoFunctionDirective(BaseDirective):
         if env["generator"]:
             node += addnodes.desc_type("function* ", "function* ")
 
-        if env["anonymous"]:
-            node += addnodes.desc_name(name, name)
-        else:
-            node += addnodes.desc_addname(module_name + ".", module_name + ".")
-            node += addnodes.desc_name(name, name)
+        node += addnodes.desc_addname(module_name + ".", module_name + ".")
+        node += addnodes.desc_name(name, name)
 
         param_list = addnodes.desc_parameterlist()
         for argument in env["arguments"]:
