@@ -502,6 +502,19 @@ def test_fetch_export_environment(content, expected):
     ("expression", "expected"),
     [
         (
+            "name;",
+            (
+                [
+                    {
+                        "id": "test.module.name",
+                        "name": "name",
+                        "alias": None,
+                    }
+                ],
+                0
+            )
+        ),
+        (
             "name1, name2, name3",
             (
                 [
@@ -539,7 +552,7 @@ def test_fetch_export_environment(content, expected):
 
         ),
         (
-            "name1, * as name2",
+            "name1, * as name2;",
             (
                 [
                     {
@@ -566,10 +579,11 @@ def test_fetch_export_environment(content, expected):
         )
     ],
     ids=[
+        "one element",
         "three elements",
         "single element with alias",
         "two elements with wildcard",
-        "wrapped element",
+        "invalid wrapped element",
         "invalid",
     ]
 )
