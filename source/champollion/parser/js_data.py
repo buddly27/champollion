@@ -11,7 +11,7 @@ from .helper import get_docstring
 _DATA_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(?P<type>(const|let|var)) (?P<name>[\w_-]+) *= *"
-    r"(?P<value>(\((\n|.)*?\) *=> *{.*?}|\[(\n|.)*?\]|{(\n|.)*?}|"
+    r"(?P<value>((\n|.)*? *=> *({.*?}|(\n|.)*?;)|\[(\n|.)*?\]|{(\n|.)*?}|"
     r"\((\n|.)*?\)|.+))"
 )
 
