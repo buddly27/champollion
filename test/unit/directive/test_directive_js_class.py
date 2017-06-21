@@ -101,7 +101,7 @@ def content():
     )
 
 
-def test_directive_autoclass_(doc_folder, content):
+def test_directive_autoclass(doc_folder, content):
     """Generate documentation from classes.
     """
     js_source = os.path.join(doc_folder, "example")
@@ -137,6 +137,38 @@ def test_directive_autoclass_(doc_folder, content):
             "class example.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"example\"\"\n"
+            "\n"
+            "   Inherited class\n"
+        )
+
+
+def test_directive_autoclass_with_partial_import_forced(doc_folder, content):
+    """Generate documentation from classes with partial import forced.
+    """
+    js_source = os.path.join(doc_folder, "example")
+    with open(os.path.join(js_source, "index.js"), "w") as f:
+        f.write(content)
+
+    index_file = os.path.join(doc_folder, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :force-partial-import:\n"
+        )
+
+    with cd(doc_folder):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "class example.AwesomeClass(name)\n"
+            "\n"
+            "   \"import {AwesomeClass} from \"example\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -215,6 +247,54 @@ def test_directive_autoclass_with_members(doc_folder, content):
             "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
+        )
+
+
+def test_directive_autoclass_with_specific_members(doc_folder, content):
+    """Generate documentation from classes with specific members.
+    """
+    js_source = os.path.join(doc_folder, "example")
+    with open(os.path.join(js_source, "index.js"), "w") as f:
+        f.write(content)
+
+    index_file = os.path.join(doc_folder, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :members: name, awesomeMethod\n"
+        )
+
+    with cd(doc_folder):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "class example.AwesomeClass(name)\n"
+            "\n"
+            "   \"import AwesomeClass from \"example\"\"\n"
+            "\n"
+            "   Inherited class\n"
+            "\n"
+            "   get name()\n"
+            "\n"
+            "      Get name.\n"
+            "\n"
+            "      Warning: The name is awesome\n"
+            "\n"
+            "   set name(value)\n"
+            "\n"
+            "      Set name.\n"
+            "\n"
+            "      Warning: Keep the name awesome\n"
+            "\n"
+            "   awesomeMethod()\n"
+            "\n"
+            "      awesomeMethod.\n"
         )
 
 
