@@ -40,6 +40,105 @@ def test_get_file_environment_empty(request):
 
 
 @pytest.mark.parametrize(
+    ("environment", "export_environment", "expected"),
+    [
+        (
+            {
+                "id": "__identifier__",
+                "description": "A description.",
+                "exported": False,
+                "default": False
+            },
+            {},
+            {
+                "id": "__identifier__",
+                "description": "A description.",
+                "exported": False,
+                "default": False
+            }
+        ),
+        (
+            {
+                "id": "__identifier__",
+                "description": "A description.",
+                "exported": False,
+                "default": False
+            },
+            {
+                "__identifier__": {
+                    "id": "__identifier__",
+                    "description": "Another description.",
+                    "default": False
+                }
+            },
+            {
+                "id": "__identifier__",
+                "description": "A description.",
+                "exported": True,
+                "default": False
+            }
+        ),
+        (
+            {
+                "id": "__identifier__",
+                "description": "A description.",
+                "exported": False,
+                "default": False
+            },
+            {
+                "__identifier__": {
+                    "id": "__identifier__",
+                    "description": "Another description.",
+                    "default": True
+                }
+            },
+            {
+                "id": "__identifier__",
+                "description": "A description.",
+                "exported": True,
+                "default": True
+            }
+        ),
+        (
+            {
+                "id": "__identifier__",
+                "description": None,
+                "exported": False,
+                "default": False
+            },
+            {
+                "__identifier__": {
+                    "id": "__identifier__",
+                    "description": "Another description.",
+                    "default": False
+                }
+            },
+            {
+                "id": "__identifier__",
+                "description": "Another description.",
+                "exported": True,
+                "default": False
+            }
+        )
+    ],
+    ids=[
+        "empty export environment",
+        "update exported environment",
+        "update exported default environment",
+        "update description from exported environment"
+    ]
+)
+def test_update_from_exported_elements(
+    environment, export_environment, expected
+):
+    """Update environment from exported element."""
+    champollion.parser.js_file.update_from_exported_elements(
+        environment, export_environment
+    )
+    assert environment == expected
+
+
+@pytest.mark.parametrize(
     ("content", "expected"),
     [
         (
@@ -182,6 +281,7 @@ def test_get_file_environment_empty(request):
     ]
 )
 def test_fetch_import_environment(content, expected):
+    """Return import environment."""
     assert champollion.parser.js_file.fetch_import_environment(
         content, "test.module"
     ) == expected
@@ -291,6 +391,7 @@ def test_fetch_import_environment(content, expected):
 def test_fetch_expression_environment(
     expression, environment, wildcards_number, expected
 ):
+    """Return expression environment."""
     assert champollion.parser.js_file._fetch_expression_environment(
         expression, "module", "test.module", environment, wildcards_number
     ) == expected
@@ -493,6 +594,7 @@ def test_fetch_expression_environment(
     ]
 )
 def test_fetch_export_environment(content, expected):
+    """Return export environment."""
     assert champollion.parser.js_file.fetch_export_environment(
         content, "test.module"
     ) == expected
@@ -588,6 +690,7 @@ def test_fetch_export_environment(content, expected):
     ]
 )
 def test_fetch_binding_environment(expression, expected):
+    """Return binding environment."""
     assert champollion.parser.js_file._fetch_binding_environment(
         expression, "test.module"
     ) == expected
