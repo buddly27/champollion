@@ -155,23 +155,6 @@ def update_from_exported_elements(environment, export_environment):
 
         Both input environments are mutated.
 
-    .. warning::
-
-        If a wrapper function is applied to an element in the file, we attempt
-        to see if the wrapped element is part of the file and update it
-        directly:
-
-        .. code-block:: js
-
-            // Element in the environment
-            class AwesomeClass {}
-
-            // Wrapped element in the export environment
-            export wrapped()(AwesomeClass);
-
-        This is likely to change in the future in order to make this
-        combination optional and more explicit.
-
     """
     env_id = environment["id"]
 
