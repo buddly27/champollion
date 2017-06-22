@@ -329,7 +329,7 @@ def get_rst_export_elements(
         if (from_module_id is None and
                 _exported_env_id in import_environment.keys()):
             name = import_environment[_exported_env_id]["name"]
-            from_module_id = import_environment[name]["module"]
+            from_module_id = import_environment[_exported_env_id]["module"]
 
         # Ignore element if the origin module can not be found
         if from_module_id not in environment["module"].keys():
