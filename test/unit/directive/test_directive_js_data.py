@@ -10,6 +10,8 @@ from sphinx.util.osutil import cd
 
 @pytest.fixture()
 def doc_folder_with_code(doc_folder):
+    """Return Doc folder with Javascript example source code.
+    """
     js_source = os.path.join(doc_folder, "example")
 
     with open(os.path.join(js_source, "index.js"), "w") as f:

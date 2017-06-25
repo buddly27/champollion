@@ -10,6 +10,8 @@ from sphinx.util.osutil import cd
 
 @pytest.fixture()
 def doc_folder_with_code(doc_folder):
+    """Return Doc folder with Javascript example source code.
+    """
     js_source = os.path.join(doc_folder, "example")
 
     with open(os.path.join(js_source, "index.js"), "w") as f:
@@ -140,36 +142,6 @@ def test_directive_autoclass(doc_folder_with_code):
             "class example.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"example\"\"\n"
-            "\n"
-            "   Inherited class\n"
-        )
-
-
-def test_directive_autoclass_with_partial_import_forced(doc_folder_with_code):
-    """Generate documentation from classes with partial import forced.
-    """
-    index_file = os.path.join(doc_folder_with_code, "index.rst")
-    with open(index_file, "w") as f:
-        f.write(
-            ".. js:autoclass:: example.AwesomeClass\n"
-            "    :force-partial-import:\n"
-        )
-
-    with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
-
-    with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
-    ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
-
-        assert content == (
-            "class example.AwesomeClass(name)\n"
-            "\n"
-            "   \"import {AwesomeClass} from \"example\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -793,4 +765,118 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
             "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
+        )
+
+
+def test_directive_autoclass_with_alias(doc_folder_with_code):
+    """Generate documentation from classes with alias.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.MotherClass\n"
+            "    :alias: AliasedMotherClass\n"
+            "\n"
+            ".. js:autoclass:: example.CustomWelcome\n"
+            "    :alias: AliasedCustomWelcome\n"
+            "\n"
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :alias: AliasedAwesomeClass\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "class example.AliasedMotherClass()\n"
+            "\n"
+            "   Base Class\n"
+            "\n"
+            "class example.AliasedCustomWelcome()\n"
+            "\n"
+            "class example.AliasedAwesomeClass(name)\n"
+            "\n"
+            "   \"import AliasedAwesomeClass from \"example\"\"\n"
+            "\n"
+            "   Inherited class\n"
+        )
+
+
+def test_directive_autoclass_with_module_alias(doc_folder_with_code):
+    """Generate documentation from classes with module alias.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.MotherClass\n"
+            "    :module-alias: alias_module\n"
+            "\n"
+            ".. js:autoclass:: example.CustomWelcome\n"
+            "    :module-alias: alias_module\n"
+            "\n"
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :module-alias: alias_module\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "class alias_module.MotherClass()\n"
+            "\n"
+            "   Base Class\n"
+            "\n"
+            "class alias_module.CustomWelcome()\n"
+            "\n"
+            "class alias_module.AwesomeClass(name)\n"
+            "\n"
+            "   \"import AwesomeClass from \"alias_module\"\"\n"
+            "\n"
+            "   Inherited class\n"
+        )
+
+
+def test_directive_autoclass_with_partial_import_forced(doc_folder_with_code):
+    """Generate documentation from classes with partial import forced.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :force-partial-import:\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "class example.AwesomeClass(name)\n"
+            "\n"
+            "   \"import {AwesomeClass} from \"example\"\"\n"
+            "\n"
+            "   Inherited class\n"
         )
