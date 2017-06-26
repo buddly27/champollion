@@ -4,6 +4,13 @@
 Release Notes
 *************
 
+.. release:: 0.5.1
+    :date: 2017-06-25
+
+    .. change:: fixed
+
+        Add PyPi and RTD badges to the README page
+
 .. release:: 0.5.0
     :date: 2017-06-25
 
