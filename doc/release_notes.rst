@@ -5,7 +5,7 @@ Release Notes
 *************
 
 .. release:: 0.5.0
-    :date: 2017-06-18
+    :date: 2017-06-25
 
     .. change:: new
         :tags: configuration
