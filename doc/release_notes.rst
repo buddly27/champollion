@@ -4,6 +4,18 @@
 Release Notes
 *************
 
+.. release:: 0.5.2
+    :date: 2017-06-29
+
+    .. change:: fixed
+
+        Update the Sphinx dependency to version 1.6.2 as `module` and `method`
+        directives where missing from the Javascript domain in older versions.
+
+        .. seealso::
+
+            `Sphinx Release Notes <https://github.com/sphinx-doc/sphinx/commit/3ba60ffd5dbd86ba3433db952304dcef6a3f023c>`_
+
 .. release:: 0.5.1
     :date: 2017-06-25
 

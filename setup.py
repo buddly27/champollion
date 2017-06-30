@@ -24,10 +24,10 @@ with open(
 
 # Compute dependencies.
 INSTALL_REQUIRES = [
-    "sphinx >= 1.2.2, < 2"
+    "sphinx >= 1.6.2, < 2"
 ]
 DOC_REQUIRES = [
-    "sphinx_rtd_theme >= 0.1.6, < 1",
+    "sphinx_rtd_theme >= 0.2.0, < 1",
     "lowdown >= 0.1.0, < 2",
 ]
 TEST_REQUIRES = [
