@@ -31,9 +31,9 @@ DOC_REQUIRES = [
     "lowdown >= 0.1.0, < 2",
 ]
 TEST_REQUIRES = [
-    "pytest-runner >= 2.7, < 3",
-    "pytest >= 2.9, < 3",
-    "pytest-mock >= 0.11, < 1",
+    "pytest-runner >= 2.11, < 3",
+    "pytest >= 3.1.2, < 4",
+    "pytest-mock >= 0.6, < 1",
     "pytest-catchlog >= 1, < 2",
     "pytest-xdist >= 1.1, < 2",
     "pytest-cov >= 2, < 3"
