@@ -32,9 +32,8 @@ _CLASS_METHOD_ARROW_PATTERN = re.compile(
 #: Regular Expression pattern for class attribute
 _CLASS_ATTRIBUTE_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?"
-    r"(?P<name>[\w._-]+) *= *"
-    r"(?P<value>((\n|.)*? *=> *({.*?}|(\n|.)*?;)|\[(\n|.)*?\]|{(\n|.)*?}|"
-    r"\((\n|.)*?\)|.+))"
+    r"(?P<name>[\w._-]+) *= *(?P<value>.+?;)",
+    re.DOTALL
 )
 
 

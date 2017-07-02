@@ -15,7 +15,7 @@ import champollion.parser.js_data
                 " * \n"
                 " * Detailed description.\n"
                 " */\n"
-                "export const DATA = 42\n"
+                "export const DATA = 42;\n"
             ),
             {
                 "test.module.DATA": {
@@ -100,7 +100,7 @@ import champollion.parser.js_data
             (
                 "const SUM = (arg1, arg2) => {\n"
                 "    return arg1 + arg2;\n"
-                "}"
+                "};"
             ),
             {
                 "test.module.SUM": {
@@ -136,11 +136,11 @@ def test_get_data_environment(content, expected):
     ("content", "expected"),
     [
         (
-            "const data_test = 42",
+            "const data_test = 42;",
             {
                 "name": "data_test",
                 "type": "const",
-                "value": "42",
+                "value": "42;",
                 "export": None,
                 "default": None,
                 "start_regex": ""
@@ -150,7 +150,7 @@ def test_get_data_environment(content, expected):
             (
                 "export let data_test2 = {\n"
                 "    key: 'value',\n"
-                "}"
+                "};"
             ),
             {
                 "name": "data_test2",
@@ -158,7 +158,7 @@ def test_get_data_environment(content, expected):
                 "value": (
                     "{\n"
                     "    key: 'value',\n"
-                    "}"
+                    "};"
                 ),
                 "export": "export ",
                 "default": None,
@@ -169,7 +169,7 @@ def test_get_data_environment(content, expected):
             (
                 "var dataTest3 = [\n"
                 "    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n"
-                "]"
+                "];"
             ),
             {
                 "name": "dataTest3",
@@ -177,7 +177,7 @@ def test_get_data_environment(content, expected):
                 "value": (
                     "[\n"
                     "    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n"
-                    "]"
+                    "];"
                 ),
                 "export": None,
                 "default": None,
@@ -187,14 +187,18 @@ def test_get_data_environment(content, expected):
         (
             "'const attribute = 42'",
             None
+        ),
+        (
+            "const data_test = 42",
+            None
         )
-
     ],
     ids=[
         "valid data",
         "valid object data",
         "valid list data",
         "invalid data string",
+        "invalid data with no semi-colons",
     ]
 )
 def test_data_pattern(content, expected):
