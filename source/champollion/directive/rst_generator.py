@@ -353,7 +353,11 @@ def get_rst_export_elements(
                 directive="automodule",
                 element_id=from_module_id,
                 module_alias=module_name,
-                extra_options=[":force-partial-import:"]
+                extra_options=[
+                    ":force-partial-import:",
+                    ":members:",
+                    ":skip-description:"
+                ]
             )
             rst_elements[line_number].append(rst_element)
 
