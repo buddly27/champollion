@@ -24,6 +24,14 @@ Two modules are available in the example above: **example** and **example.test**
 
 The available options are:
 
+* members:
+    This option can be boolean if no arguments are given to indicate that
+    all members should be documented, or a white list of member names to
+    display.
+
+* skip-description:
+    Indicate whether the module description should be skipped.
+
 * undoc-members:
     Indicate whether members with no docstrings should be displayed.
 

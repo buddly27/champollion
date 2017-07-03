@@ -56,6 +56,13 @@ Provide a list of options to apply automatically for all
     # conf.py
     js_class_options = ["members", "skip-constructor", "undoc-members"]
 
+This configuration only accept the following boolean options:
+
+* members (When not used as a 'white list')
+* skip-constructor
+* undoc-members
+* private-members
+* force-partial-import
 
 .. _configuration/js_module_options:
 
@@ -68,3 +75,10 @@ Provide a list of options to apply automatically for all
     # conf.py
     js_module_options = ["undoc-members", "private-members"]
 
+This configuration only accept the following boolean options:
+
+* members (When not used as a 'white list')
+* skip-description
+* undoc-members
+* private-members
+* force-partial-import

@@ -4,10 +4,62 @@
 Release Notes
 *************
 
-.. release:: 0.5.3
-    :date: 2017-07-02
+.. release:: 0.6.0
+    :date: 2017-07-03
+
+    .. change:: new
+        :tags: javascript-parser
+
+        Added :func:`champollion.parser.js_file.fetch_file_description` to
+        return description included in the docstring defined at the very
+        beginning of the file.
+
+    .. change:: changed
+        :tags: javascript-parser
+
+        Updated :func:`champollion.parser.js_file.fetch_environment` to include
+        the file description in the environment.
+
+    .. change:: new
+        :tags: directive
+
+        Updated :class:`js:automodule
+        <champollion.directive.js_module.AutoModuleDirective>` to display the
+        module description.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:members:`` option to the
+        :class:`js:automodule
+        <champollion.directive.js_module.AutoModuleDirective>` directive to
+        provide a way to document all or part of the members contained within a
+        class.
+
+        .. note::
+
+            This option can be set automatically via the :ref:`js_module_options
+            <configuration/js_module_options>` configuration
+
+        .. warning::
+
+            By default, only the description of the module will be displayed.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:skip-description:`` option to the
+        :class:`js:automodule
+        <champollion.directive.js_module.AutoModuleDirective>` directive to
+        provide a way to skip the module description.
+
+        .. note::
+
+            This option can be set automatically via the :ref:`js_module_options
+            <configuration/js_module_options>` configuration
 
     .. change:: fixed
+        :tags: javascript-parser
 
         Updated the regular expression in the :mod:`data parser
         <champollion.parser.js_data.fetch_environment>` to recognize values
@@ -25,6 +77,7 @@ Release Notes
             with a semi-colon.
 
     .. change:: fixed
+        :tags: javascript-parser
 
         Updated the regular expression in the :mod:`attribute parser
         <champollion.parser.js_class.fetch_attribute_environment>` to recognize
@@ -44,6 +97,7 @@ Release Notes
             end with a semi-colon.
 
     .. change:: fixed
+        :tags: javascript-parser
 
         Updated the regular expressions in the :mod:`method parser
         <champollion.parser.js_class.fetch_methods_environment>` to recognize
@@ -110,6 +164,7 @@ Release Notes
         `Javascript roles <http://www.sphinx-doc.org/en/stable/domains.html#the-javascript-domain>`_
 
     .. change:: changed
+        :tags: javascript-parser
 
         Added ``js_environment`` global configuration value which will be
         filled automatically from the ``js_source`` global configuration via
