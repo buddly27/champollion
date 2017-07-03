@@ -16,6 +16,10 @@ def doc_folder_with_code(doc_folder):
 
     with open(os.path.join(js_source, "index.js"), "w") as f:
         f.write(
+            "/**\n"
+            " * A cool application.\n"
+            " */\n"
+            "\n"
             "import {\n"
             "    VARIABLE_OBJECT as ALIASED_VARIABLE_OBJECT\n"
             "} from './test_attribute';\n"
@@ -49,10 +53,16 @@ def doc_folder_with_code(doc_folder):
             "    key2: 'value2',\n"
             "    key3: 'value3',\n"
             "};\n"
+            "\n"
+            "/** Another variable. */\n"
+            "let VARIABLE_INT = 42;\n"
         )
 
     with open(os.path.join(js_source, "test_class.js"), "w") as f:
         f.write(
+            "/** A file with a great class. */\n"
+            "\n"
+            "\n"
             "import {Element as AliasedElement} from 'wherever';\n"
             "\n"
             "/**\n"
@@ -178,6 +188,42 @@ def test_directive_automodule(doc_folder_with_code):
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
+            "A file with a great class.\n"
+        )
+
+
+def test_directive_automodule_with_members(doc_folder_with_code):
+    """Generate documentation from modules with members.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:automodule:: example\n"
+            "    :members:\n"
+            "\n"
+            ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
+            "\n"
+            ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "A cool application.\n"
+            "\n"
             "const example.ALIASED_VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
@@ -202,11 +248,50 @@ def test_directive_automodule(doc_folder_with_code):
             "\n"
             "   Note: A note.\n"
             "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
+            "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"example.test_class\"\"\n"
             "\n"
             "   Inherited class\n"
+        )
+
+
+def test_directive_automodule_with_specific_members(doc_folder_with_code):
+    """Generate documentation from modules with specific members.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:automodule:: example.test_attribute\n"
+            "    :members: VARIABLE_OBJECT\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "const example.test_attribute.VARIABLE_OBJECT = "
+            "{ key1: value1, key2: value2, key3: value3, }\n"
+            "\n"
+            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "\n"
+            "   A variable\n"
+            "\n"
+            "   Note: A note.\n"
         )
 
 
@@ -217,12 +302,15 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
     with open(index_file, "w") as f:
         f.write(
             ".. js:automodule:: example\n"
+            "    :members:\n"
             "    :undoc-members:\n"
             "\n"
             ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
             "    :undoc-members:\n"
             "\n"
             ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
             "    :undoc-members:\n"
         )
 
@@ -238,6 +326,8 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
             "example.undocumentedFunction(arg)\n"
             "\n"
             "const example.ALIASED_VARIABLE_OBJECT = "
@@ -263,6 +353,12 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "   A variable\n"
             "\n"
             "   Note: A note.\n"
+            "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
@@ -285,10 +381,13 @@ def test_directive_automodule_with_undocumented_members_default(
     with open(index_file, "w") as f:
         f.write(
             ".. js:automodule:: example\n"
+            "    :members:\n"
             "\n"
             ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
             "\n"
             ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
         )
 
     with cd(doc_folder_with_code):
@@ -303,6 +402,8 @@ def test_directive_automodule_with_undocumented_members_default(
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
             "example.undocumentedFunction(arg)\n"
             "\n"
             "const example.ALIASED_VARIABLE_OBJECT = "
@@ -329,6 +430,12 @@ def test_directive_automodule_with_undocumented_members_default(
             "\n"
             "   Note: A note.\n"
             "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
+            "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"example.test_class\"\"\n"
@@ -344,12 +451,15 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
     with open(index_file, "w") as f:
         f.write(
             ".. js:automodule:: example\n"
+            "    :members:\n"
             "    :private-members:\n"
             "\n"
             ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
             "    :private-members:\n"
             "\n"
             ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
             "    :private-members:\n"
         )
 
@@ -365,6 +475,8 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
             "example._privateFunction(arg)\n"
             "\n"
             "   A private function\n"
@@ -392,6 +504,12 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "   A variable\n"
             "\n"
             "   Note: A note.\n"
+            "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
@@ -414,10 +532,13 @@ def test_directive_automodule_with_private_members_default(
     with open(index_file, "w") as f:
         f.write(
             ".. js:automodule:: example\n"
+            "    :members:\n"
             "\n"
             ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
             "\n"
             ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
         )
 
     with cd(doc_folder_with_code):
@@ -432,6 +553,8 @@ def test_directive_automodule_with_private_members_default(
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
             "example._privateFunction(arg)\n"
             "\n"
             "   A private function\n"
@@ -460,6 +583,12 @@ def test_directive_automodule_with_private_members_default(
             "\n"
             "   Note: A note.\n"
             "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
+            "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"example.test_class\"\"\n"
@@ -475,12 +604,15 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
     with open(index_file, "w") as f:
         f.write(
             ".. js:automodule:: example\n"
+            "    :members:\n"
             "    :module-alias: alias_module\n"
             "\n"
             ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
             "    :module-alias: alias_module\n"
             "\n"
             ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
             "    :module-alias: alias_module\n"
         )
 
@@ -496,6 +628,8 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
             "const alias_module.ALIASED_VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
@@ -520,6 +654,12 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "   Note: A note.\n"
             "\n"
+            "let alias_module.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
+            "\n"
             "class alias_module.AwesomeClass(name)\n"
             "\n"
             "   \"import AwesomeClass from \"alias_module\"\"\n"
@@ -535,12 +675,15 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
     with open(index_file, "w") as f:
         f.write(
             ".. js:automodule:: example\n"
+            "    :members:\n"
             "    :force-partial-import:\n"
             "\n"
             ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
             "    :force-partial-import:\n"
             "\n"
             ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
             "    :force-partial-import:\n"
         )
 
@@ -556,6 +699,8 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             content = f.read().encode("ascii", "ignore").decode("utf8")
 
         assert content == (
+            "A cool application.\n"
+            "\n"
             "const example.ALIASED_VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
@@ -579,6 +724,12 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "   A variable\n"
             "\n"
             "   Note: A note.\n"
+            "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
