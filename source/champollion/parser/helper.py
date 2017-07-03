@@ -4,7 +4,7 @@ import re
 
 
 #: Regular Expression pattern for single line comments
-_ONE_LINE_COMMENT_PATTERN = re.compile(r"//.*?\n")
+_ONE_LINE_COMMENT_PATTERN = re.compile(r"(\n|^| )//.*?\n")
 
 #: Regular Expression pattern for multi-line comments
 _MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*.*?\*/", re.DOTALL)
@@ -32,11 +32,28 @@ def filter_comments(
 
     """
     def _replace_comment(element):
-        count = element.group().count("\n")
+        """Replace matched *element* in content."""
+        replacement = ""
+        matched = element.group()
+
+        # Ensure that only the comment part is being replaced
+        if not matched.startswith("/"):
+            replacement += matched[0]
+            matched = matched[1:]
+
+        count = matched.count("\n")
+
+        # Add empty spaces with the size of the content if the size
+        # must be kept.
         if keep_content_size:
-            _buffer = len(element.group()) - count
-            return " " * _buffer + "\n" * count
-        return "\n" * count
+            _buffer = len(matched) - count
+            replacement += " " * _buffer + "\n" * count
+
+        # Otherwise simply keep the number of lines
+        else:
+            replacement += "\n" * count
+
+        return replacement
 
     content = _ONE_LINE_COMMENT_PATTERN.sub(_replace_comment, content)
 
@@ -68,6 +85,7 @@ def collapse_all(content, filter_comment=False):
         content = filter_comments(content, keep_content_size=True)
 
     def _replace_element(element):
+        """Replace matched *element* in content."""
         # Guess line number
         count = element.group().count("\n")
 

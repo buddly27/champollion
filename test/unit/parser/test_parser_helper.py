@@ -137,6 +137,9 @@ def test_filter_comments():
         "    // Return the sum of a and b\n"
         "    return a+b;\n"
         "}\n"
+        "\n"
+        "const url = 'http://somewhere.com';\n"
+        "\n"
     )
 
     expected = (
@@ -157,6 +160,9 @@ def test_filter_comments():
         "    \n"
         "    return a+b;\n"
         "}\n"
+        "\n"
+        "const url = 'http://somewhere.com';\n"
+        "\n"
     )
     assert champollion.parser.helper.filter_comments(content) == expected
 
@@ -181,6 +187,9 @@ def test_filter_comments_keep_content_size():
         "    // Return the sum of a and b\n"
         "    return a+b;\n"
         "}\n"
+        "\n"
+        "const url = 'http://somewhere.com';\n"
+        "\n"
     )
 
     expected = (
@@ -201,6 +210,9 @@ def test_filter_comments_keep_content_size():
         "    {comment5}\n"
         "    return a+b;\n"
         "}}\n"
+        "\n"
+        "const url = 'http://somewhere.com';\n"
+        "\n"
     ).format(
         comment1=" " * len("/* a beautiful comment */"),
         comment2=" " * len(
@@ -243,6 +255,9 @@ def test_filter_comments_without_multiline_comments():
         "    // Return the sum of a and b\n"
         "    return a+b;\n"
         "}\n"
+        "\n"
+        "const url = 'http://somewhere.com';\n"
+        "\n"
     )
 
     expected = (
@@ -263,6 +278,9 @@ def test_filter_comments_without_multiline_comments():
         "    \n"
         "    return a+b;\n"
         "}\n"
+        "\n"
+        "const url = 'http://somewhere.com';\n"
+        "\n"
     )
     assert champollion.parser.helper.filter_comments(
         content, filter_multiline_comment=False
