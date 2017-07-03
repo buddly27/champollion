@@ -7,7 +7,7 @@ from .js_class import fetch_environment as fetch_class_environment
 from .js_function import fetch_environment as fetch_function_environment
 from .js_data import fetch_environment as fetch_data_environment
 
-from .helper import get_docstring
+from .helper import get_docstring, filter_comments
 
 
 #: Regular Expression pattern for imported element
@@ -29,6 +29,9 @@ _EXPORTED_ELEMENT_PATTERN = re.compile(
 _BINDING_ELEMENT_PATTERN = re.compile(
     r"^(?P<name>(\w+|\*))( +as +(?P<alias>\w+))?;?$"
 )
+
+#: Regular Expression pattern for file docstring
+_FILE_DOCSTRING_PATTERN = re.compile(r"^/\*\*.*?\*/", re.DOTALL)
 
 
 def fetch_environment(file_path, file_id, module_id):
@@ -108,6 +111,7 @@ def fetch_environment(file_path, file_id, module_id):
         "name": os.path.basename(file_path),
         "path": file_path,
         "content": content,
+        "description": fetch_file_description(content),
         "export": fetch_export_environment(content, module_id),
         "import": fetch_import_environment(content, module_id),
         "class": {},
@@ -128,6 +132,53 @@ def fetch_environment(file_path, file_id, module_id):
         environment["data"][_env_id] = _env
 
     return environment
+
+
+def fetch_file_description(content):
+    """Return file description from *content*.
+
+    The description must be in a docstring which should be defined at the very
+    beginning of the file. It can only be preceded by one line comments.
+
+    It must be in the form of::
+
+        /**
+         * File description.
+         *
+         * A detailed description of the file.
+         *
+         */
+
+    Return None if no description is available.
+
+    """
+    content = filter_comments(content, filter_multiline_comment=False).strip()
+
+    match = _FILE_DOCSTRING_PATTERN.search(content)
+    if match is None:
+        return
+
+    docstring_content = match.group()[3:-2].strip()
+
+    # If the entire docstring fit in one line
+    if docstring_content.count("\n") == 0:
+        return docstring_content
+
+    docstring = []
+
+    for line in docstring_content.split("\n"):
+        line = line.strip()
+
+        # Valid docstring line starts with a '*'
+        if re.search("^\*( *| +.+)$", line) is not None:
+            indentation = 2 if len(line) > 1 else 1
+            docstring.append(line[indentation:].rstrip())
+
+        # Error in the docstring
+        else:
+            return
+
+    return "\n".join(docstring)
 
 
 def update_from_exported_elements(environment, export_environment):

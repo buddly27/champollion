@@ -21,6 +21,7 @@ def test_get_file_environment_empty(request):
         "name": os.path.basename(path),
         "path": path,
         "content": "",
+        "description": None,
         "class": {},
         "function": {},
         "data": {},
@@ -37,6 +38,105 @@ def test_get_file_environment_empty(request):
 
     request.addfinalizer(cleanup)
     return path
+
+
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        (
+            (
+                "/**\n"
+                " * A file description.\n"
+                " * \n"
+                " * A detailed description which can be quite long\n"
+                " * and eventually go over multiple lines.\n"
+                " *\n"
+                " * .. note::\n"
+                " *\n"
+                " *     A note.\n"
+                " */\n"
+                "\n"
+                "function awesomeFunction() {}\n"
+                "\n"
+            ),
+            (
+                "A file description.\n"
+                "\n"
+                "A detailed description which can be quite long\n"
+                "and eventually go over multiple lines.\n"
+                "\n"
+                ".. note::\n"
+                "\n"
+                "    A note."
+            )
+        ),
+        (
+            (
+                "/** A file description. */\n"
+                "\n"
+                "function awesomeFunction() {}\n"
+                "\n"
+            ),
+            (
+                "A file description."
+            )
+        ),
+        (
+            (
+                "\n"
+                "\n// a comment."
+                "\n"
+                "/** A file description. */\n"
+                "\n"
+                "function awesomeFunction() {}\n"
+                "\n"
+            ),
+            (
+                "A file description."
+            )
+        ),
+        (
+            (
+                "/* a multi-line comment. */\n"
+                "\n"
+                "/** A file description. */\n"
+                "\n"
+                "function awesomeFunction() {}\n"
+                "\n"
+            ),
+            None
+        ),
+        (
+            (
+                "/**\n"
+                " A file description.\n"
+                " \n"
+                " A detailed description which can be quite long\n"
+                " and eventually go over multiple lines.\n"
+                " \n"
+                " .. note::\n"
+                " \n"
+                "     A note.\n"
+                "*/\n"
+                "\n"
+                "function awesomeFunction() {}\n"
+                "\n"
+            ),
+            None
+        )
+    ],
+    ids=[
+        "valid description",
+        "valid description on one line",
+        "valid description with top content",
+        "invalid description with incorrect top content",
+        "invalid description"
+    ]
+)
+def test_fetch_file_description(content, expected):
+    assert champollion.parser.js_file.fetch_file_description(
+        content
+    ) == expected
 
 
 @pytest.mark.parametrize(
