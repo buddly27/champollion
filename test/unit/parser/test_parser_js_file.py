@@ -72,6 +72,19 @@ def test_get_file_environment_empty(request):
         ),
         (
             (
+                "/**\n"
+                " * A file description.\n"
+                " */\n"
+                "\n"
+                "function awesomeFunction() {}\n"
+                "\n"
+            ),
+            (
+                "A file description."
+            )
+        ),
+        (
+            (
                 "/** A file description. */\n"
                 "\n"
                 "function awesomeFunction() {}\n"
@@ -127,6 +140,7 @@ def test_get_file_environment_empty(request):
     ],
     ids=[
         "valid description",
+        "valid description on three lines",
         "valid description on one line",
         "valid description with top content",
         "invalid description with incorrect top content",

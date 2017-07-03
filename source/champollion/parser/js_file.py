@@ -161,7 +161,7 @@ def fetch_file_description(content):
     docstring_content = match.group()[3:-2].strip()
 
     # If the entire docstring fit in one line
-    if docstring_content.count("\n") == 0:
+    if match.group().count("\n") == 0:
         return docstring_content
 
     docstring = []
