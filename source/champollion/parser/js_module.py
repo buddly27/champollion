@@ -53,6 +53,7 @@ def fetch_environment(file_id, files=None, module_names=None):
     return {
         "id": module_id,
         "name": module_name,
+        "path": module_id.replace(".", "/"),
         "file_id": file_id
     }
 
