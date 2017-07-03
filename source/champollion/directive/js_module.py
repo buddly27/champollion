@@ -40,6 +40,9 @@ class AutoModuleDirective(Directive):
         all members should be documented, or a white list of member names to
         display.
 
+    * skip-description:
+        Indicate whether the module description should be skipped.
+
     * undoc-members:
         Indicate whether members with no docstrings should be displayed.
 
@@ -79,6 +82,7 @@ class AutoModuleDirective(Directive):
     #: module options
     option_spec = {
         "members": _parse_members,
+        "skip-description": lambda x: True,
         "undoc-members": lambda x: True,
         "private-members": lambda x: True,
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
@@ -130,7 +134,11 @@ class AutoModuleDirective(Directive):
         file_environment = self._file_environment(module_environment)
         description = file_environment["description"]
 
-        if description:
+        skip_description = self.options.get(
+            "skip-description", "skip-description" in options
+        )
+
+        if description and not skip_description:
             rst_element = rst_string(description)
             node = docutils.nodes.paragraph()
             self.state.nested_parse(rst_element, 0, node)
