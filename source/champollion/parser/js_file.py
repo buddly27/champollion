@@ -52,6 +52,7 @@ def fetch_environment(file_path, file_id, module_id):
             "name": "index.js",
             "path": "/path/to/module/test/index.js",
             "content": "'use strict'\\n\\n...",
+            "description": "File description",
             "export": {
                 "module.test.exported_element": {
                     "id": "module.test.exported_element",
