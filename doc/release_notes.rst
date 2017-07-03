@@ -58,6 +58,26 @@ Release Notes
             This option can be set automatically via the :ref:`js_module_options
             <configuration/js_module_options>` configuration
 
+    .. change:: new
+        :tags: javascript-parser
+
+        Added module path to the module environment returned by
+        :func:`champollion.parser.js_module.fetch_environment`
+
+    .. change:: changed
+        :tags: directive
+
+        Updated all directives to use the module path when displaying the import
+        statement::
+
+            import {Element} from "example/module"
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:module-path-alias:`` options to all directives to modify the
+        path of the module from the element to display.
+
     .. change:: fixed
         :tags: javascript-parser
 
