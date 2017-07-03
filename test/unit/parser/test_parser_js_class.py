@@ -423,22 +423,25 @@ def test_class_pattern(content, expected):
     ("content", "expected"),
     [
         (
-            "function invalidMethod() {}",
-            None
-        ),
-        (
-            "invalidMethod()",
-            None
-        ),
-        (
-            "invalidMethod {}",
-            None
-        ),
-        (
             "valid-Method (arg1) {}",
             {
                 "arguments": "arg1",
                 "method_name": "valid-Method",
+                "prefix": None,
+                "start_regex": ""
+            }
+        ),
+        (
+            "validMethod (\n"
+            "    arg1, arg2, arg3, arg4, arg5,\n"
+            "    arg6, arg7, arg8, arg9, arg10\n"
+            ") {}",
+            {
+                "arguments": (
+                    "arg1, arg2, arg3, arg4, arg5,\n"
+                    "    arg6, arg7, arg8, arg9, arg10"
+                ),
+                "method_name": "validMethod",
                 "prefix": None,
                 "start_regex": ""
             }
@@ -476,15 +479,28 @@ def test_class_pattern(content, expected):
                 "start_regex": ""
             }
         ),
+        (
+            "function invalidMethod() {}",
+            None
+        ),
+        (
+            "invalidMethod()",
+            None
+        ),
+        (
+            "invalidMethod {}",
+            None
+        ),
     ],
     ids=[
-        "invalid method with 'function' statement",
-        "invalid method without nested element",
-        "invalid method without argument",
         "valid method",
+        "valid method with many arguments",
         "valid static method",
         "valid getter method",
         "valid setter method",
+        "invalid method with 'function' statement",
+        "invalid method without nested element",
+        "invalid method without argument",
     ]
 )
 def test_class_method_pattern(content, expected):
@@ -545,12 +561,13 @@ def test_class_method_pattern(content, expected):
             (
                 "arrow_type_method3 = (\n"
                 "    arg1, arg2, arg3, arg4, arg5, agr6,\n"
+                "    arg7\n"
                 ") => {\n"
                 "    console.log('youpi');\n"
                 "};\n"
             ),
             {
-                "arguments": "arg1, arg2, arg3, arg4, arg5, agr6,",
+                "arguments": "arg1, arg2, arg3, arg4, arg5, agr6,\n    arg7",
                 "single_argument": None,
                 "method_name": "arrow_type_method3",
                 "prefix": None,

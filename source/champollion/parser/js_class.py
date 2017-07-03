@@ -19,14 +19,16 @@ _CLASS_PATTERN = re.compile(
 #: Regular Expression pattern for class methods
 _CLASS_METHOD_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>(static|get|set) +)?"
-    r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*?)[\n ]*\) *{"
+    r"(?P<method_name>[\w._-]+) *\([\n ]*(?P<arguments>.*?)[\n ]*\) *{",
+    re.DOTALL
 )
 
 #: Regular Expression pattern for class arrow methods
 _CLASS_METHOD_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<prefix>static +)?(?P<method_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
-    r"=> *"
+    r"=> *",
+    re.DOTALL
 )
 
 #: Regular Expression pattern for class attribute

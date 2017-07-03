@@ -7,7 +7,7 @@ import re
 _ONE_LINE_COMMENT_PATTERN = re.compile(r"//.*?\n")
 
 #: Regular Expression pattern for multi-line comments
-_MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*(.|\n)*?\*/")
+_MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*.*?\*/", re.DOTALL)
 
 #: Regular Expression pattern for nested element symbols
 _NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]*}")

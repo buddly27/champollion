@@ -242,12 +242,13 @@ def test_get_function_environment(content, expected):
             (
                 "function doSomething_Else(\n"
                 "    arg1, arg2, arg3, arg3, arg4, arg5,\n"
+                "    arg6\n"
                 ") {\n"
                 "    console.log('test')\n"
                 "}"
             ),
             {
-                "arguments": "arg1, arg2, arg3, arg3, arg4, arg5,",
+                "arguments": "arg1, arg2, arg3, arg3, arg4, arg5,\n    arg6",
                 "data_name": None,
                 "default": None,
                 "export": None,
@@ -379,12 +380,15 @@ def test_function_pattern(content, expected):
             (
                 "export const arrow_type_function = (\n"
                 "    arg1, arg2, arg3, arg4, arg5, agr6,\n"
+                "    arg7, arg8\n"
                 ") => {\n"
                 "    console.log('youpi');\n"
                 "};\n"
             ),
             {
-                "arguments": "arg1, arg2, arg3, arg4, arg5, agr6,",
+                "arguments": (
+                    "arg1, arg2, arg3, arg4, arg5, agr6,\n    arg7, arg8"
+                ),
                 "single_argument": None,
                 "function_name": "arrow_type_function",
                 "default": None,
@@ -446,6 +450,19 @@ def test_function_arrow_pattern(content, expected):
             }
         ),
         (
+            "connect("
+            "    arg1, arg2, arg3, arg4, arg5, arg6,\n"
+            "    arg7,\n"
+            ");",
+            {
+                "arguments": "arg1, arg2, arg3, arg4, arg5, arg6,\n    arg7,",
+                "default": None,
+                "export": None,
+                "function_name": "connect",
+                "start_regex": ""
+            }
+        ),
+        (
             "export   connect(arg1, arg2);",
             {
                 "arguments": "arg1, arg2",
@@ -469,6 +486,7 @@ def test_function_arrow_pattern(content, expected):
     ],
     ids=[
         "valid function",
+        "valid function with multiple arguments",
         "valid exported function",
         "valid exported default function",
     ]

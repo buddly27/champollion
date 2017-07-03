@@ -12,7 +12,8 @@ _FUNCTION_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"((const|var|let) (?P<data_name>[\w_-]+) *= *)?"
     r"function *(?P<generator>\* *)?(?P<function_name>[\w_-]+)? "
-    r"*\([\n ]*(?P<arguments>.*?)[\n ]*\) *{"
+    r"*\([\n ]*(?P<arguments>.*?)[\n ]*\) *{",
+    re.DOTALL
 )
 
 #: Regular Expression pattern for arrow functions
@@ -20,13 +21,15 @@ _FUNCTION_ARROW_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
     r"(const|let|var) (?P<function_name>\w+) *= *"
     r"(\([\n ]*(?P<arguments>.*?)[\n ]*\)|(?P<single_argument>[\w._-]+)) *"
-    r"=> *"
+    r"=> *",
+    re.DOTALL
 )
 
 #: Regular Expression pattern for imported functions
 _IMPORTED_FUNCTION_PATTERN = re.compile(
     r"(?P<start_regex>(\n|^)) *(?P<export>export +)?(?P<default>default +)?"
-    r"(?P<function_name>[\w_-]+)? *\([\n ]*(?P<arguments>.*?)[\n ]*\);?"
+    r"(?P<function_name>[\w_-]+)? *\([\n ]*(?P<arguments>.*?)[\n ]*\);?",
+    re.DOTALL
 )
 
 
