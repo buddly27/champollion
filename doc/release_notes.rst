@@ -4,12 +4,67 @@
 Release Notes
 *************
 
+.. release:: 0.5.3
+    :date: 2017-07-02
+
+    .. change:: fixed
+
+        Updated the regular expression in the :mod:`data parser
+        <champollion.parser.js_data.fetch_environment>` to recognize values
+        spread over several lines::
+
+            const DATA = {
+                key1: 'value1',
+                key2: 'value2',
+                key3: 'value3',
+            };
+
+        .. warning::
+
+            This update requires that **all** documented data statements end
+            with a semi-colon.
+
+    .. change:: fixed
+
+        Updated the regular expression in the :mod:`attribute parser
+        <champollion.parser.js_class.fetch_attribute_environment>` to recognize
+        values spread over several lines::
+
+            class AwesomeClass {
+                static DATA = {
+                    key1: 'value1',
+                    key2: 'value2',
+                    key3: 'value3',
+                }
+            }
+
+        .. warning::
+
+            This update requires that **all** documented attribute statements
+            end with a semi-colon.
+
+    .. change:: fixed
+
+        Updated the regular expressions in the :mod:`method parser
+        <champollion.parser.js_class.fetch_methods_environment>` to recognize
+        arguments spread over several lines::
+
+            class AwesomeClass {
+                method(
+                    argument1,
+                    argument2,
+                    argument3,
+                ) {
+                    console.log('Hello World')
+                }
+            }
+
 .. release:: 0.5.2
     :date: 2017-06-29
 
     .. change:: fixed
 
-        Update the Sphinx dependency version to 1.6.2 as `module` and `method`
+        Updated the Sphinx dependency version to 1.6.2 as `module` and `method`
         directives where missing from the Javascript domain in older versions.
 
         .. seealso::
@@ -18,14 +73,14 @@ Release Notes
 
     .. change:: changed
 
-        Update pytest dependency version to 3.0.0
+        Updated pytest dependency version to 3.0.0
 
 .. release:: 0.5.1
     :date: 2017-06-25
 
     .. change:: fixed
 
-        Add PyPi and RTD badges to the README page
+        Added PyPi and RTD badges to the README page
 
 .. release:: 0.5.0
     :date: 2017-06-25
