@@ -846,7 +846,49 @@ def test_directive_autoclass_with_module_alias(doc_folder_with_code):
             "\n"
             "class alias_module.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"alias_module\"\"\n"
+            "   \"import AwesomeClass from \"example\"\"\n"
+            "\n"
+            "   Inherited class\n"
+        )
+
+
+def test_directive_autoclass_with_module_path_alias(doc_folder_with_code):
+    """Generate documentation from classes with module path alias.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.MotherClass\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autoclass:: example.CustomWelcome\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :module-path-alias: test/alias/module\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "class example.MotherClass()\n"
+            "\n"
+            "   Base Class\n"
+            "\n"
+            "class example.CustomWelcome()\n"
+            "\n"
+            "class example.AwesomeClass(name)\n"
+            "\n"
+            "   \"import AwesomeClass from \"test/alias/module\"\"\n"
             "\n"
             "   Inherited class\n"
         )

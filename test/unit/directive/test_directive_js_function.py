@@ -204,7 +204,7 @@ def test_directive_autofunction_with_module_alias(doc_folder_with_code):
         assert content == (
             "alias_module.doSomething1(arg1, arg2 = null)\n"
             "\n"
-            "   \"import doSomething1 from \"alias_module\"\"\n"
+            "   \"import doSomething1 from \"example\"\"\n"
             "\n"
             "   A function\n"
             "\n"
@@ -220,11 +220,73 @@ def test_directive_autofunction_with_module_alias(doc_folder_with_code):
             "\n"
             "alias_module.doSomething3()\n"
             "\n"
-            "   \"import {doSomething3} from \"alias_module\"\"\n"
+            "   \"import {doSomething3} from \"example\"\"\n"
             "\n"
             "alias_module.__ANONYMOUS_FUNCTION__()\n"
             "\n"
             "function* alias_module.yieldSomethingAliased(arg)\n"
+            "\n"
+            "   generator function\n"
+        )
+
+
+def test_directive_autofunction_with_module_path_alias(doc_folder_with_code):
+    """Generate documentation from functions with module path alias.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autofunction:: example.doSomething1\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autofunction:: example.doSomething2\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autofunction:: example.doSomething3\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autofunction:: example.__ANONYMOUS_FUNCTION__\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autofunction:: example.yieldSomethingAliased\n"
+            "    :module-path-alias: test/alias/module\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "example.doSomething1(arg1, arg2 = null)\n"
+            "\n"
+            "   \"import doSomething1 from \"test/alias/module\"\"\n"
+            "\n"
+            "   A function\n"
+            "\n"
+            "   Note: A note.\n"
+            "\n"
+            "example.doSomething2(arg)\n"
+            "\n"
+            "   Another function\n"
+            "\n"
+            "   A citation:\n"
+            "\n"
+            "      A citation\n"
+            "\n"
+            "example.doSomething3()\n"
+            "\n"
+            "   \"import {doSomething3} from \"test/alias/module\"\"\n"
+            "\n"
+            "example.__ANONYMOUS_FUNCTION__()\n"
+            "\n"
+            "function* example.yieldSomethingAliased(arg)\n"
             "\n"
             "   generator function\n"
         )

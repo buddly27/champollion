@@ -173,7 +173,7 @@ def test_directive_autodata_with_module_alias(doc_folder_with_code):
         assert content == (
             "const alias_module.VARIABLE_INT = 42\n"
             "\n"
-            "   \"import VARIABLE_INT from \"alias_module\"\"\n"
+            "   \"import VARIABLE_INT from \"example\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -190,7 +190,58 @@ def test_directive_autodata_with_module_alias(doc_folder_with_code):
             "\n"
             "let alias_module.VARIABLE_STRING = rosebud\n"
             "\n"
-            "   \"import {VARIABLE_STRING} from \"alias_module\"\"\n"
+            "   \"import {VARIABLE_STRING} from \"example\"\"\n"
+        )
+
+
+def test_directive_autodata_with_module_path_alias(doc_folder_with_code):
+    """Generate documentation from global data variables with module path alias.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autodata:: example.VARIABLE_INT\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autodata:: example.VARIABLE_OBJECT\n"
+            "    :module-path-alias: test/alias/module\n"
+            "\n"
+            ".. js:autodata:: example.VARIABLE_STRING\n"
+            "    :module-path-alias: test/alias/module\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "const example.VARIABLE_INT = 42\n"
+            "\n"
+            "   \"import VARIABLE_INT from \"test/alias/module\"\"\n"
+            "\n"
+            "   A variable\n"
+            "\n"
+            "   Note: A note.\n"
+            "\n"
+            "var example.VARIABLE_OBJECT = { "
+            "key1: value1, key2: value2, key3: value3, }\n"
+            "\n"
+            "   Another variable\n"
+            "\n"
+            "   A citation:\n"
+            "\n"
+            "      A citation\n"
+            "\n"
+            "let example.VARIABLE_STRING = rosebud\n"
+            "\n"
+            "   \"import {VARIABLE_STRING} from \"test/alias/module\"\"\n"
         )
 
 

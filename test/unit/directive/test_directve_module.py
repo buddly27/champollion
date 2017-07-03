@@ -242,7 +242,7 @@ def test_directive_automodule_with_members(doc_folder_with_code):
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -256,7 +256,7 @@ def test_directive_automodule_with_members(doc_folder_with_code):
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"example.test_class\"\"\n"
+            "   \"import AwesomeClass from \"example/test_class\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -287,7 +287,7 @@ def test_directive_automodule_with_specific_members(doc_folder_with_code):
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -348,7 +348,7 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -362,7 +362,7 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"example.test_class\"\"\n"
+            "   \"import AwesomeClass from \"example/test_class\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -424,7 +424,7 @@ def test_directive_automodule_with_undocumented_members_default(
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -438,7 +438,7 @@ def test_directive_automodule_with_undocumented_members_default(
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"example.test_class\"\"\n"
+            "   \"import AwesomeClass from \"example/test_class\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -499,7 +499,7 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -513,7 +513,7 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"example.test_class\"\"\n"
+            "   \"import AwesomeClass from \"example/test_class\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -577,7 +577,7 @@ def test_directive_automodule_with_private_members_default(
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -591,7 +591,7 @@ def test_directive_automodule_with_private_members_default(
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"example.test_class\"\"\n"
+            "   \"import AwesomeClass from \"example/test_class\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -633,7 +633,7 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "const alias_module.ALIASED_VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {ALIASED_VARIABLE_OBJECT} from \"alias_module\"\"\n"
+            "   \"import {ALIASED_VARIABLE_OBJECT} from \"example\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -641,14 +641,14 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "class alias_module.AwesomeClass(name)\n"
             "\n"
-            "   \"import {AwesomeClass} from \"alias_module\"\"\n"
+            "   \"import {AwesomeClass} from \"example\"\"\n"
             "\n"
             "   Inherited class\n"
             "\n"
             "const alias_module.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"alias_module\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -662,7 +662,78 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "class alias_module.AwesomeClass(name)\n"
             "\n"
-            "   \"import AwesomeClass from \"alias_module\"\"\n"
+            "   \"import AwesomeClass from \"example/test_class\"\"\n"
+            "\n"
+            "   Inherited class\n"
+        )
+
+
+def test_directive_automodule_with_module_path_alias(doc_folder_with_code):
+    """Generate documentation from modules with module path alias.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:automodule:: example\n"
+            "    :members:\n"
+            "    :module-path-alias: alias/module\n"
+            "\n"
+            ".. js:automodule:: example.test_attribute\n"
+            "    :members:\n"
+            "    :module-path-alias: alias/module\n"
+            "\n"
+            ".. js:automodule:: example.test_class\n"
+            "    :members:\n"
+            "    :module-path-alias: alias/module\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+    ) as f:
+        if sys.version_info < (3, 0):
+            content = f.read().decode("ascii", "ignore")
+        else:
+            content = f.read().encode("ascii", "ignore").decode("utf8")
+
+        assert content == (
+            "A cool application.\n"
+            "\n"
+            "const example.ALIASED_VARIABLE_OBJECT = "
+            "{ key1: value1, key2: value2, key3: value3, }\n"
+            "\n"
+            "   \"import {ALIASED_VARIABLE_OBJECT} from \"alias/module\"\"\n"
+            "\n"
+            "   A variable\n"
+            "\n"
+            "   Note: A note.\n"
+            "\n"
+            "class example.AwesomeClass(name)\n"
+            "\n"
+            "   \"import {AwesomeClass} from \"alias/module\"\"\n"
+            "\n"
+            "   Inherited class\n"
+            "\n"
+            "const example.test_attribute.VARIABLE_OBJECT = "
+            "{ key1: value1, key2: value2, key3: value3, }\n"
+            "\n"
+            "   \"import {VARIABLE_OBJECT} from \"alias/module\"\"\n"
+            "\n"
+            "   A variable\n"
+            "\n"
+            "   Note: A note.\n"
+            "\n"
+            "let example.test_attribute.VARIABLE_INT = 42\n"
+            "\n"
+            "   Another variable.\n"
+            "\n"
+            "A file with a great class.\n"
+            "\n"
+            "class example.test_class.AwesomeClass(name)\n"
+            "\n"
+            "   \"import AwesomeClass from \"alias/module\"\"\n"
             "\n"
             "   Inherited class\n"
         )
@@ -719,7 +790,7 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "const example.test_attribute.VARIABLE_OBJECT = "
             "{ key1: value1, key2: value2, key3: value3, }\n"
             "\n"
-            "   \"import {VARIABLE_OBJECT} from \"example.test_attribute\"\"\n"
+            "   \"import {VARIABLE_OBJECT} from \"example/test_attribute\"\"\n"
             "\n"
             "   A variable\n"
             "\n"
@@ -733,7 +804,7 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "class example.test_class.AwesomeClass(name)\n"
             "\n"
-            "   \"import {AwesomeClass} from \"example.test_class\"\"\n"
+            "   \"import {AwesomeClass} from \"example/test_class\"\"\n"
             "\n"
             "   Inherited class\n"
         )

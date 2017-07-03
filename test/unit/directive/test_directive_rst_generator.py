@@ -25,6 +25,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class1",
                             "    :alias: Class1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -37,6 +38,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class4",
                             "    :alias: Class4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -60,6 +62,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class1",
                             "    :alias: Class1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -83,6 +86,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class1",
                             "    :alias: Class1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -95,6 +99,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class2",
                             "    :alias: Class2",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -107,6 +112,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class4",
                             "    :alias: Class4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -130,6 +136,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class1",
                             "    :alias: Class1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -142,6 +149,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test._Class3",
                             "    :alias: _Class3",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -154,6 +162,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class4",
                             "    :alias: Class4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -177,6 +186,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class1",
                             "    :alias: Class1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "    :force-partial-import:",
                             "",
                             ""
@@ -190,6 +200,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class4",
                             "    :alias: Class4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "    :force-partial-import:",
                             "",
                             ""
@@ -212,6 +223,7 @@ from docutils.statemachine import StringList
                                 ".. js:autoclass:: example.Test",
                                 "    :alias: Test",
                                 "    :module-alias: example",
+                                "    :module-path-alias: example",
                                 "",
                                 ""
                             ]
@@ -227,6 +239,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class1",
                             "    :alias: Class1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -239,6 +252,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: test.Class4",
                             "    :alias: Class4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -251,6 +265,7 @@ from docutils.statemachine import StringList
                             ".. js:autoclass:: example.Test",
                             "    :alias: Test",
                             "    :module-alias: example",
+                            "    :module-path-alias: example",
                             "",
                             ""
                         ]
@@ -301,7 +316,7 @@ def test_get_rst_class_elements(options, expected):
     }
 
     assert champollion.directive.rst_generator.get_rst_class_elements(
-        environment, "test.module", **options
+        environment, "test.module", "test/module", **options
     ) == expected
 
 
@@ -838,6 +853,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function1",
                             "    :alias: function1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -850,6 +866,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function4",
                             "    :alias: function4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -873,6 +890,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function1",
                             "    :alias: function1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -896,6 +914,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function1",
                             "    :alias: function1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -908,6 +927,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function2",
                             "    :alias: function2",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -920,6 +940,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function4",
                             "    :alias: function4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -943,6 +964,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function1",
                             "    :alias: function1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -955,6 +977,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test._function3",
                             "    :alias: _function3",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -967,6 +990,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function4",
                             "    :alias: function4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -990,6 +1014,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function1",
                             "    :alias: function1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "    :force-partial-import:",
                             "",
                             ""
@@ -1003,6 +1028,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function4",
                             "    :alias: function4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "    :force-partial-import:",
                             "",
                             ""
@@ -1025,6 +1051,7 @@ def test_get_rst_method_elements(options, expected):
                                 ".. js:autofunction:: example.test",
                                 "    :alias: test",
                                 "    :module-alias: example",
+                                "    :module-path-alias: example",
                                 "",
                                 ""
                             ]
@@ -1040,6 +1067,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function1",
                             "    :alias: function1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1052,6 +1080,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: test.function4",
                             "    :alias: function4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1064,6 +1093,7 @@ def test_get_rst_method_elements(options, expected):
                             ".. js:autofunction:: example.test",
                             "    :alias: test",
                             "    :module-alias: example",
+                            "    :module-path-alias: example",
                             "",
                             ""
                         ]
@@ -1114,7 +1144,7 @@ def test_get_rst_function_elements(options, expected):
     }
 
     assert champollion.directive.rst_generator.get_rst_function_elements(
-        environment, "test.module", **options
+        environment, "test.module", "test/module", **options
     ) == expected
 
 
@@ -1138,6 +1168,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA1",
                             "    :alias: DATA1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1150,6 +1181,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA4",
                             "    :alias: DATA4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1174,6 +1206,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA1",
                             "    :alias: DATA1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1198,6 +1231,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA4",
                             "    :alias: DATA4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1222,6 +1256,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA1",
                             "    :alias: DATA1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1234,6 +1269,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA2",
                             "    :alias: DATA2",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1246,6 +1282,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA4",
                             "    :alias: DATA4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1270,6 +1307,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA1",
                             "    :alias: DATA1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1282,6 +1320,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test._DATA3",
                             "    :alias: _DATA3",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1294,6 +1333,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA4",
                             "    :alias: DATA4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1318,6 +1358,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA1",
                             "    :alias: DATA1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "    :force-partial-import:",
                             "",
                             ""
@@ -1331,6 +1372,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA4",
                             "    :alias: DATA4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "    :force-partial-import:",
                             "",
                             ""
@@ -1354,6 +1396,7 @@ def test_get_rst_function_elements(options, expected):
                                 ".. js:autodata:: example.TEST",
                                 "    :alias: TEST",
                                 "    :module-alias: example",
+                                "    :module-path-alias: example",
                                 "",
                                 ""
                             ]
@@ -1369,6 +1412,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA1",
                             "    :alias: DATA1",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1381,6 +1425,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: test.DATA4",
                             "    :alias: DATA4",
                             "    :module-alias: test.module",
+                            "    :module-path-alias: test/module",
                             "",
                             ""
                         ]
@@ -1393,6 +1438,7 @@ def test_get_rst_function_elements(options, expected):
                             ".. js:autodata:: example.TEST",
                             "    :alias: TEST",
                             "    :module-alias: example",
+                            "    :module-path-alias: example",
                             "",
                             ""
                         ]
@@ -1444,5 +1490,5 @@ def test_get_rst_data_elements(options, expected):
     }
 
     assert champollion.directive.rst_generator.get_rst_data_elements(
-        environment, "test.module", **options
+        environment, "test.module", "test/module", **options
     ) == expected

@@ -79,8 +79,8 @@ class BaseDirective(JSObject):
         """
         name = self.options.get("alias", environment["name"])
         module_id = environment["module_id"]
-        module_name = self.options.get(
-            "module-alias", module_environment[module_id]["name"]
+        module_path = self.options.get(
+            "module-path-alias", module_environment[module_id]["path"]
         )
         exported = environment["exported"]
         is_default = environment["default"]
@@ -88,14 +88,14 @@ class BaseDirective(JSObject):
         if exported and is_default and not force_partial_import:
             return rst_string(
                 "``import {name} from \"{module}\"``\n".format(
-                    name=name, module=module_name
+                    name=name, module=module_path
                 )
             )
 
         if exported and (not is_default or force_partial_import):
             return rst_string(
                 "``import {{{name}}} from \"{module}\"``\n".format(
-                    name=name, module=module_name
+                    name=name, module=module_path
                 )
             )
 

@@ -23,6 +23,9 @@ class AutoFunctionDirective(BaseDirective):
     * module-alias:
         String element to replace the module name.
 
+    * module-path-alias:
+        String element to replace the module path.
+
     * force-partial-import:
         Indicate whether the function import statement display should be
         indicated with partial import if the function element is exported.
@@ -42,6 +45,7 @@ class AutoFunctionDirective(BaseDirective):
     option_spec = {
         "alias": docutils.parsers.rst.directives.unchanged_required,
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
+        "module-path-alias": docutils.parsers.rst.directives.unchanged_required,
         "force-partial-import": lambda x: True,
     }
 

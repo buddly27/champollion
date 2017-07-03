@@ -53,6 +53,9 @@ class AutoClassDirective(BaseDirective):
     * module-alias:
         String element to replace the module name.
 
+    * module-path-alias:
+        String element to replace the module path.
+
     * force-partial-import:
         Indicate whether the class import statement display should be indicated
         with partial import if the class element is exported.
@@ -80,6 +83,7 @@ class AutoClassDirective(BaseDirective):
         "private-members": lambda x: True,
         "alias": docutils.parsers.rst.directives.unchanged_required,
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
+        "module-path-alias": docutils.parsers.rst.directives.unchanged_required,
         "force-partial-import": lambda x: True,
     }
 

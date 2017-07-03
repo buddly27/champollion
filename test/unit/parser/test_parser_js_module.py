@@ -12,6 +12,7 @@ def test_get_module_environment_from_file():
     ) == {
         "id": "test.module.example",
         "name": "example",
+        "path": "test/module/example",
         "file_id": "test/module/example.js"
     }
 
@@ -23,6 +24,7 @@ def test_get_module_environment_from_index_file():
     ) == {
             "id": "test.module",
             "name": "module",
+            "path": "test/module",
             "file_id": "test/module/index.js"
     }
 
@@ -35,6 +37,7 @@ def test_get_module_environment_from_file_with_adjacent_index():
     ) == {
         "id": "test.module.example",
         "name": "module.example",
+        "path": "test/module/example",
         "file_id": "test/module/example.js"
     }
 

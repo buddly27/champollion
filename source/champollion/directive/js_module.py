@@ -53,6 +53,9 @@ class AutoModuleDirective(Directive):
     * module-alias:
         String element to replace the module name.
 
+    * module-path-alias:
+        String element to replace the module path.
+
     * force-partial-import:
         Indicate whether each import statement display within the module
         should be indicated with partial import.
@@ -86,6 +89,7 @@ class AutoModuleDirective(Directive):
         "undoc-members": lambda x: True,
         "private-members": lambda x: True,
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
+        "module-path-alias": docutils.parsers.rst.directives.unchanged_required,
         "force-partial-import": lambda x: True,
     }
 
@@ -184,6 +188,10 @@ class AutoModuleDirective(Directive):
             "module-alias", module_environment["name"]
         )
 
+        module_path_name = self.options.get(
+            "module-path-alias", module_environment["path"]
+        )
+
         # Options manually set
         undoc_members = self.options.get(
             "undoc-members", "undoc-members" in options
@@ -196,7 +204,7 @@ class AutoModuleDirective(Directive):
 
         # Gather classes
         rst_elements = get_rst_class_elements(
-            file_environment, module_name,
+            file_environment, module_name, module_path_name,
             whitelist_names=whitelist_names,
             undocumented_members=undoc_members,
             private_members=private_members,
@@ -208,7 +216,7 @@ class AutoModuleDirective(Directive):
 
         # Gather functions
         rst_elements = get_rst_function_elements(
-            file_environment, module_name,
+            file_environment, module_name, module_path_name,
             whitelist_names=whitelist_names,
             undocumented_members=undoc_members,
             private_members=private_members,
@@ -220,7 +228,7 @@ class AutoModuleDirective(Directive):
 
         # Gather variables
         rst_elements = get_rst_data_elements(
-            file_environment, module_name,
+            file_environment, module_name, module_path_name,
             whitelist_names=whitelist_names,
             blacklist_ids=file_environment["function"].keys(),
             undocumented_members=undoc_members,
@@ -233,7 +241,7 @@ class AutoModuleDirective(Directive):
 
         # Gather exported elements
         rst_elements = get_rst_export_elements(
-            file_environment, js_env, module_name,
+            file_environment, js_env, module_name, module_path_name,
             rst_elements=rst_elements
         )
 

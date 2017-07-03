@@ -4,7 +4,7 @@ from docutils.statemachine import StringList
 
 
 def get_rst_class_elements(
-    environment, module_name, whitelist_names=None,
+    environment, module_name, module_path_name, whitelist_names=None,
     undocumented_members=False, private_members=False,
     force_partial_import=False, rst_elements=None
 ):
@@ -12,6 +12,9 @@ def get_rst_class_elements(
     *environment*.
 
     *module_name* is the module alias that should be added to each
+    directive.
+
+    *module_path_name* is the module path alias that should be added to each
     directive.
 
     *whitelist_names* is an optional list of element names that
@@ -54,6 +57,7 @@ def get_rst_class_elements(
                 element_id=class_environment["id"],
                 alias=class_environment["name"],
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=extra_options
             )
             rst_elements[line_number] = [rst_element]
@@ -165,7 +169,7 @@ def get_rst_method_elements(
 
 
 def get_rst_function_elements(
-    environment, module_name, whitelist_names=None,
+    environment, module_name, module_path_name, whitelist_names=None,
     undocumented_members=False, private_members=False,
     force_partial_import=False, rst_elements=None
 ):
@@ -173,6 +177,9 @@ def get_rst_function_elements(
     *environment*.
 
     *module_name* is the module alias that should be added to each
+    directive.
+
+    *module_path_name* is the module path alias that should be added to each
     directive.
 
     *whitelist_names* is an optional list of element names that
@@ -215,6 +222,7 @@ def get_rst_function_elements(
                 element_id=function_environment["id"],
                 alias=function_environment["name"],
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=extra_options
             )
             rst_elements[line_number] = [rst_element]
@@ -223,14 +231,17 @@ def get_rst_function_elements(
 
 
 def get_rst_data_elements(
-    environment, module_name, whitelist_names=None, blacklist_ids=None,
-    undocumented_members=False, private_members=False,
+    environment, module_name, module_path_name, whitelist_names=None,
+    blacklist_ids=None, undocumented_members=False, private_members=False,
     force_partial_import=False, rst_elements=None,
 ):
     """Return :term:`reStructuredText` from data elements within
     *environment*.
 
     *module_name* is the module alias that should be added to each
+    directive.
+
+    *module_path_name* is the module path alias that should be added to each
     directive.
 
     *whitelist_names* is an optional list of element names that
@@ -284,6 +295,7 @@ def get_rst_data_elements(
                 element_id=data_environment["id"],
                 alias=data_environment["name"],
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=extra_options
             )
             rst_elements[line_number] = [rst_element]
@@ -292,7 +304,8 @@ def get_rst_data_elements(
 
 
 def get_rst_export_elements(
-    file_environment, environment, module_name, rst_elements=None
+    file_environment, environment, module_name, module_path_name,
+    rst_elements=None
 ):
     """Return :term:`reStructuredText` from exported elements within
     *file_environment*.
@@ -301,6 +314,9 @@ def get_rst_export_elements(
     in :mod:`~champollion.parser`.
 
     *module_name* is the module alias that should be added to each
+    directive.
+
+    *module_path_name* is the module path alias that should be added to each
     directive.
 
     *rst_elements* can be an initial dictionary that will be updated and
@@ -341,7 +357,7 @@ def get_rst_export_elements(
 
         if name == "default":
             rst_element = get_rst_default_from_file_environment(
-                from_file_env, alias, module_name
+                from_file_env, alias, module_name, module_path_name
             )
             if rst_element is None:
                 continue
@@ -353,6 +369,7 @@ def get_rst_export_elements(
                 directive="automodule",
                 element_id=from_module_id,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[
                     ":force-partial-import:",
                     ":members:",
@@ -363,7 +380,7 @@ def get_rst_export_elements(
 
         else:
             rst_element = get_rst_name_from_file_environment(
-                name, from_file_env, alias, module_name
+                name, from_file_env, alias, module_name, module_path_name
             )
             if rst_element is None:
                 continue
@@ -374,7 +391,7 @@ def get_rst_export_elements(
 
 
 def get_rst_default_from_file_environment(
-    file_environment, alias, module_name
+    file_environment, alias, module_name, module_path_name
 ):
     """Return :term:`reStructuredText` from default element in
     *file_environment*.
@@ -383,6 +400,9 @@ def get_rst_default_from_file_environment(
 
     *module_name* is the module alias that should replace the element
     module name.
+
+    *module_path_name* is the module path alias that should be added to each
+    directive.
 
     .. warning::
 
@@ -396,6 +416,7 @@ def get_rst_default_from_file_environment(
                 element_id=class_env["id"],
                 alias=alias,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[":force-partial-import:"]
             )
 
@@ -406,6 +427,7 @@ def get_rst_default_from_file_environment(
                 element_id=function_env["id"],
                 alias=alias,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[":force-partial-import:"]
             )
 
@@ -416,12 +438,13 @@ def get_rst_default_from_file_environment(
                 element_id=data_env["id"],
                 alias=alias,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[":force-partial-import:"]
             )
 
 
 def get_rst_name_from_file_environment(
-    name, file_environment, alias, module_name,
+    name, file_environment, alias, module_name, module_path_name
 ):
     """Return :term:`reStructuredText` element in *file_environment* from
     *name*.
@@ -430,6 +453,9 @@ def get_rst_name_from_file_environment(
 
     *module_name* is the module name that should replace the element
     module name.
+
+    *module_path_name* is the module path alias that should be added to each
+    directive.
 
     .. warning::
 
@@ -443,6 +469,7 @@ def get_rst_name_from_file_environment(
                 element_id=class_env["id"],
                 alias=alias,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[":force-partial-import:"]
             )
 
@@ -453,6 +480,7 @@ def get_rst_name_from_file_environment(
                 element_id=function_env["id"],
                 alias=alias,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[":force-partial-import:"]
             )
 
@@ -463,13 +491,14 @@ def get_rst_name_from_file_environment(
                 element_id=data_env["id"],
                 alias=alias,
                 module_alias=module_name,
+                module_path_alias=module_path_name,
                 extra_options=[":force-partial-import:"]
             )
 
 
 def rst_generate(
     directive, element_id, alias=None, module_alias=None,
-    extra_options=None
+    module_path_alias=None, extra_options=None
 ):
     """Generate `StringList` from *directive* and *element_id*.
 
@@ -483,6 +512,9 @@ def rst_generate(
 
     *module_alias* is the module name that should replace the element
     module name.
+
+    *module_path_alias* is the module path that should replace the element
+    module path.
 
     *extra_options* can be a list of extra options to add to the directive.
 
@@ -502,6 +534,11 @@ def rst_generate(
     if module_alias is not None:
         element_rst += "    :module-alias: {module}\n".format(
             module=module_alias
+        )
+
+    if module_path_alias is not None:
+        element_rst += "    :module-path-alias: {module}\n".format(
+            module=module_path_alias
         )
 
     for option in extra_options:
