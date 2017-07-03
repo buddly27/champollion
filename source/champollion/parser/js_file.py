@@ -31,7 +31,7 @@ _BINDING_ELEMENT_PATTERN = re.compile(
 )
 
 #: Regular Expression pattern for file docstring
-_FILE_DOCSTRING_PATTERN = re.compile(r"^/\*\*.*?\*/", re.DOTALL)
+_FILE_DOCSTRING_PATTERN = re.compile(r"^/\*\*.*?\*/(?=\n\n)", re.DOTALL)
 
 
 def fetch_environment(file_path, file_id, module_id):
