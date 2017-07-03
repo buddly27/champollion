@@ -10,7 +10,8 @@ from .rst_generator import (
     get_rst_class_elements,
     get_rst_function_elements,
     get_rst_data_elements,
-    get_rst_export_elements
+    get_rst_export_elements,
+    rst_string
 )
 
 
@@ -111,11 +112,40 @@ class AutoModuleDirective(Directive):
         )
         nodes.append(index_node)
 
+        file_environment = self._file_environment(module_environment)
+        description = file_environment["description"]
+
+        if description:
+            rst_element = rst_string(description)
+            node = docutils.nodes.paragraph()
+            self.state.nested_parse(rst_element, 0, node)
+            nodes.append(node)
+
+        nodes += self.generate_members(module_environment, options)
+        return nodes
+
+    def _file_environment(self, module_environment):
+        """Get the file environment from the *module_environment*.
+        """
+        js_env = self.state.document.settings.env.app.config.js_environment
+
         file_id = module_environment["file_id"]
+        file_environment = js_env["file"][file_id]
+        return file_environment
+
+    def generate_members(self, module_environment, options):
+        """Generate a list of member nodes from *module_environment*
+
+        *options* is the dictionary of module options that can affect the
+        display of members
+
+        """
+        js_env = self.state.document.settings.env.app.config.js_environment
+        file_environment = self._file_environment(module_environment)
+
         module_name = self.options.get(
             "module-alias", module_environment["name"]
         )
-        file_environment = js_env["file"][file_id]
 
         # Options manually set
         undoc_members = self.options.get(
@@ -168,6 +198,8 @@ class AutoModuleDirective(Directive):
         )
 
         # Add content while respecting the line order
+        nodes = []
+
         for line_number in sorted(rst_elements.keys()):
             for rst_element in rst_elements[line_number]:
                 node = docutils.nodes.paragraph()
