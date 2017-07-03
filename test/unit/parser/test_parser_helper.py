@@ -161,6 +161,114 @@ def test_filter_comments():
     assert champollion.parser.helper.filter_comments(content) == expected
 
 
+def test_filter_comments_keep_content_size():
+    """Remove all comments from content while keeping content size."""
+    content = (
+        "'use strict'; /* a beautiful comment */\n"
+        "\n"
+        "/*\n"
+        "a long comment that can take a lot of places so\n"
+        "we put it on several lines.\n"
+        "*/\n"
+        "\n"
+        "// a data docstring\n"
+        "const DATA = 1;\n"
+        "\n"
+        "/**\n"
+        " * Function docstring\n"
+        " */\n"
+        "function sum(a, b) {\n"
+        "    // Return the sum of a and b\n"
+        "    return a+b;\n"
+        "}\n"
+    )
+
+    expected = (
+        "'use strict'; {comment1}\n"
+        "\n"
+        "{comment2}\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "{comment3}\n"
+        "const DATA = 1;\n"
+        "\n"
+        "{comment4}\n"
+        "\n"
+        "\n"
+        "function sum(a, b) {{\n"
+        "    {comment5}\n"
+        "    return a+b;\n"
+        "}}\n"
+    ).format(
+        comment1=" " * len("/* a beautiful comment */"),
+        comment2=" " * len(
+            "/*"
+            "a long comment that can take a lot of places so"
+            "we put it on several lines."
+            "*/"
+        ),
+        comment3=" " * len("// a data docstring"),
+        comment4=" " * len(
+            "/**"
+            " * Function docstring"
+            " */"
+        ),
+        comment5=" " * len("// Return the sum of a and b")
+    )
+
+    assert champollion.parser.helper.filter_comments(
+        content, keep_content_size=True
+    ) == expected
+
+
+def test_filter_comments_without_multiline_comments():
+    """Remove all comments from content without multiline comments."""
+    content = (
+        "'use strict'; /* a beautiful comment */\n"
+        "\n"
+        "/*\n"
+        "a long comment that can take a lot of places so\n"
+        "we put it on several lines.\n"
+        "*/\n"
+        "\n"
+        "// a data docstring\n"
+        "const DATA = 1;\n"
+        "\n"
+        "/**\n"
+        " * Function docstring\n"
+        " */\n"
+        "function sum(a, b) {\n"
+        "    // Return the sum of a and b\n"
+        "    return a+b;\n"
+        "}\n"
+    )
+
+    expected = (
+        "'use strict'; /* a beautiful comment */\n"
+        "\n"
+        "/*\n"
+        "a long comment that can take a lot of places so\n"
+        "we put it on several lines.\n"
+        "*/\n"
+        "\n"
+        "\n"
+        "const DATA = 1;\n"
+        "\n"
+        "/**\n"
+        " * Function docstring\n"
+        " */\n"
+        "function sum(a, b) {\n"
+        "    \n"
+        "    return a+b;\n"
+        "}\n"
+    )
+    assert champollion.parser.helper.filter_comments(
+        content, filter_multiline_comment=False
+    ) == expected
+
+
 @pytest.mark.parametrize(
     ("content", "expected_content", "expected_collapsed_content"),
     [

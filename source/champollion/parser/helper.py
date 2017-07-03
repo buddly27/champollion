@@ -13,8 +13,13 @@ _MULTI_LINES_COMMENT_PATTERN = re.compile(r"/\*.*?\*/", re.DOTALL)
 _NESTED_ELEMENT_PATTERN = re.compile(r"{[^{}]*}")
 
 
-def filter_comments(content, keep_content_size=False):
+def filter_comments(
+    content, filter_multiline_comment=True, keep_content_size=False
+):
     """Return *content* without the comments.
+
+    If *filter_multiline_comment* is set to False, only the one line comment
+    will be filtered out.
 
     If *keep_content_size* is set to True, the size of the content is preserved.
 
@@ -22,6 +27,8 @@ def filter_comments(content, keep_content_size=False):
 
         The filtered content keep the same number of lines as the
         original content.
+
+    .. seealso:: https://www.w3schools.com/js/js_comments.asp
 
     """
     def _replace_comment(element):
@@ -32,7 +39,9 @@ def filter_comments(content, keep_content_size=False):
         return "\n" * count
 
     content = _ONE_LINE_COMMENT_PATTERN.sub(_replace_comment, content)
-    content = _MULTI_LINES_COMMENT_PATTERN.sub(_replace_comment, content)
+
+    if filter_multiline_comment:
+        content = _MULTI_LINES_COMMENT_PATTERN.sub(_replace_comment, content)
 
     return content
 
@@ -140,8 +149,8 @@ def get_docstring(line_number, lines):
 
         # Valid docstring line starts with a '*'
         elif re.search("^\*( *| +.+)$", line) is not None:
-            index = 2 if len(line) > 1 else 1
-            docstring.append(line[index:].rstrip())
+            indentation = 2 if len(line) > 1 else 1
+            docstring.append(line[indentation:].rstrip())
 
         # Beginning of valid docstrings starts with '/**'
         elif line.startswith("/**"):
