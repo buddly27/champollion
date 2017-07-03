@@ -42,6 +42,9 @@ The available options are:
 * module-alias:
     String element to replace the module name.
 
+* module-path-alias:
+    String element to replace the module path.
+
 * force-partial-import:
     Indicate whether each import statement display within the module
     should be indicated with partial import.
@@ -79,6 +82,9 @@ The available options are:
 
 * module-alias:
     String element to replace the module name.
+
+* module-path-alias:
+    String element to replace the module path.
 
 * force-partial-import:
     Indicate whether the data import statement display should be indicated
@@ -122,6 +128,9 @@ The available options are:
 
 * module-alias:
     String element to replace the module name.
+
+* module-path-alias:
+    String element to replace the module path.
 
 * force-partial-import:
     Indicate whether the function import statement display should be
@@ -210,6 +219,9 @@ The available options are:
 
 * module-alias:
     String element to replace the module name.
+
+* module-path-alias:
+    String element to replace the module path.
 
 * force-partial-import:
     Indicate whether the class import statement display should be indicated
