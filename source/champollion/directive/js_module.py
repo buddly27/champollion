@@ -1,5 +1,7 @@
 # :coding: utf-8
 
+import collections
+
 from sphinx.directives import Directive
 from sphinx import addnodes
 import docutils.parsers.rst.directives
@@ -15,6 +17,13 @@ from .rst_generator import (
 )
 
 
+def _parse_members(argument):
+    """Convert the :members: options to module directive."""
+    if argument is None:
+        return True
+    return [arg.strip() for arg in argument.split(",")]
+
+
 class AutoModuleDirective(Directive):
     """Directive to render :term:`Javascript` module documentation.
 
@@ -25,6 +34,11 @@ class AutoModuleDirective(Directive):
         .. js:automodule:: module.test
 
     The available options are:
+
+    * members:
+        This option can be boolean if no arguments are given to indicate that
+        all members should be documented, or a white list of member names to
+        display.
 
     * undoc-members:
         Indicate whether members with no docstrings should be displayed.
@@ -64,6 +78,7 @@ class AutoModuleDirective(Directive):
 
     #: module options
     option_spec = {
+        "members": _parse_members,
         "undoc-members": lambda x: True,
         "private-members": lambda x: True,
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
@@ -121,7 +136,16 @@ class AutoModuleDirective(Directive):
             self.state.nested_parse(rst_element, 0, node)
             nodes.append(node)
 
-        nodes += self.generate_members(module_environment, options)
+        members = self.options.get("members", "members" in options)
+        if members:
+            whitelist = (
+                members if isinstance(members, collections.Iterable) else None
+            )
+
+            nodes += self.generate_members(
+                module_environment, options, whitelist_names=whitelist
+            )
+
         return nodes
 
     def _file_environment(self, module_environment):
@@ -133,11 +157,16 @@ class AutoModuleDirective(Directive):
         file_environment = js_env["file"][file_id]
         return file_environment
 
-    def generate_members(self, module_environment, options):
+    def generate_members(
+        self, module_environment, options, whitelist_names=None
+    ):
         """Generate a list of member nodes from *module_environment*
 
         *options* is the dictionary of module options that can affect the
         display of members
+
+        *whitelist_names* is an optional list of element names that
+        should be displayed exclusively.
 
         """
         js_env = self.state.document.settings.env.app.config.js_environment
@@ -160,6 +189,7 @@ class AutoModuleDirective(Directive):
         # Gather classes
         rst_elements = get_rst_class_elements(
             file_environment, module_name,
+            whitelist_names=whitelist_names,
             undocumented_members=undoc_members,
             private_members=private_members,
             force_partial_import=self.options.get(
@@ -171,6 +201,7 @@ class AutoModuleDirective(Directive):
         # Gather functions
         rst_elements = get_rst_function_elements(
             file_environment, module_name,
+            whitelist_names=whitelist_names,
             undocumented_members=undoc_members,
             private_members=private_members,
             force_partial_import=self.options.get(
@@ -182,6 +213,7 @@ class AutoModuleDirective(Directive):
         # Gather variables
         rst_elements = get_rst_data_elements(
             file_environment, module_name,
+            whitelist_names=whitelist_names,
             blacklist_ids=file_environment["function"].keys(),
             undocumented_members=undoc_members,
             private_members=private_members,
