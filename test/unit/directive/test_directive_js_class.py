@@ -215,7 +215,7 @@ def test_directive_autoclass_with_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -336,7 +336,7 @@ def test_directive_autoclass_with_default_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -395,7 +395,7 @@ def test_directive_autoclass_without_constructor(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -457,7 +457,7 @@ def test_directive_autoclass_without_constructor_default(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -540,7 +540,7 @@ def test_directive_autoclass_with_undocumented_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -625,7 +625,7 @@ def test_directive_autoclass_with_undoc_members_default(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -692,7 +692,7 @@ def test_directive_autoclass_with_private_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -762,7 +762,7 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: a test, }\n"
+            "   classicAttribute = { test: 'a test', }\n"
             "\n"
             "      another attribute.\n"
         )
