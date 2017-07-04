@@ -2,10 +2,23 @@
 
 import pytest
 import os
-import sys
+import re
+import unicodedata
 
 from sphinx.cmdline import main as sphinx_main
 from sphinx.util.osutil import cd
+
+
+def _sanitise_value(value):
+    """Return *value* suitable for comparison using python 2 and python 3.
+    """
+    value = value.decode("UTF-8")
+    value = unicodedata.normalize("NFKD", value)
+    value = value.encode("ascii", "ignore").decode("UTF-8")
+    value = re.sub(
+        r"[^\w*._\-\\/:% \"()\[\]{}\n=,]", "", value
+    )
+    return value
 
 
 @pytest.fixture()
@@ -70,12 +83,9 @@ def test_directive_autofunction(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"
@@ -132,12 +142,9 @@ def test_directive_autofunction_with_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "example.aliased_doSomething1(arg1, arg2 = null)\n"
@@ -194,12 +201,9 @@ def test_directive_autofunction_with_module_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "alias_module.doSomething1(arg1, arg2 = null)\n"
@@ -256,12 +260,9 @@ def test_directive_autofunction_with_module_path_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"
@@ -320,12 +321,9 @@ def test_directive_autofunction_with_partial_import_forced(
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"

@@ -2,10 +2,23 @@
 
 import pytest
 import os
-import sys
+import re
+import unicodedata
 
 from sphinx.cmdline import main as sphinx_main
 from sphinx.util.osutil import cd
+
+
+def _sanitise_value(value):
+    """Return *value* suitable for comparison using python 2 and python 3.
+    """
+    value = value.decode("UTF-8")
+    value = unicodedata.normalize("NFKD", value)
+    value = value.encode("ascii", "ignore").decode("UTF-8")
+    value = re.sub(
+        r"[^\w._\-\\/:% \"()\[\]{}\n=,]", "", value
+    )
+    return value
 
 
 @pytest.fixture()
@@ -125,12 +138,9 @@ def test_directive_autoclass(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -167,12 +177,9 @@ def test_directive_autoclass_with_members(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -215,7 +222,7 @@ def test_directive_autoclass_with_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -235,12 +242,9 @@ def test_directive_autoclass_with_specific_members(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -288,12 +292,9 @@ def test_directive_autoclass_with_default_members(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -336,7 +337,7 @@ def test_directive_autoclass_with_default_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -357,12 +358,9 @@ def test_directive_autoclass_without_constructor(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -395,7 +393,7 @@ def test_directive_autoclass_without_constructor(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -419,12 +417,9 @@ def test_directive_autoclass_without_constructor_default(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -457,7 +452,7 @@ def test_directive_autoclass_without_constructor_default(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -486,12 +481,9 @@ def test_directive_autoclass_with_undocumented_members(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -540,7 +532,7 @@ def test_directive_autoclass_with_undocumented_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -571,12 +563,9 @@ def test_directive_autoclass_with_undoc_members_default(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -625,7 +614,7 @@ def test_directive_autoclass_with_undoc_members_default(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -646,12 +635,9 @@ def test_directive_autoclass_with_private_members(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -692,7 +678,7 @@ def test_directive_autoclass_with_private_members(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -716,12 +702,9 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -762,7 +745,7 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
             "\n"
             "      attribute.\n"
             "\n"
-            "   classicAttribute = { test: 'a test', }\n"
+            "   classicAttribute = { test: a test, }\n"
             "\n"
             "      another attribute.\n"
         )
@@ -788,12 +771,9 @@ def test_directive_autoclass_with_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AliasedMotherClass()\n"
@@ -830,12 +810,9 @@ def test_directive_autoclass_with_module_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class alias_module.MotherClass()\n"
@@ -872,12 +849,9 @@ def test_directive_autoclass_with_module_path_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -908,12 +882,9 @@ def test_directive_autoclass_with_partial_import_forced(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"

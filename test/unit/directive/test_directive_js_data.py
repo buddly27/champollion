@@ -2,10 +2,23 @@
 
 import pytest
 import os
-import sys
+import re
+import unicodedata
 
 from sphinx.cmdline import main as sphinx_main
 from sphinx.util.osutil import cd
+
+
+def _sanitise_value(value):
+    """Return *value* suitable for comparison using python 2 and python 3.
+    """
+    value = value.decode("UTF-8")
+    value = unicodedata.normalize("NFKD", value)
+    value = value.encode("ascii", "ignore").decode("UTF-8")
+    value = re.sub(
+        r"[^\w._\-\\/:% \"()\[\]{}\n=,]", "", value
+    )
+    return value
 
 
 @pytest.fixture()
@@ -61,12 +74,9 @@ def test_directive_autodata(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "const example.VARIABLE_INT = 42\n"
@@ -78,7 +88,7 @@ def test_directive_autodata(doc_folder_with_code):
             "   Note: A note.\n"
             "\n"
             "var example.VARIABLE_OBJECT = { "
-            "key1: 'value1', key2: 'value2', key3: 'value3', }\n"
+            "key1: value1, key2: value2, key3: value3, }\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -86,7 +96,7 @@ def test_directive_autodata(doc_folder_with_code):
             "\n"
             "      A citation\n"
             "\n"
-            "let example.VARIABLE_STRING = 'rosebud'\n"
+            "let example.VARIABLE_STRING = rosebud\n"
             "\n"
             "   \"import {VARIABLE_STRING} from \"example\"\"\n"
         )
@@ -112,12 +122,9 @@ def test_directive_autodata_with_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "const example.ALIASED_VARIABLE_INT = 42\n"
@@ -129,7 +136,7 @@ def test_directive_autodata_with_alias(doc_folder_with_code):
             "   Note: A note.\n"
             "\n"
             "var example.ALIASED_VARIABLE_OBJECT = { "
-            "key1: 'value1', key2: 'value2', key3: 'value3', }\n"
+            "key1: value1, key2: value2, key3: value3, }\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -137,7 +144,7 @@ def test_directive_autodata_with_alias(doc_folder_with_code):
             "\n"
             "      A citation\n"
             "\n"
-            "let example.ALIASED_VARIABLE_STRING = 'rosebud'\n"
+            "let example.ALIASED_VARIABLE_STRING = rosebud\n"
             "\n"
             "   \"import {ALIASED_VARIABLE_STRING} from \"example\"\"\n"
         )
@@ -163,12 +170,9 @@ def test_directive_autodata_with_module_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "const alias_module.VARIABLE_INT = 42\n"
@@ -180,7 +184,7 @@ def test_directive_autodata_with_module_alias(doc_folder_with_code):
             "   Note: A note.\n"
             "\n"
             "var alias_module.VARIABLE_OBJECT = { "
-            "key1: 'value1', key2: 'value2', key3: 'value3', }\n"
+            "key1: value1, key2: value2, key3: value3, }\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -188,7 +192,7 @@ def test_directive_autodata_with_module_alias(doc_folder_with_code):
             "\n"
             "      A citation\n"
             "\n"
-            "let alias_module.VARIABLE_STRING = 'rosebud'\n"
+            "let alias_module.VARIABLE_STRING = rosebud\n"
             "\n"
             "   \"import {VARIABLE_STRING} from \"example\"\"\n"
         )
@@ -214,12 +218,9 @@ def test_directive_autodata_with_module_path_alias(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "const example.VARIABLE_INT = 42\n"
@@ -231,7 +232,7 @@ def test_directive_autodata_with_module_path_alias(doc_folder_with_code):
             "   Note: A note.\n"
             "\n"
             "var example.VARIABLE_OBJECT = { "
-            "key1: 'value1', key2: 'value2', key3: 'value3', }\n"
+            "key1: value1, key2: value2, key3: value3, }\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -239,7 +240,7 @@ def test_directive_autodata_with_module_path_alias(doc_folder_with_code):
             "\n"
             "      A citation\n"
             "\n"
-            "let example.VARIABLE_STRING = 'rosebud'\n"
+            "let example.VARIABLE_STRING = rosebud\n"
             "\n"
             "   \"import {VARIABLE_STRING} from \"test/alias/module\"\"\n"
         )
@@ -266,12 +267,9 @@ def test_directive_autodata_with_partial_import_forced(doc_folder_with_code):
         sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
 
     with open(
-        os.path.join(doc_folder_with_code, "_build", "index.txt"), "r"
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        if sys.version_info < (3, 0):
-            content = f.read().decode("ascii", "ignore")
-        else:
-            content = f.read().encode("ascii", "ignore").decode("utf8")
+        content = _sanitise_value(f.read())
 
         assert content == (
             "const example.VARIABLE_INT = 42\n"
@@ -283,7 +281,7 @@ def test_directive_autodata_with_partial_import_forced(doc_folder_with_code):
             "   Note: A note.\n"
             "\n"
             "var example.VARIABLE_OBJECT = { "
-            "key1: 'value1', key2: 'value2', key3: 'value3', }\n"
+            "key1: value1, key2: value2, key3: value3, }\n"
             "\n"
             "   Another variable\n"
             "\n"
@@ -291,7 +289,7 @@ def test_directive_autodata_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "      A citation\n"
             "\n"
-            "let example.VARIABLE_STRING = 'rosebud'\n"
+            "let example.VARIABLE_STRING = rosebud\n"
             "\n"
             "   \"import {VARIABLE_STRING} from \"example\"\"\n"
         )
