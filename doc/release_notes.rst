@@ -4,6 +4,22 @@
 Release Notes
 *************
 
+.. release:: 0.7.0
+    :date: 2018-07-06
+
+    .. change:: new
+        :tags: configuration
+
+        Added ``js_sources`` global configuration value which can contains
+        several paths to :term:`Javascript` source codes to parse.
+
+    .. change:: fixed
+        :tags: javascript-parser
+
+        Fixed :func:`champollion.parser.helper.get_docstring` to ensure that a
+        docstring is not associated with an element when too many blank lines
+        separate the docstring from the function.
+
 .. release:: 0.6.0
     :date: 2017-07-03
 
