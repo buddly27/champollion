@@ -20,11 +20,17 @@ Provide a path to the :term:`Javascript` source code that will be analysed by
 :mod:`champollion.parser`::
 
     # conf.py
-    js_source = "./relative/path/to/code"
+    js_source = "/path/to/code"
 
 An environment will be generated when the `builder-inited
 <http://www.sphinx-doc.org/en/stable/extdev/appapi.html#event-builder-inited>`_
 event is emitted.
+
+It is also possible to provide several paths::
+
+    # conf.py
+    js_sources = ["/path/to/code1", "/path/to/code2"]
+
 
 .. _configuration/js_environment:
 
