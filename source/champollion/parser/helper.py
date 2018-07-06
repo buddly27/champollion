@@ -150,6 +150,11 @@ def get_docstring(line_number, lines):
     for index in reversed(range(line_number-1)):
         line = lines[index].strip()
         if len(line) == 0 or line.startswith("//"):
+            # Do not look for docstring when more than two blank lines precede
+            # the element.
+            if index < line_number - 1:
+                return
+
             continue
 
         # Start of the docstring (from the end)
