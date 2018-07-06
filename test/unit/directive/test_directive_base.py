@@ -30,7 +30,7 @@ def test_directive_error(doc_folder):
         )
 
     with cd(doc_folder):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(os.path.join(doc_folder, "_build", "index.txt"), "r") as f:
         assert f.read() == ""

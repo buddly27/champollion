@@ -135,7 +135,7 @@ def test_directive_autoclass(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -174,7 +174,7 @@ def test_directive_autoclass_with_members(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -239,7 +239,7 @@ def test_directive_autoclass_with_specific_members(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -289,7 +289,7 @@ def test_directive_autoclass_with_default_members(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -355,7 +355,7 @@ def test_directive_autoclass_without_constructor(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -414,7 +414,7 @@ def test_directive_autoclass_without_constructor_default(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -478,7 +478,7 @@ def test_directive_autoclass_with_undocumented_members(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -560,7 +560,7 @@ def test_directive_autoclass_with_undoc_members_default(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -632,7 +632,7 @@ def test_directive_autoclass_with_private_members(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -699,7 +699,7 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -768,7 +768,7 @@ def test_directive_autoclass_with_alias(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -807,7 +807,7 @@ def test_directive_autoclass_with_module_alias(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -846,7 +846,7 @@ def test_directive_autoclass_with_module_path_alias(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -879,7 +879,7 @@ def test_directive_autoclass_with_partial_import_forced(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"

@@ -71,7 +71,7 @@ def test_directive_autodata(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -119,7 +119,7 @@ def test_directive_autodata_with_alias(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -167,7 +167,7 @@ def test_directive_autodata_with_module_alias(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -215,7 +215,7 @@ def test_directive_autodata_with_module_path_alias(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
@@ -264,7 +264,7 @@ def test_directive_autodata_with_partial_import_forced(doc_folder_with_code):
         )
 
     with cd(doc_folder_with_code):
-        sphinx_main(["dummy", "-b", "text", "-E", ".", "_build"])
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
 
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
