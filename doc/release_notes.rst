@@ -4,13 +4,20 @@
 Release Notes
 *************
 
+.. release:: 0.7.2
+    :date: 2018-07-06
+
+    .. change:: fixed
+
+        Fixed package version issue.
+
 .. release:: 0.7.1
     :date: 2018-07-06
 
     .. change:: fixed
         :tags: unit-tests
 
-        Update Travis configuration to run unit-tests for Python 3.6.
+        Updated Travis configuration to run unit-tests for Python 3.6.
 
 .. release:: 0.7.0
     :date: 2018-07-06
