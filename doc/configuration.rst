@@ -66,6 +66,7 @@ This configuration only accept the following boolean options:
 
 * members (When not used as a 'white list')
 * skip-constructor
+* skip-attribute-value
 * undoc-members
 * private-members
 * force-partial-import
@@ -85,6 +86,9 @@ This configuration only accept the following boolean options:
 
 * members (When not used as a 'white list')
 * skip-description
+* skip-data-value
+* skip-attribute-value
 * undoc-members
 * private-members
 * force-partial-import
+
