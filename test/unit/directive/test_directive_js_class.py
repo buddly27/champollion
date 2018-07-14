@@ -893,3 +893,63 @@ def test_directive_autoclass_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "   Inherited class\n"
         )
+
+
+def test_directive_autoclass_with_attribute_value_skipped(doc_folder_with_code):
+    """Generate documentation from classes with data value skipped.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autoclass:: example.AwesomeClass\n"
+            "    :members:\n"
+            "    :skip-attribute-value:\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
+    ) as f:
+        content = _sanitise_value(f.read())
+
+        assert content == (
+            "class example.AwesomeClass(name)\n"
+            "\n"
+            "   \"import AwesomeClass from \"example\"\"\n"
+            "\n"
+            "   Inherited class\n"
+            "\n"
+            "   constructor(name)\n"
+            "\n"
+            "      Constructor.\n"
+            "\n"
+            "   get name()\n"
+            "\n"
+            "      Get name.\n"
+            "\n"
+            "      Warning: The name is awesome\n"
+            "\n"
+            "   set name(value)\n"
+            "\n"
+            "      Set name.\n"
+            "\n"
+            "      Warning: Keep the name awesome\n"
+            "\n"
+            "   awesomeMethod()\n"
+            "\n"
+            "      awesomeMethod.\n"
+            "\n"
+            "   static staticMethod()\n"
+            "\n"
+            "      staticMethod.\n"
+            "\n"
+            "   static attribute\n"
+            "\n"
+            "      attribute.\n"
+            "\n"
+            "   classicAttribute\n"
+            "\n"
+            "      another attribute.\n"
+        )

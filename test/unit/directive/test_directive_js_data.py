@@ -293,3 +293,50 @@ def test_directive_autodata_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "   \"import {VARIABLE_STRING} from \"example\"\"\n"
         )
+
+
+def test_directive_autodata_with_value_skipped(doc_folder_with_code):
+    """Generate documentation from global data variables with value skipped.
+    """
+    index_file = os.path.join(doc_folder_with_code, "index.rst")
+    with open(index_file, "w") as f:
+        f.write(
+            ".. js:autodata:: example.VARIABLE_INT\n"
+            "    :skip-value:\n"
+            "\n"
+            ".. js:autodata:: example.VARIABLE_OBJECT\n"
+            "    :skip-value:\n"
+            "\n"
+            ".. js:autodata:: example.VARIABLE_STRING\n"
+            "    :skip-value:\n"
+        )
+
+    with cd(doc_folder_with_code):
+        sphinx_main(["-c", ".", "-b", "text", "-E", ".", "_build"])
+
+    with open(
+        os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
+    ) as f:
+        content = _sanitise_value(f.read())
+
+        assert content == (
+            "const example.VARIABLE_INT\n"
+            "\n"
+            "   \"import VARIABLE_INT from \"example\"\"\n"
+            "\n"
+            "   A variable\n"
+            "\n"
+            "   Note: A note.\n"
+            "\n"
+            "var example.VARIABLE_OBJECT\n"
+            "\n"
+            "   Another variable\n"
+            "\n"
+            "   A citation:\n"
+            "\n"
+            "      A citation\n"
+            "\n"
+            "let example.VARIABLE_STRING\n"
+            "\n"
+            "   \"import {VARIABLE_STRING} from \"example\"\"\n"
+        )
