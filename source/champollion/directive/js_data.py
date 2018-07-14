@@ -47,6 +47,7 @@ class AutoDataDirective(BaseDirective):
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
         "module-path-alias": docutils.parsers.rst.directives.unchanged_required,
         "force-partial-import": lambda x: True,
+        "skip-value": lambda x: True,
     }
 
     def handle_signature(self, signature, node):
@@ -62,6 +63,8 @@ class AutoDataDirective(BaseDirective):
         value = env["value"]
         variable_type = env["type"]
 
+        skip_value = self.options.get("skip-value", False)
+
         node["type"] = "data"
         node["id"] = env["id"]
         node["module"] = module_name
@@ -70,7 +73,9 @@ class AutoDataDirective(BaseDirective):
         node += addnodes.desc_type(variable_type + " ", variable_type + " ")
         node += addnodes.desc_addname(module_name + ".", module_name + ".")
         node += addnodes.desc_name(name, name)
-        node += addnodes.desc_annotation(" = " + value, " = " + value)
+        if not skip_value:
+            node += addnodes.desc_annotation(" = " + value, " = " + value)
+
         return name, module_name
 
     def before_content(self):
