@@ -6,7 +6,7 @@ from docutils.statemachine import StringList
 def get_rst_class_elements(
     environment, module_name, module_path_name, whitelist_names=None,
     undocumented_members=False, private_members=False,
-    force_partial_import=False, rst_elements=None
+    force_partial_import=False, skip_attribute_value=False, rst_elements=None
 ):
     """Return :term:`reStructuredText` from class elements within
     *environment*.
@@ -28,6 +28,9 @@ def get_rst_class_elements(
 
     *force_partial_import* indicate whether the import statement should
     force the partial import display if necessary.
+
+    *skip_attribute_value* indicate whether attribute value within the class
+    should not be displayed.
 
     *rst_elements* can be an initial dictionary that will be updated and
     returned.
@@ -51,6 +54,8 @@ def get_rst_class_elements(
             extra_options = []
             if force_partial_import:
                 extra_options = [":force-partial-import:"]
+            if skip_attribute_value:
+                extra_options.append(":skip-attribute-value:")
 
             rst_element = rst_generate(
                 directive="autoclass",
@@ -67,7 +72,8 @@ def get_rst_class_elements(
 
 def get_rst_attribute_elements(
     class_environment, whitelist_names=None, blacklist_ids=None,
-    undocumented_members=False, private_members=False, rst_elements=None,
+    undocumented_members=False, private_members=False, skip_value=False,
+    rst_elements=None,
 ):
     """Return :term:`reStructuredText` from class attribute elements within
     *class_environment*.
@@ -83,6 +89,8 @@ def get_rst_attribute_elements(
 
     *private_members* indicate whether elements starting with an underscore
     should be displayed.
+
+    *skip_value* indicate whether the value should not be displayed.
 
     *rst_elements* can be an initial dictionary that will be updated and
     returned.
@@ -108,11 +116,16 @@ def get_rst_attribute_elements(
         if name.startswith("_") and not private_members:
             continue
 
+        extra_options = []
+        if skip_value:
+            extra_options.append(":skip-value:")
+
         if whitelist_names is None or name in whitelist_names:
             line_number = attr_environment["line_number"]
             rst_element = rst_generate(
                 directive="autoattribute",
                 element_id=attr_environment["id"],
+                extra_options=extra_options
             )
             rst_elements[line_number] = [rst_element]
 
@@ -233,7 +246,7 @@ def get_rst_function_elements(
 def get_rst_data_elements(
     environment, module_name, module_path_name, whitelist_names=None,
     blacklist_ids=None, undocumented_members=False, private_members=False,
-    force_partial_import=False, rst_elements=None,
+    force_partial_import=False, skip_value=False, rst_elements=None,
 ):
     """Return :term:`reStructuredText` from data elements within
     *environment*.
@@ -258,6 +271,8 @@ def get_rst_data_elements(
 
     *force_partial_import* indicate whether the import statement should
     force the partial import display if necessary.
+
+    *skip_value* indicate whether the value should not be displayed.
 
     *rst_elements* can be an initial dictionary that will be updated and
     returned.
@@ -288,7 +303,9 @@ def get_rst_data_elements(
 
             extra_options = []
             if force_partial_import:
-                extra_options = [":force-partial-import:"]
+                extra_options.append(":force-partial-import:")
+            if skip_value:
+                extra_options.append(":skip-value:")
 
             rst_element = rst_generate(
                 directive="autodata",
@@ -305,7 +322,7 @@ def get_rst_data_elements(
 
 def get_rst_export_elements(
     file_environment, environment, module_name, module_path_name,
-    rst_elements=None
+    skip_data_value=False, skip_attribute_value=False, rst_elements=None
 ):
     """Return :term:`reStructuredText` from exported elements within
     *file_environment*.
@@ -318,6 +335,11 @@ def get_rst_export_elements(
 
     *module_path_name* is the module path alias that should be added to each
     directive.
+
+    *skip_data_value* indicate whether data value should not be displayed.
+
+    *skip_attribute_value* indicate whether attribute value should not be
+    displayed.
 
     *rst_elements* can be an initial dictionary that will be updated and
     returned.
@@ -357,7 +379,9 @@ def get_rst_export_elements(
 
         if name == "default":
             rst_element = get_rst_default_from_file_environment(
-                from_file_env, alias, module_name, module_path_name
+                from_file_env, alias, module_name, module_path_name,
+                skip_data_value=skip_data_value,
+                skip_attribute_value=skip_attribute_value,
             )
             if rst_element is None:
                 continue
@@ -365,22 +389,30 @@ def get_rst_export_elements(
             rst_elements[line_number].append(rst_element)
 
         elif name == "*":
+            extra_options = [
+                ":force-partial-import:",
+                ":members:",
+                ":skip-description:"
+            ]
+            if skip_data_value:
+                extra_options.append(":skip-data-value:")
+            if skip_attribute_value:
+                extra_options.append(":skip-attribute-value:")
+
             rst_element = rst_generate(
                 directive="automodule",
                 element_id=from_module_id,
                 module_alias=module_name,
                 module_path_alias=module_path_name,
-                extra_options=[
-                    ":force-partial-import:",
-                    ":members:",
-                    ":skip-description:"
-                ]
+                extra_options=extra_options
             )
             rst_elements[line_number].append(rst_element)
 
         else:
             rst_element = get_rst_name_from_file_environment(
-                name, from_file_env, alias, module_name, module_path_name
+                name, from_file_env, alias, module_name, module_path_name,
+                skip_data_value=skip_data_value,
+                skip_attribute_value=skip_attribute_value,
             )
             if rst_element is None:
                 continue
@@ -391,7 +423,8 @@ def get_rst_export_elements(
 
 
 def get_rst_default_from_file_environment(
-    file_environment, alias, module_name, module_path_name
+    file_environment, alias, module_name, module_path_name,
+    skip_data_value=False, skip_attribute_value=False
 ):
     """Return :term:`reStructuredText` from default element in
     *file_environment*.
@@ -404,6 +437,11 @@ def get_rst_default_from_file_environment(
     *module_path_name* is the module path alias that should be added to each
     directive.
 
+    *skip_data_value* indicate whether data value should not be displayed.
+
+    *skip_attribute_value* indicate whether attribute value should not be
+    displayed.
+
     .. warning::
 
         Return None if no default is found in the file.
@@ -411,13 +449,19 @@ def get_rst_default_from_file_environment(
     """
     for class_env in file_environment["class"].values():
         if class_env["default"]:
+            extra_options = [":force-partial-import:"]
+            if skip_data_value:
+                extra_options.append(":skip-data-value:")
+            if skip_attribute_value:
+                extra_options.append(":skip-attribute-value:")
+
             return rst_generate(
                 directive="autoclass",
                 element_id=class_env["id"],
                 alias=alias,
                 module_alias=module_name,
                 module_path_alias=module_path_name,
-                extra_options=[":force-partial-import:"]
+                extra_options=extra_options
             )
 
     for function_env in file_environment["function"].values():
@@ -433,18 +477,23 @@ def get_rst_default_from_file_environment(
 
     for data_env in file_environment["data"].values():
         if data_env["default"]:
+            extra_options = [":force-partial-import:"]
+            if skip_data_value:
+                extra_options.append(":skip-value:")
+
             return rst_generate(
                 directive="autodata",
                 element_id=data_env["id"],
                 alias=alias,
                 module_alias=module_name,
                 module_path_alias=module_path_name,
-                extra_options=[":force-partial-import:"]
+                extra_options=extra_options
             )
 
 
 def get_rst_name_from_file_environment(
-    name, file_environment, alias, module_name, module_path_name
+    name, file_environment, alias, module_name, module_path_name,
+    skip_data_value=False, skip_attribute_value=False
 ):
     """Return :term:`reStructuredText` element in *file_environment* from
     *name*.
@@ -457,6 +506,11 @@ def get_rst_name_from_file_environment(
     *module_path_name* is the module path alias that should be added to each
     directive.
 
+    *skip_data_value* indicate whether data value should not be displayed.
+
+    *skip_attribute_value* indicate whether attribute value should not be
+    displayed.
+
     .. warning::
 
         Return None if the element is not found in the file.
@@ -464,13 +518,19 @@ def get_rst_name_from_file_environment(
     """
     for class_env in file_environment["class"].values():
         if class_env["name"] == name and class_env["exported"]:
+            extra_options = [":force-partial-import:"]
+            if skip_data_value:
+                extra_options.append(":skip-data-value:")
+            if skip_attribute_value:
+                extra_options.append(":skip-attribute-value:")
+
             return rst_generate(
                 directive="autoclass",
                 element_id=class_env["id"],
                 alias=alias,
                 module_alias=module_name,
                 module_path_alias=module_path_name,
-                extra_options=[":force-partial-import:"]
+                extra_options=extra_options
             )
 
     for function_env in file_environment["function"].values():
@@ -486,13 +546,17 @@ def get_rst_name_from_file_environment(
 
     for data_env in file_environment["data"].values():
         if data_env["name"] == name and data_env["exported"]:
+            extra_options = [":force-partial-import:"]
+            if skip_data_value:
+                extra_options.append(":skip-value:")
+
             return rst_generate(
                 directive="autodata",
                 element_id=data_env["id"],
                 alias=alias,
                 module_alias=module_name,
                 module_path_alias=module_path_name,
-                extra_options=[":force-partial-import:"]
+                extra_options=extra_options
             )
 
 
