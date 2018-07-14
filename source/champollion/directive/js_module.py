@@ -40,11 +40,6 @@ class AutoModuleDirective(Directive):
         all members should be documented, or a white list of member names to
         display.
 
-    * class-members:
-        This option can be boolean if no arguments are given to indicate that
-        all class members should be documented, or a white list of class member
-        names to display.
-
     * skip-description:
         Indicate whether the module description should be skipped.
 
@@ -96,7 +91,6 @@ class AutoModuleDirective(Directive):
     #: module options
     option_spec = {
         "members": _parse_members,
-        "class-members": _parse_members,
         "skip-description": lambda x: True,
         "skip-data-value": lambda x: True,
         "skip-attribute-value": lambda x: True,
