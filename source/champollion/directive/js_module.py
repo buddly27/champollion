@@ -40,8 +40,19 @@ class AutoModuleDirective(Directive):
         all members should be documented, or a white list of member names to
         display.
 
+    * class-members:
+        This option can be boolean if no arguments are given to indicate that
+        all class members should be documented, or a white list of class member
+        names to display.
+
     * skip-description:
         Indicate whether the module description should be skipped.
+
+    * skip-data-value:
+        Indicate whether data values within the module should be skipped.
+
+    * skip-attribute-value:
+        Indicate whether attribute values within the module should be skipped.
 
     * undoc-members:
         Indicate whether members with no docstrings should be displayed.
@@ -85,7 +96,10 @@ class AutoModuleDirective(Directive):
     #: module options
     option_spec = {
         "members": _parse_members,
+        "class-members": _parse_members,
         "skip-description": lambda x: True,
+        "skip-data-value": lambda x: True,
+        "skip-attribute-value": lambda x: True,
         "undoc-members": lambda x: True,
         "private-members": lambda x: True,
         "module-alias": docutils.parsers.rst.directives.unchanged_required,
@@ -211,6 +225,9 @@ class AutoModuleDirective(Directive):
             force_partial_import=self.options.get(
                 "force-partial-import", False
             ),
+            skip_attribute_value=self.options.get(
+                "skip-attribute-value", "skip-attribute-value" in options
+            ),
             rst_elements=rst_elements
         )
 
@@ -236,13 +253,22 @@ class AutoModuleDirective(Directive):
             force_partial_import=self.options.get(
                 "force-partial-import", False
             ),
+            skip_value=self.options.get(
+                "skip-data-value", "skip-data-value" in options
+            ),
             rst_elements=rst_elements,
         )
 
         # Gather exported elements
         rst_elements = get_rst_export_elements(
             file_environment, js_env, module_name, module_path_name,
-            rst_elements=rst_elements
+            skip_data_value=self.options.get(
+                "skip-data-value", "skip-data-value" in options
+            ),
+            skip_attribute_value=self.options.get(
+                "skip-attribute-value", "skip-attribute-value" in options
+            ),
+            rst_elements=rst_elements,
         )
 
         # Add content while respecting the line order
