@@ -40,6 +40,9 @@ class AutoClassDirective(BaseDirective):
         Indicate whether the constructor method should be displayed if
         available.
 
+    * skip-attribute-value:
+        Indicate whether attribute values within the class should be skipped.
+
     * undoc-members:
         Indicate whether members with no docstrings should be displayed.
 
@@ -79,6 +82,7 @@ class AutoClassDirective(BaseDirective):
     option_spec = {
         "members": _parse_members,
         "skip-constructor": lambda x: True,
+        "skip-attribute-value": lambda x: True,
         "undoc-members": lambda x: True,
         "private-members": lambda x: True,
         "alias": docutils.parsers.rst.directives.unchanged_required,
@@ -160,6 +164,9 @@ class AutoClassDirective(BaseDirective):
                 blacklist_ids=env["method"].keys(),
                 undocumented_members=undoc_members,
                 private_members=private_members,
+                skip_value=self.options.get(
+                    "skip-attribute-value", "skip-attribute-value" in options
+                ),
                 rst_elements=rst_elements
             )
 
@@ -253,6 +260,11 @@ class AutoAttributeDirective(BaseDirective):
     #: Define the Object type
     objtype = "attribute"
 
+    #: data options
+    option_spec = {
+        "skip-value": lambda x: True,
+    }
+
     def handle_signature(self, signature, node):
         """Update the signature *node*."""
         env = self.state.document.settings.env.element_environment
@@ -265,10 +277,13 @@ class AutoAttributeDirective(BaseDirective):
         node["id"] = env["id"]
         node["fullname"] = name
 
+        skip_value = self.options.get("skip-value", False)
+
         if prefix is not None:
             node += addnodes.desc_type(prefix + " ", prefix + " ")
         node += addnodes.desc_name(name, name)
-        node += addnodes.desc_annotation(" = " + value, " = " + value)
+        if not skip_value:
+            node += addnodes.desc_annotation(" = " + value, " = " + value)
 
         class_name = env["class_id"].rsplit(".", 1)[-1]
         return class_name + "." + name, None
