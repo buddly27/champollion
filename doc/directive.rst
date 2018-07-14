@@ -32,6 +32,12 @@ The available options are:
 * skip-description:
     Indicate whether the module description should be skipped.
 
+* skip-data-value:
+    Indicate whether data values within the module should be skipped.
+
+* skip-attribute-value:
+    Indicate whether attribute values within the module should be skipped.
+
 * undoc-members:
     Indicate whether members with no docstrings should be displayed.
 
@@ -89,6 +95,9 @@ The available options are:
 * force-partial-import:
     Indicate whether the data import statement display should be indicated
     with partial import if the data element is exported.
+
+* skip-value:
+    Indicate whether data value should be skipped.
 
 .. _directive/autofunction:
 
@@ -207,6 +216,9 @@ The available options are:
     Indicate whether the constructor method should be displayed if
     available.
 
+* skip-attribute-value:
+    Indicate whether attribute values within the class should be skipped.
+
 * undoc-members:
     Indicate whether members with no docstrings should be displayed.
 
@@ -292,3 +304,8 @@ documented as follow:
 .. sourcecode:: rest
 
     .. js:autoattribute:: example.Square.name
+
+The available options are:
+
+* skip-value:
+    Indicate whether attribute value should be skipped.

@@ -30,6 +30,9 @@ class AutoDataDirective(BaseDirective):
         Indicate whether the data import statement display should be indicated
         with partial import if the data element is exported.
 
+    * skip-value:
+        Indicate whether data value should be skipped.
+
     .. seealso::
 
         :ref:`directive/autodata`

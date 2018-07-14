@@ -249,6 +249,11 @@ class AutoAttributeDirective(BaseDirective):
 
         .. js:autoattribute:: module.AwesomeClass.DATA
 
+    The available options are:
+
+    * skip-value:
+        Indicate whether attribute value should be skipped.
+
     .. seealso::
 
         :ref:`directive/autoattribute`
