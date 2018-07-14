@@ -4,6 +4,49 @@
 Release Notes
 *************
 
+.. release:: 0.8.0
+    :date: 2018-07-14
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:skip-value:`` option to the
+        :class:`js:autodata
+        <champollion.directive.js_data.AutoDataDirective>` directive to
+        prevent displayed the data value.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:skip-value:`` option to the
+        :class:`js:autoattribute
+        <champollion.directive.js_class.AutoAttributeDirective>` directive to
+        prevent displayed the attribute value.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:skip-attribute-value:`` option to the
+        :class:`js:autoclass
+        <champollion.directive.js_class.AutoClassDirective>` directive to
+        prevent displayed all attribute values within the class.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:skip-attribute-value:`` option to the
+        :class:`js:automodule
+        <champollion.directive.js_module.AutoModuleDirective>` directive to
+        prevent displayed all attribute values within the module.
+
+    .. change:: new
+        :tags: directive
+
+        Added ``:skip-data-value:`` option to the
+        :class:`js:automodule
+        <champollion.directive.js_module.AutoModuleDirective>` directive to
+        prevent displayed all data values within the module.
+
 .. release:: 0.7.2
     :date: 2018-07-06
 
