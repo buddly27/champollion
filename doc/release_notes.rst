@@ -4,6 +4,19 @@
 Release Notes
 *************
 
+.. release:: 0.8.1
+    :date: 2018-09-23
+
+    .. change:: fixed
+
+        Excluded the :term:`Sphinx` requirement version from 1.8 as `Directive`
+        class is removed from the `sphinx.directives` module.
+
+        .. seealso::
+
+            `Sphinx Release 1.8.0
+            <http://www.sphinx-doc.org/en/stable/changes.html#release-1-8-0-released-sep-13-2018>`_
+
 .. release:: 0.8.0
     :date: 2018-07-14
 

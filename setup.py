@@ -24,7 +24,7 @@ with open(
 
 # Compute dependencies.
 INSTALL_REQUIRES = [
-    "sphinx >= 1.7.5, < 2"
+    "sphinx >= 1.7.5, < 1.8"
 ]
 DOC_REQUIRES = [
     "sphinx_rtd_theme >= 0.2.0, < 1",
