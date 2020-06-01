@@ -24,7 +24,7 @@ with open(
 
 # Compute dependencies.
 INSTALL_REQUIRES = [
-    "sphinx >= 1.7.5, < 1.8"
+    "sphinx >= 1.8, < 4",
 ]
 DOC_REQUIRES = [
     "sphinx_rtd_theme >= 0.2.0, < 1",
@@ -32,9 +32,9 @@ DOC_REQUIRES = [
 ]
 TEST_REQUIRES = [
     "pytest-runner >= 2.11, < 3",
-    "pytest >= 3.1.2, < 4",
-    "pytest-mock >= 0.6, < 1",
-    "pytest-xdist >= 1.1, < 2",
+    "pytest >= 4, < 5",
+    "pytest-mock >= 1.2, < 2",
+    "pytest-xdist >= 1.18, < 2",
     "pytest-cov >= 2, < 3"
 ]
 
