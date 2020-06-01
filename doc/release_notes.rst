@@ -4,6 +4,17 @@
 Release Notes
 *************
 
+.. release:: 1.0.0
+    :date: 2020-05-31
+
+    .. change:: new
+        :tags: directive
+
+        Updated :class:`js:automodule
+        <champollion.directive.js_module.AutoModuleDirective>` to inherit from
+        :class:`docutils.parsers.rst.Directive` instead of
+        :class:`sphinx.directives.Directive` so it can work with Sphinx >= 1.8.
+
 .. release:: 0.8.1
     :date: 2018-09-23
 
