@@ -2,8 +2,8 @@
 
 import collections
 
-from sphinx.directives import Directive
 from sphinx import addnodes
+import docutils.parsers.rst
 import docutils.parsers.rst.directives
 import docutils.nodes
 
@@ -24,7 +24,7 @@ def _parse_members(argument):
     return [arg.strip() for arg in argument.split(",")]
 
 
-class AutoModuleDirective(Directive):
+class AutoModuleDirective(docutils.parsers.rst.Directive):
     """Directive to render :term:`Javascript` module documentation.
 
     The unique argument should be the identifier of the module element.
