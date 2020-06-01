@@ -36,7 +36,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"champollion"
-copyright = u"2017, Jeremy Retailleau"
+copyright = u"2020, Jeremy Retailleau"
 
 # Version
 with open(
