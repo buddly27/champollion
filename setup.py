@@ -24,6 +24,7 @@ with open(
 
 # Compute dependencies.
 INSTALL_REQUIRES = [
+    "docutils >= 0.16, < 1",
     "sphinx >= 1.8, < 4",
 ]
 DOC_REQUIRES = [
