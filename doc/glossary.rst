@@ -10,7 +10,7 @@ Glossary
 
         .. seealso:: http://www.sphinx-doc.org/en/stable/rest.html#directives
 
-    JavaScript
+    Javascript
         Programming language specified in the ECAMScript language specification.
 
         .. seealso:: http://www.w3schools.com/js/

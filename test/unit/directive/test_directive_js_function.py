@@ -1,24 +1,12 @@
 # :coding: utf-8
 
-import pytest
 import os
-import re
-import unicodedata
 
-from sphinx.cmdline import main as sphinx_main
+import pytest
+from sphinx.cmd.build import main as sphinx_main
 from sphinx.util.osutil import cd
 
-
-def _sanitise_value(value):
-    """Return *value* suitable for comparison using python 2 and python 3.
-    """
-    value = value.decode("UTF-8")
-    value = unicodedata.normalize("NFKD", value)
-    value = value.encode("ascii", "ignore").decode("UTF-8")
-    value = re.sub(
-        r"[^\w*._\-\\/:% \"()\[\]{}\n=,]", "", value
-    )
-    return value
+import utility
 
 
 @pytest.fixture()
@@ -85,7 +73,7 @@ def test_directive_autofunction(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"
@@ -94,7 +82,9 @@ def test_directive_autofunction(doc_folder_with_code):
             "\n"
             "   A function\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "example.doSomething2(arg)\n"
             "\n"
@@ -144,7 +134,7 @@ def test_directive_autofunction_with_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "example.aliased_doSomething1(arg1, arg2 = null)\n"
@@ -153,7 +143,9 @@ def test_directive_autofunction_with_alias(doc_folder_with_code):
             "\n"
             "   A function\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "example.aliased_doSomething2(arg)\n"
             "\n"
@@ -203,7 +195,7 @@ def test_directive_autofunction_with_module_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "alias_module.doSomething1(arg1, arg2 = null)\n"
@@ -212,7 +204,9 @@ def test_directive_autofunction_with_module_alias(doc_folder_with_code):
             "\n"
             "   A function\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "alias_module.doSomething2(arg)\n"
             "\n"
@@ -262,7 +256,7 @@ def test_directive_autofunction_with_module_path_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"
@@ -271,7 +265,9 @@ def test_directive_autofunction_with_module_path_alias(doc_folder_with_code):
             "\n"
             "   A function\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "example.doSomething2(arg)\n"
             "\n"
@@ -323,7 +319,7 @@ def test_directive_autofunction_with_partial_import_forced(
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "example.doSomething1(arg1, arg2 = null)\n"
@@ -332,7 +328,9 @@ def test_directive_autofunction_with_partial_import_forced(
             "\n"
             "   A function\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "example.doSomething2(arg)\n"
             "\n"

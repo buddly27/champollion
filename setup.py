@@ -24,17 +24,21 @@ with open(
 
 # Compute dependencies.
 INSTALL_REQUIRES = [
-    "sphinx >= 1.7.5, < 1.8"
+    "docutils >= 0.16, < 1",
+    "sphinx >= 1.8, < 4",
 ]
 DOC_REQUIRES = [
+    # RTD theme seems is not yet compatible with Sphinx 3.
+    # https://github.com/readthedocs/sphinx_rtd_theme/pull/900
+    "sphinx >= 1.8, < 3",
     "sphinx_rtd_theme >= 0.2.0, < 1",
     "lowdown >= 0.1.0, < 2",
 ]
 TEST_REQUIRES = [
     "pytest-runner >= 2.11, < 3",
-    "pytest >= 3.1.2, < 4",
-    "pytest-mock >= 0.6, < 1",
-    "pytest-xdist >= 1.1, < 2",
+    "pytest >= 4.6.10, < 5",
+    "pytest-mock >= 1.2, < 2",
+    "pytest-xdist >= 1.18, < 2",
     "pytest-cov >= 2, < 3"
 ]
 

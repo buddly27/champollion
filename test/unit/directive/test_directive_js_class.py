@@ -1,24 +1,12 @@
 # :coding: utf-8
 
-import pytest
 import os
-import re
-import unicodedata
 
-from sphinx.cmdline import main as sphinx_main
+import pytest
+from sphinx.cmd.build import main as sphinx_main
 from sphinx.util.osutil import cd
 
-
-def _sanitise_value(value):
-    """Return *value* suitable for comparison using python 2 and python 3.
-    """
-    value = value.decode("UTF-8")
-    value = unicodedata.normalize("NFKD", value)
-    value = value.encode("ascii", "ignore").decode("UTF-8")
-    value = re.sub(
-        r"[^\w._\-\\/:% \"()\[\]{}\n=,]", "", value
-    )
-    return value
+import utility
 
 
 @pytest.fixture()
@@ -140,7 +128,7 @@ def test_directive_autoclass(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -179,7 +167,7 @@ def test_directive_autoclass_with_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -202,13 +190,17 @@ def test_directive_autoclass_with_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -244,7 +236,7 @@ def test_directive_autoclass_with_specific_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -257,13 +249,17 @@ def test_directive_autoclass_with_specific_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -294,7 +290,7 @@ def test_directive_autoclass_with_default_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -317,13 +313,17 @@ def test_directive_autoclass_with_default_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -360,7 +360,7 @@ def test_directive_autoclass_without_constructor(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -373,13 +373,17 @@ def test_directive_autoclass_without_constructor(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -419,7 +423,7 @@ def test_directive_autoclass_without_constructor_default(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -432,13 +436,17 @@ def test_directive_autoclass_without_constructor_default(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -483,7 +491,7 @@ def test_directive_autoclass_with_undocumented_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -510,13 +518,17 @@ def test_directive_autoclass_with_undocumented_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -565,7 +577,7 @@ def test_directive_autoclass_with_undoc_members_default(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -592,13 +604,17 @@ def test_directive_autoclass_with_undoc_members_default(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -637,7 +653,7 @@ def test_directive_autoclass_with_private_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -654,13 +670,17 @@ def test_directive_autoclass_with_private_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -704,7 +724,7 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -721,13 +741,17 @@ def test_directive_autoclass_with_private_members_default(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -773,7 +797,7 @@ def test_directive_autoclass_with_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AliasedMotherClass()\n"
@@ -812,7 +836,7 @@ def test_directive_autoclass_with_module_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class alias_module.MotherClass()\n"
@@ -851,7 +875,7 @@ def test_directive_autoclass_with_module_path_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.MotherClass()\n"
@@ -884,7 +908,7 @@ def test_directive_autoclass_with_partial_import_forced(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -912,7 +936,7 @@ def test_directive_autoclass_with_attribute_value_skipped(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "class example.AwesomeClass(name)\n"
@@ -929,13 +953,17 @@ def test_directive_autoclass_with_attribute_value_skipped(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"

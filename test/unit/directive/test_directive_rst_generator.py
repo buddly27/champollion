@@ -1,9 +1,9 @@
 # :coding: utf-8
 
 import pytest
+from docutils.statemachine import StringList
 
 import champollion.directive.rst_generator
-from docutils.statemachine import StringList
 
 
 @pytest.mark.parametrize(

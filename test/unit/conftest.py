@@ -1,10 +1,14 @@
 # :coding: utf-8
 
 import os
+import sys
 import shutil
 import tempfile
 
 import pytest
+
+# Include module in sys.path to include utility functions.
+sys.path.insert(0, os.path.dirname(__file__))
 
 
 @pytest.fixture()

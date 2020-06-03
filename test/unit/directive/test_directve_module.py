@@ -1,24 +1,12 @@
 # :coding: utf-8
 
-import pytest
 import os
-import re
-import unicodedata
 
-from sphinx.cmdline import main as sphinx_main
+import pytest
+from sphinx.cmd.build import main as sphinx_main
 from sphinx.util.osutil import cd
 
-
-def _sanitise_value(value):
-    """Return *value* suitable for comparison using python 2 and python 3.
-    """
-    value = value.decode("UTF-8")
-    value = unicodedata.normalize("NFKD", value)
-    value = value.encode("ascii", "ignore").decode("UTF-8")
-    value = re.sub(
-        r"[^\w*._\-\\/:% \"()\[\]{}\n=,]", "", value
-    )
-    return value
+import utility
 
 
 @pytest.fixture()
@@ -195,7 +183,7 @@ def test_directive_automodule(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -226,7 +214,7 @@ def test_directive_automodule_with_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -238,7 +226,9 @@ def test_directive_automodule_with_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -254,13 +244,17 @@ def test_directive_automodule_with_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -285,7 +279,9 @@ def test_directive_automodule_with_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -307,13 +303,17 @@ def test_directive_automodule_with_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -349,7 +349,7 @@ def test_directive_automodule_with_specific_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "const example.test_attribute.VARIABLE_OBJECT = "
@@ -359,7 +359,9 @@ def test_directive_automodule_with_specific_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
         )
 
 
@@ -388,7 +390,7 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -402,7 +404,9 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -418,13 +422,17 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -449,7 +457,9 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -471,13 +481,17 @@ def test_directive_automodule_with_undocumented_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -525,7 +539,7 @@ def test_directive_automodule_with_undocumented_members_default(
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -539,7 +553,9 @@ def test_directive_automodule_with_undocumented_members_default(
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -555,13 +571,17 @@ def test_directive_automodule_with_undocumented_members_default(
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -586,7 +606,9 @@ def test_directive_automodule_with_undocumented_members_default(
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -608,13 +630,17 @@ def test_directive_automodule_with_undocumented_members_default(
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -659,7 +685,7 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -675,7 +701,9 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -691,13 +719,17 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -722,7 +754,9 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -744,13 +778,17 @@ def test_directive_automodule_with_private_members(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -798,7 +836,7 @@ def test_directive_automodule_with_private_members_default(
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -814,7 +852,9 @@ def test_directive_automodule_with_private_members_default(
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -830,13 +870,17 @@ def test_directive_automodule_with_private_members_default(
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -861,7 +905,9 @@ def test_directive_automodule_with_private_members_default(
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -883,13 +929,17 @@ def test_directive_automodule_with_private_members_default(
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -934,7 +984,7 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -946,7 +996,9 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class alias_module.AwesomeClass(name)\n"
             "\n"
@@ -962,13 +1014,17 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -993,7 +1049,9 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let alias_module.VARIABLE_INT = 42\n"
             "\n"
@@ -1015,13 +1073,17 @@ def test_directive_automodule_with_module_alias(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1066,7 +1128,7 @@ def test_directive_automodule_with_module_path_alias(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -1078,7 +1140,9 @@ def test_directive_automodule_with_module_path_alias(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -1094,13 +1158,17 @@ def test_directive_automodule_with_module_path_alias(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1125,7 +1193,9 @@ def test_directive_automodule_with_module_path_alias(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -1147,13 +1217,17 @@ def test_directive_automodule_with_module_path_alias(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1198,7 +1272,7 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -1210,7 +1284,9 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -1226,13 +1302,17 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1257,7 +1337,9 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -1279,13 +1361,17 @@ def test_directive_automodule_with_partial_import_forced(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1330,7 +1416,7 @@ def test_directive_automodule_with_data_value_skipped(doc_folder_with_code):
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -1341,7 +1427,9 @@ def test_directive_automodule_with_data_value_skipped(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -1357,13 +1445,17 @@ def test_directive_automodule_with_data_value_skipped(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1387,7 +1479,9 @@ def test_directive_automodule_with_data_value_skipped(doc_folder_with_code):
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT\n"
             "\n"
@@ -1409,13 +1503,17 @@ def test_directive_automodule_with_data_value_skipped(doc_folder_with_code):
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1462,7 +1560,7 @@ def test_directive_automodule_with_attribute_value_skipped(
     with open(
         os.path.join(doc_folder_with_code, "_build", "index.txt"), "rb"
     ) as f:
-        content = _sanitise_value(f.read())
+        content = utility.sanitize_value(f.read())
 
         assert content == (
             "A cool application.\n"
@@ -1474,7 +1572,9 @@ def test_directive_automodule_with_attribute_value_skipped(
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "class example.AwesomeClass(name)\n"
             "\n"
@@ -1490,13 +1590,17 @@ def test_directive_automodule_with_attribute_value_skipped(
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
@@ -1521,7 +1625,9 @@ def test_directive_automodule_with_attribute_value_skipped(
             "\n"
             "   A variable\n"
             "\n"
-            "   Note: A note.\n"
+            "   Note:\n"
+            "\n"
+            "     A note.\n"
             "\n"
             "let example.test_attribute.VARIABLE_INT = 42\n"
             "\n"
@@ -1543,13 +1649,17 @@ def test_directive_automodule_with_attribute_value_skipped(
             "\n"
             "      Get name.\n"
             "\n"
-            "      Warning: The name is awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        The name is awesome\n"
             "\n"
             "   set name(value)\n"
             "\n"
             "      Set name.\n"
             "\n"
-            "      Warning: Keep the name awesome\n"
+            "      Warning:\n"
+            "\n"
+            "        Keep the name awesome\n"
             "\n"
             "   awesomeMethod()\n"
             "\n"
