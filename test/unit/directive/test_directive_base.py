@@ -1,9 +1,8 @@
 # :coding: utf-8
 
-import pytest
 import os
 
-from sphinx.cmdline import main as sphinx_main
+from sphinx.cmd.build import main as sphinx_main
 from sphinx.util.osutil import cd
 
 
