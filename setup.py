@@ -28,6 +28,9 @@ INSTALL_REQUIRES = [
     "sphinx >= 1.8, < 4",
 ]
 DOC_REQUIRES = [
+    # RTD theme seems is not yet compatible with Sphinx 3.
+    # https://github.com/readthedocs/sphinx_rtd_theme/pull/900
+    "sphinx >= 1.8, < 3",
     "sphinx_rtd_theme >= 0.2.0, < 1",
     "lowdown >= 0.1.0, < 2",
 ]
