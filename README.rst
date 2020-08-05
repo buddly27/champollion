@@ -5,8 +5,8 @@ Champollion
 .. image:: https://img.shields.io/pypi/v/champollion.svg
         :target: https://pypi.python.org/pypi/champollion
 
-.. image:: https://api.travis-ci.org/buddly27/champollion.svg?branch=master
-    :target: https://travis-ci.org/buddly27/champollion
+.. image:: https://travis-ci.org/themill/wiz.svg?branch=master
+    :target: https://travis-ci.org/themill/wiz
 
 .. image:: https://coveralls.io/repos/github/buddly27/champollion/badge.svg?branch=master
     :target: https://coveralls.io/github/buddly27/champollion?branch=master
